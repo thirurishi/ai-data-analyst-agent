@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Column, MetaData, PrimaryKeyConstraint, String, Table, insert
+from sqlalchemy import Column, MetaData, PrimaryKeyConstraint, String, Table, insert, select
 from sqlalchemy.dialects.postgresql import insert as postgres_insert
 from sqlalchemy.engine import Engine
 from sqlalchemy.types import Integer, JSON
@@ -65,3 +65,41 @@ class PostgresVectorStore(VectorStoreRepository):
         with self.engine.begin() as connection:
             result = connection.execute(statement)
             return len(result.scalars().all())
+
+    def search(
+        self,
+        *,
+        file_id: str,
+        query_vector: list[float],
+        top_k: int,
+        embedding_model: str,
+    ) -> list[VectorDocumentRecord]:
+        try:
+            from pgvector.sqlalchemy import Vector
+        except ImportError as exc:
+            raise VectorStoreError("pgvector is required for PostgreSQL vector search.") from exc
+        statement = (
+            select(self._table.c.chunk_id, self._table.c.file_id, self._table.c.chunk_index,
+                   self._table.c.chunk_text, self._table.c.embedding,
+                   self._table.c.embedding_model, self._table.c.metadata)
+            .where(
+                self._table.c.file_id == file_id,
+                self._table.c.embedding_model == embedding_model,
+            )
+            .order_by(self._table.c.embedding.cosine_distance(query_vector))
+            .limit(top_k)
+        )
+        with self.engine.connect() as connection:
+            rows = connection.execute(statement).mappings().all()
+        return [
+            VectorDocumentRecord(
+                chunk_id=row["chunk_id"],
+                file_id=row["file_id"],
+                chunk_index=row["chunk_index"],
+                chunk_text=row["chunk_text"],
+                embedding=row["embedding"].tolist(),
+                embedding_model=row["embedding_model"],
+                metadata=row["metadata"],
+            )
+            for row in rows
+        ]
