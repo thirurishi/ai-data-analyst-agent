@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="1200" height="340" role="img" aria-label="AI Data Analyst Agent: ask your data a question, get the number, the chart and the reason">
+  <style>
+    .bg { fill: #EEF1EC; }
+    .card { fill: #FFFFFF; stroke: #DFE4DC; }
+    .title { font: 800 54px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #1E2924; letter-spacing: -1.5px; }
+    .sub { font: 500 22px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #4E5B53; }
+    .kicker { font: 700 15px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #3F6B57; letter-spacing: .4px; }
+    .q { font: 500 17px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #1E2924; }
+    .ans { font: 500 14px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #4E5B53; }
+    .chip { fill: #F4F6F2; stroke: #DFE4DC; }
+    .chiptext { font: 600 12px "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #4E5B53; }
+
+    .typed { clip-path: inset(0 100% 0 0); animation: type 1.6s steps(26) .6s forwards; }
+    @keyframes type { to { clip-path: inset(0 0 0 0); } }
+    .caret { opacity: 0; animation: blink 1s steps(2) 2.2s infinite; }
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } }
+
+    .bar { transform-box: fill-box; transform-origin: bottom; transform: scaleY(0); animation: grow .8s cubic-bezier(.2,.8,.2,1) forwards; }
+    .b1 { animation-delay: 2.5s; } .b2 { animation-delay: 2.6s; } .b3 { animation-delay: 2.7s; } .b4 { animation-delay: 2.8s; } .b5 { animation-delay: 2.9s; }
+    @keyframes grow { to { transform: scaleY(1); } }
+    .fade { opacity: 0; animation: fade .6s ease 2.3s forwards; }
+    @keyframes fade { to { opacity: 1; } }
+    .line { stroke-dasharray: 700; stroke-dashoffset: 700; animation: draw 2.2s ease .4s forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .typed, .bar, .fade, .line { animation: none; clip-path: none; transform: none; opacity: 1; stroke-dashoffset: 0; }
+    }
+  </style>
+
+  <rect class="bg" width="1200" height="340" rx="18"/>
+  <!-- faint trend line behind the title -->
+  <path class="line" d="M40 322 C 140 314, 200 296, 280 302 S 420 280, 500 286 S 620 262, 700 256" fill="none" stroke="#C9D0C4" stroke-width="2.5"/>
+
+  <g transform="translate(56 0)">
+    <rect x="0" y="62" width="36" height="36" rx="9" fill="#3F6B57"/>
+    <path d="M9 87 l7 -9 l6 6 l9 -13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="kicker" x="50" y="86">AI DATA ANALYST AGENT</text>
+    <text class="title" x="0" y="160">Ask your data a question.</text>
+    <text class="sub" x="2" y="204">Get the number, the chart and the reason. Every figure is a real</text>
+    <text class="sub" x="2" y="234">Pandas calculation you can open and check.</text>
+  </g>
+
+  <!-- product card -->
+  <g transform="translate(760 40)">
+    <rect class="card" x="0" y="0" width="390" height="262" rx="14"/>
+    <circle cx="20" cy="22" r="4.5" fill="#C9D0C4"/><circle cx="35" cy="22" r="4.5" fill="#C9D0C4"/><circle cx="50" cy="22" r="4.5" fill="#C9D0C4"/>
+    <line x1="0" y1="42" x2="390" y2="42" stroke="#DFE4DC"/>
+    <rect x="18" y="58" width="354" height="40" rx="9" fill="#F4F6F2" stroke="#C9D0C4"/>
+    <g class="typed"><text class="q" x="32" y="84">Top 5 products by revenue</text></g>
+    <rect class="caret" x="246" y="68" width="2" height="21" fill="#3F6B57"/>
+    <g class="fade">
+      <text class="ans" x="20" y="124">'Smart Watch' leads with 29.2K, then 'Laptop Stand'.</text>
+    </g>
+    <g transform="translate(30 0)">
+      <rect class="bar b1" x="0"   y="140" width="50" height="76" rx="5" fill="#3F6B57"/>
+      <rect class="bar b2" x="64"  y="150" width="50" height="66" rx="5" fill="#8FAE9C"/>
+      <rect class="bar b3" x="128" y="169" width="50" height="47" rx="5" fill="#8FAE9C"/>
+      <rect class="bar b4" x="192" y="179" width="50" height="37" rx="5" fill="#8FAE9C"/>
+      <rect class="bar b5" x="256" y="187" width="50" height="29" rx="5" fill="#8FAE9C"/>
+    </g>
+    <g class="fade">
+      <rect class="chip" x="20" y="228" width="104" height="22" rx="11"/><text class="chiptext" x="33" y="243">analyze_top_n</text>
+      <rect class="chip" x="132" y="228" width="128" height="22" rx="11"/><text class="chiptext" x="145" y="243">group_by: product</text>
+      <rect class="chip" x="268" y="228" width="48" height="22" rx="11"/><text class="chiptext" x="281" y="243">n: 5</text>
+    </g>
+  </g>
+</svg>

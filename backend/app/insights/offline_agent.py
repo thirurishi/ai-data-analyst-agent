@@ -239,26 +239,61 @@ class OfflineAgent:
             text += f" You could ask: \"average {humanize(metric).lower()}\"."
         return text
 
+
+    def _describe_dataset(self, result: dict[str, Any]) -> str:
+        """Plain-English 'what is this data about' answer built from the columns and values."""
+        df, roles = self.dataframe, self.roles
+        parts = [f"This dataset has {result['row_count']:,} rows and {result['column_count']} columns."]
+
+        if roles["identifier"]:
+            entity = re.sub(r"(?i)[\s_-]*(id|identifier|code|uuid)$", "", roles["identifier"][0]).strip(" _-")
+            if entity:
+                parts.append(f"Each row looks like one {humanize(entity).lower()} (based on '{roles['identifier'][0]}').")
+
+        for column in roles["datetime"][:1]:
+            dates = InsightService._parse_dates(df[column])
+            if dates is None:
+                dates = pd.to_datetime(df[column], errors="coerce")
+            dates = dates.dropna()
+            if len(dates):
+                parts.append(f"It covers {dates.min():%d %b %Y} to {dates.max():%d %b %Y}.")
+
+        metric = InsightService.primary_metric(df, roles)
+        if metric:
+            values = InsightService._numeric(df[metric]).dropna()
+            if len(values):
+                parts.append(
+                    f"The main measure looks like {humanize(metric).lower()}: total {format_number(values.sum())}, "
+                    f"average {format_number(values.mean())} per row."
+                )
+
+        breakdowns = []
+        for column in roles["categorical"][:4]:
+            top = df[column].astype("string").str.strip().value_counts().head(3).index.tolist()
+            count = int(df[column].nunique(dropna=True))
+            breakdowns.append(f"{humanize(column).lower()} ({count} values, e.g. {', '.join(top)})")
+        if breakdowns:
+            parts.append("You can break it down by " + "; ".join(breakdowns) + ".")
+
+        other_numeric = [c for c in roles["numeric"] if c != metric]
+        if other_numeric:
+            parts.append("Other numeric fields: " + ", ".join(humanize(c).lower() for c in other_numeric[:6]) + ".")
+        if roles["text"]:
+            parts.append("Text fields: " + ", ".join(roles["text"][:4]) + ".")
+
+        category = InsightService.primary_category(df, roles)
+        if metric and category:
+            parts.append(f"Try asking: \"{_metric_label('sum', metric)} by {humanize(category).lower()}\".")
+        elif category:
+            parts.append(f"Try asking: \"how many rows per {humanize(category).lower()}\".")
+        elif metric:
+            parts.append(f"Try asking: \"average {humanize(metric).lower()}\".")
+        return " ".join(parts)
+
     def describe(self, result: dict[str, Any]) -> str:
         operation = result["operation"]
         if operation == "summary":
-            roles = self.roles
-            parts = [f"The dataset has {result['row_count']:,} rows and {result['column_count']} columns."]
-            if roles["numeric"]:
-                parts.append("Numeric fields: " + ", ".join(roles["numeric"][:6]) + ".")
-            if roles["categorical"]:
-                parts.append("Categories: " + ", ".join(roles["categorical"][:6]) + ".")
-            if roles["datetime"]:
-                parts.append("Dates: " + ", ".join(roles["datetime"][:3]) + ".")
-            others = roles["identifier"] + roles["text"]
-            if others:
-                parts.append("Other columns: " + ", ".join(others[:6]) + ".")
-            if roles["numeric"]:
-                parts.append("Try asking for a total, an average, or a breakdown \"by\" one of the category columns.")
-            elif roles["categorical"]:
-                parts.append("There are no numeric columns, so try counting rows \"per\" a category, for example "
-                             f"\"how many rows per {humanize(roles['categorical'][0]).lower()}\".")
-            return " ".join(parts)
+            return self._describe_dataset(result)
         if operation == "aggregate":
             if result["aggregation"] == "count":
                 return f"There are {format_number(result['value'])} non-empty values in {humanize(result['column']).lower()}."

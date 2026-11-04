@@ -290,6 +290,17 @@ def test_offline_agent_explains_missing_columns_instead_of_guessing():
     assert "how many rows per seller state" in missing["answer"]
     assert "no column" not in summary["answer"]
     assert "seller_city" in summary["answer"]
+    assert "Each row looks like one seller" in summary["answer"]
     assert counts["result"]["rows"] == [{"seller_state": "SP", "value": 15}, {"seller_state": "PR", "value": 10}]
     assert agent.run("draw a chart chart")["answer"].count("'chart'") == 1
     assert InsightService.chart_from_result(counts["result"])["y_label"] == "rows"
+
+
+def test_dataset_description_mentions_entity_dates_metric_and_breakdowns(kaggle_style_frame):
+    answer = OfflineAgent(kaggle_style_frame).run("WHAT IS THIS DATA ABOUT")["answer"]
+
+    assert "Each row looks like one transaction" in answer
+    assert "01 Jan 2023 to 01 Jun 2023" in answer
+    assert "total amount: total 2,170" in answer
+    assert "product category (3 values" in answer
+    assert "total total" not in answer

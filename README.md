@@ -1,51 +1,167 @@
-# AI Data Analyst Agent
+<p align="center">
+  <img src="docs/banner.svg" alt="AI Data Analyst Agent: ask your data a question, get the number, the chart and the reason" width="100%">
+</p>
 
-Upload a CSV and get what a junior analyst would hand you on day one: key metrics, a data-health score, the patterns that stand out, ready-made charts, and answers to plain-English questions. When you're done, export a PDF report. You can also upload PDF, Word and text documents and ask questions about them with retrieval-augmented generation (RAG).
+<p align="center">
+  <a href="https://ai-data-analyst-agent-wbvy.onrender.com"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-open_app-3F6B57?style=for-the-badge"></a>
+  <img alt="Tests" src="https://img.shields.io/badge/tests-397_passing-3F6B57?style=for-the-badge">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11+-1E2924?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-1E2924?style=for-the-badge&logo=fastapi&logoColor=white">
+  <img alt="Pandas" src="https://img.shields.io/badge/pandas-1E2924?style=for-the-badge&logo=pandas&logoColor=white">
+  <img alt="Docker" src="https://img.shields.io/badge/docker-ready-1E2924?style=for-the-badge&logo=docker&logoColor=white">
+</p>
 
-**Live demo:** [ai-data-analyst-agent-wbvy.onrender.com](https://ai-data-analyst-agent-wbvy.onrender.com). Click **Try the sample dataset**. It runs on Render's free plan, so the first load after a quiet period can take up to a minute.
+<p align="center">
+  <a href="https://ai-data-analyst-agent-wbvy.onrender.com"><b>Live demo</b></a> ·
+  <a href="#-see-it-in-action"><b>Demo</b></a> ·
+  <a href="#-how-it-works"><b>How it works</b></a> ·
+  <a href="#-quick-start"><b>Quick start</b></a> ·
+  <a href="#-api"><b>API</b></a>
+</p>
 
-The core rule of the project: **the LLM never invents numbers.** It only chooses *which* validated analysis tool to run. Every figure comes from a deterministic Pandas or SQL calculation, and you can inspect the raw result under each answer.
+---
 
-![Overview](docs/screenshots/overview.png)
+Upload a CSV and get what a junior analyst would hand you on day one: **key metrics, a data-health score, the patterns that stand out, ready-made charts, and answers to plain-English questions**. Then export a PDF report. You can also upload PDF, Word and text documents and ask questions about them with retrieval-augmented generation (RAG).
 
-| Ask in plain English | Human-approved data cleaning |
+> [!IMPORTANT]
+> **The LLM never invents numbers.** It only chooses *which* validated analysis tool to run, with arguments checked against the real columns. Every figure comes from a deterministic Pandas or SQL calculation, and the raw result is shown under each answer.
+
+> [!TIP]
+> Open the [live demo](https://ai-data-analyst-agent-wbvy.onrender.com) and click **Try the sample dataset**. It runs on Render's free plan, so the first load after a quiet period can take up to a minute.
+
+## 🎬 See it in action
+
+<p align="center">
+  <img src="docs/demo.gif" alt="Demo: loading the sample dataset, reading the overview, asking a question, approving a data-quality fix and building a chart" width="100%">
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/overview.png" alt="Overview with KPIs, findings and data health"><p align="center"><sub><b>Overview</b>: KPIs, findings and a 0–100 health score</sub></p></td>
+    <td width="50%"><img src="docs/screenshots/ask.png" alt="Ask tab answering a question with a chart"><p align="center"><sub><b>Ask</b>: plain-English questions, grounded answers, auto chart</sub></p></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/charts.png" alt="Automatically generated charts"><p align="center"><sub><b>Charts</b>: suggested automatically, enlarge or download as PNG</sub></p></td>
+    <td width="50%"><img src="docs/screenshots/quality.png" alt="Human-approved data quality fixes"><p align="center"><sub><b>Quality</b>: detect, recommend, approve, then apply</sub></p></td>
+  </tr>
+</table>
+
+## ✨ Features
+
+| | |
 |---|---|
-| ![Ask](docs/screenshots/ask.png) | ![Quality](docs/screenshots/quality.png) |
+| 📊 **Instant overview** | Detects column roles (metric, category, date, identifier) and surfaces the top segment, concentration, trend, distribution shape, correlations, missing data and outliers. |
+| 🩺 **Data health score** | A 0–100 score built from completeness, uniqueness, validity and consistency, with a penalty for each detected issue. |
+| 💬 **Ask in plain English** | With an API key, an LLM selects a tool (`analyze_group_by`, `sql_top_n`, `rag_ask`, …). Without one, a built-in rule-based planner answers totals, averages, rankings and breakdowns, and understands partial column names and business words like *revenue* and *sales*. |
+| 📈 **Chart builder** | Bar, line, doughnut, pie, histogram and scatter for any columns, with sum, average, median, min, max or count. |
+| 🧹 **Human-approved cleaning** | Issues become recommendations. A person approves or rejects each one, and approved fixes write a *new* cleaned file. The original upload is never modified. |
+| 📄 **One-click reports** | A styled PDF with KPIs, health, findings, charts, recommendations and a column overview, or a Markdown version. |
+| 📚 **Document Q&A (RAG)** | PDF, DOCX and TXT extraction, deterministic chunking, embeddings, vector search (in memory or pgvector) and answers with cited passages. |
+| 🗄️ **SQL backend** | CSVs can be ingested into PostgreSQL, and the agent chooses between Pandas and SQL tools. |
+| 🔒 **Safe by design** | Filename and path-traversal protection, size and content-type limits, UUID file IDs with content fingerprints, read-only analysis and standard error codes. |
 
-## Features
+## 🧠 How it works
 
-- **Instant overview.** Detects column roles (metric, category, date, identifier). Shows KPIs and findings such as the top segment, concentration, trend, distribution shape, correlations, missing data and outliers. Suggests charts automatically.
-- **Data health score (0–100).** Built from completeness, uniqueness, validity and consistency, plus a penalty for each detected issue.
-- **Ask questions.**
-  - With an OpenRouter key, an LLM picks a tool (`analyze_group_by`, `sql_top_n`, `rag_ask`…) with schema-validated arguments, and a second call writes an answer grounded in the verified result.
-  - Without a key, a built-in rule-based planner answers questions such as "top 5 products by revenue", "average rating by category" or "how many orders per channel".
-  - If the LLM fails, the app falls back to the planner automatically.
-- **Chart builder.** Bar, line, doughnut, pie, histogram or scatter, for any column, with sum, average, median, min, max or count.
-- **Data quality workflow.** Issues are detected, recommendations generated, and a human approves or rejects each one. Approved fixes are applied to a *new* cleaned file, which opens automatically. The original upload is never modified.
-- **Report export.** A styled PDF (KPIs, health, findings, charts, recommendations, column overview) or a Markdown report.
-- **Document Q&A (RAG).** Text extraction from PDF, DOCX and TXT, deterministic chunking, embeddings, vector search (in memory or PostgreSQL with pgvector), and answers with citations.
-- **SQL backend.** CSVs can be ingested into PostgreSQL, and the agent chooses between Pandas and SQL tools.
-- **Safety.** Filename and path-traversal protection, size limits, content-type checks, UUID file IDs with content fingerprints, read-only analysis, and standardized error codes.
+**Answering a question**
 
-## Quick start
+```mermaid
+flowchart LR
+    Q([Question]) --> K{LLM key<br/>configured?}
+    K -- yes --> S[LLM selects a tool<br/>+ arguments]
+    K -- no --> R[Rule-based planner]
+    S --> V{Arguments valid<br/>for real columns?}
+    V -- no --> R
+    V -- yes --> T[Run deterministic tool<br/>Pandas · SQL · RAG]
+    R --> T
+    T --> A[Grounded answer]
+    T --> C[Chart spec]
+    A --> U([UI shows answer,<br/>chart and raw result])
+    C --> U
+```
 
-Requires Python 3.11+.
+**Architecture**
 
-**Windows (PowerShell)**
+```mermaid
+flowchart TB
+    subgraph Browser
+      UI[Web app<br/>vanilla JS + Chart.js]
+    end
+    subgraph API["FastAPI service"]
+      R1[Upload & registry]
+      R2[Insights · charts · reports]
+      R3[Agent & assistant]
+      R4[Data quality workflow]
+      R5[Document RAG]
+    end
+    subgraph Engines
+      P[(Pandas)]
+      S[(PostgreSQL)]
+      V[(pgvector / in-memory<br/>vector store)]
+      L[[OpenRouter LLM<br/>optional]]
+      E[[Embeddings API<br/>optional]]
+    end
+    UI <--> API
+    R1 --> P
+    R2 --> P
+    R3 --> P & S & L
+    R4 --> P
+    R5 --> V & E & L
+```
+
+**Data quality: a human stays in the loop**
+
+```mermaid
+sequenceDiagram
+    participant U as You
+    participant A as API
+    U->>A: Upload CSV
+    A-->>U: Issues + recommendations (pending)
+    U->>A: Approve "remove duplicate rows"
+    U->>A: Apply fix
+    A->>A: Write cleaned copy, keep original
+    A-->>U: Cleaned file opens automatically
+```
+
+## 🛠️ Tech stack
+
+| Layer | Tools |
+|---|---|
+| **Backend** | Python, FastAPI, Pydantic, Uvicorn |
+| **Data** | Pandas, NumPy, SQLAlchemy, PostgreSQL |
+| **AI** | OpenRouter (LLM tool-calling), OpenAI-compatible embeddings, pgvector |
+| **Documents** | pypdf, python-docx, ReportLab (PDF reports) |
+| **Frontend** | Vanilla JavaScript, Chart.js, CSS (light and dark themes) |
+| **Quality** | pytest (397 tests), ruff |
+| **Delivery** | Docker, Docker Compose, Render |
+
+## 🚀 Quick start
+
+Requires **Python 3.11+**.
+
+<table>
+<tr><th>Windows (PowerShell)</th><th>macOS / Linux</th></tr>
+<tr>
+<td>
 
 ```powershell
 .\run.ps1
 ```
 
-**macOS / Linux**
+</td>
+<td>
 
 ```bash
 ./run.sh
 ```
 
-Open **http://127.0.0.1:8000**, then click **Try the sample retail dataset** or drop in your own CSV. Interactive API docs are at http://127.0.0.1:8000/docs.
+</td>
+</tr>
+</table>
 
-To run it manually:
+Open **http://127.0.0.1:8000** and click **Try the sample dataset**. Interactive API docs are at **/docs**.
+
+<details>
+<summary><b>Manual setup</b></summary>
 
 ```bash
 python -m venv .venv
@@ -53,57 +169,36 @@ python -m venv .venv
 pip install -r requirements.txt
 uvicorn backend.app.main:app --reload
 ```
+</details>
 
-### Enable the LLM features (optional)
+<details>
+<summary><b>Docker (API + web app + PostgreSQL/pgvector)</b></summary>
 
 ```bash
-cp .env.example .env
+cp .env.example .env     # optional: add API keys
+docker compose up --build
 ```
+</details>
 
-Then set these values in `.env`:
+<details>
+<summary><b>Optional configuration (.env)</b></summary>
+
+Everything except LLM and document Q&A works without keys.
 
 | Variable | Enables |
 |---|---|
 | `OPENROUTER_API_KEY` | LLM tool-calling agent and grounded answers (default model `openai/gpt-4o-mini`) |
 | `EMBEDDING_API_KEY` | Document indexing and Q&A (OpenAI-compatible embeddings) |
 | `POSTGRES_*` | SQL ingestion and analysis, plus a durable pgvector RAG index |
+| `EMBEDDING_VECTOR_STORE` | `memory` (default, local only) or `postgres` (durable) |
 
 The sidebar shows which mode is active.
+</details>
 
-### Docker (API + web app + PostgreSQL/pgvector)
+## 🔌 API
 
-```bash
-docker compose up --build
-```
-
-## Architecture
-
-```
-frontend/ (vanilla JS + Chart.js, served by FastAPI at /app)
-        │  fetch
-        ▼
-FastAPI  backend/app/main.py
- ├─ api/routes/        upload · metadata · profile · data-quality · analyze · agent
- │                     documents (RAG) · database · insights (overview, charts, report, assistant)
- ├─ ingestion/         safe uploads, file registry, robust CSV reader, profiler
- ├─ quality/           detection → recommendations → approval → cleaning
- ├─ analysis/          deterministic Pandas + SQL analysis services
- ├─ insights/          column roles, health score, findings, charts, offline planner, PDF/MD report
- ├─ tools/             tool registry, schemas, LLM tool selection with validation
- ├─ llm/               OpenRouter client, planner, grounded answer generation
- ├─ services/          document extraction, chunking, embeddings, retrieval, QA
- └─ repositories/      vector stores (memory / pgvector)
-```
-
-The question-answering flow looks like this:
-
-```
-question ─► LLM picks tool + args ─► args validated against real columns ─► Pandas/SQL runs
-         └─(no key / failure)─► rule-based planner ─────────────────────────┘
-                                                          result ─► grounded answer + chart
-```
-
-## Main endpoints
+<details>
+<summary><b>Main endpoints</b> (full OpenAPI docs at <code>/docs</code>)</summary>
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -120,31 +215,84 @@ question ─► LLM picks tool + args ─► args validated against real columns
 | POST | `/database/ingest/{file_id}` · `/database/analyze` | PostgreSQL ingestion and SQL analysis |
 | GET | `/status` | Which AI features are configured |
 
-## Tests
+```bash
+curl -F "file=@sample_data/retail_sales_2025.csv" http://127.0.0.1:8000/upload
+curl -X POST http://127.0.0.1:8000/assistant/ask \
+     -H "Content-Type: application/json" \
+     -d '{"file_id": "<id>", "question": "top 3 products by revenue"}'
+```
+</details>
+
+## 🧪 Testing
 
 ```bash
 python -m pytest -q
 ```
 
-The suite has 396 tests. They run against an isolated temporary upload directory and need no API keys or database; the LLM and embedding providers are mocked.
+**397 tests** cover ingestion edge cases, security, data quality, cleaning, the analysis tools, the LLM planner and tool selection (with mocked providers), RAG, persistence, insights, reports and the offline assistant. They run against an isolated temporary upload directory and need no API keys or database.
 
-## Persistence
+## 🗂️ Project structure
+
+<details>
+<summary><b>Show the tree</b></summary>
+
+```
+ai-data-analyst-agent/
+├── backend/
+│   ├── app/
+│   │   ├── api/routes/     # FastAPI routers (upload, insights, agent, quality, documents, …)
+│   │   ├── analysis/       # deterministic Pandas + SQL analysis
+│   │   ├── insights/       # column roles, health score, findings, charts, offline planner, reports
+│   │   ├── quality/        # detection → recommendations → approval → cleaning
+│   │   ├── llm/            # OpenRouter client, planner, grounded answers
+│   │   ├── tools/          # tool registry, schemas, validated tool selection
+│   │   ├── services/       # document extraction, chunking, embeddings, retrieval, QA
+│   │   ├── repositories/   # vector stores (memory / pgvector)
+│   │   ├── ingestion/      # safe uploads, file registry, CSV reader, profiler
+│   │   └── main.py
+│   └── tests/              # 397 pytest tests
+├── frontend/               # web app (HTML, CSS, JS) served at /app
+├── sample_data/            # demo retail dataset
+├── docs/                   # banner, demo GIF, screenshots
+├── Dockerfile · docker-compose.yml
+└── run.ps1 · run.sh
+```
+</details>
+
+## 🧭 Design decisions
+
+- **Deterministic first.** Numbers come from code, not from a model. The LLM's job is narrowed to choosing a tool, which makes answers verifiable and testable.
+- **Graceful degradation.** No key, a provider outage or an invalid tool call all fall back to the rule-based planner instead of failing.
+- **Human in the loop.** Cleaning never happens silently. Every change needs approval and produces a new file, so the original data stays intact.
+- **Security over convenience.** Uploads are addressed by UUID, fingerprinted against tampering, and validated for name, size and type.
+
+<details>
+<summary><b>Persistence details</b></summary>
 
 | Data | Where it is stored | Survives an API restart |
 |---|---|---|
 | Uploaded files | `backend/app/uploads/` | Yes |
 | Upload records (`file_id`) | `backend/app/uploads/.upload_registry.json` | Yes, if the file still exists unchanged |
-| SQL ingestion registry | `backend/app/uploads/.database_ingestion_registry.json` | Yes, after the table is re-verified in the database |
+| SQL ingestion registry | `backend/app/uploads/.database_ingestion_registry.json` | Yes, after the table is re-verified |
 | Ingested SQL tables | PostgreSQL | Yes |
-| RAG index, `EMBEDDING_VECTOR_STORE=postgres` | PostgreSQL with pgvector | Yes |
-| RAG index, `EMBEDDING_VECTOR_STORE=memory` | API process memory | **No.** Re-index after each restart. |
+| RAG index (`postgres`) | PostgreSQL with pgvector | Yes |
+| RAG index (`memory`) | API process memory | No: re-index after a restart |
 
-Quality approval status is held in memory and resets on restart. The registry files support a single API process, so do not run multiple uvicorn workers against the same upload directory.
+Quality approval status is held in memory. The registry files support a single API process.
+</details>
 
-## Tech stack
+## 🗺️ Roadmap
 
-Python · FastAPI · Pandas · SQLAlchemy · PostgreSQL + pgvector · OpenRouter (LLM) · OpenAI-compatible embeddings · ReportLab · Chart.js · pytest · Docker
+- [ ] Join several CSVs (for example orders, products and sellers) and ask across them
+- [ ] Persistent cloud storage for uploads on the hosted demo
+- [ ] Scheduled email reports
+- [ ] User accounts and per-user workspaces
 
-## Author
+## 👤 Author
 
-Thirumurugan Kumar, MSc Data Science & Analytics, EPITA Paris.
+**Thirumurugan Kumar**, MSc Data Science & Analytics, EPITA Paris
+
+[![GitHub](https://img.shields.io/badge/GitHub-thirurishi-1E2924?style=flat-square&logo=github)](https://github.com/thirurishi)
+[![Portfolio](https://img.shields.io/badge/Portfolio-thiruuportfolio-3F6B57?style=flat-square)](https://thiruuportfolio.netlify.app)
+
+If this project is useful or interesting, a ⭐ helps others find it.
