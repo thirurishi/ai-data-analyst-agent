@@ -2,6 +2,8 @@
 
 Upload a CSV and get what a junior analyst would hand you on day one: key metrics, a data-health score, the patterns that stand out, ready-made charts, and answers to plain-English questions. When you're done, export a PDF report. You can also upload PDF, Word and text documents and ask questions about them with retrieval-augmented generation (RAG).
 
+**Live demo:** [ai-data-analyst-agent-wbvy.onrender.com](https://ai-data-analyst-agent-wbvy.onrender.com). Click **Try the sample dataset**. It runs on Render's free plan, so the first load after a quiet period can take up to a minute.
+
 The core rule of the project: **the LLM never invents numbers.** It only chooses *which* validated analysis tool to run. Every figure comes from a deterministic Pandas or SQL calculation, and you can inspect the raw result under each answer.
 
 ![Overview](docs/screenshots/overview.png)
