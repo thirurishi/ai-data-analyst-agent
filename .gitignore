@@ -24,6 +24,10 @@ __pycache__/
 *.swp
 *.swo
 
+# Local upload directory for CSV ingestion
+backend/app/uploads/*
+!backend/app/uploads/.gitkeep
+
 # OS-generated files
 .DS_Store
 Thumbs.db
