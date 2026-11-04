@@ -35,6 +35,8 @@ class UploadService:
             raise ValueError("Invalid filename: path traversal is not allowed.")
 
         safe_name = candidate.name
+        if len(candidate.parts) != 1:
+            raise ValueError("Invalid filename: directory paths are not allowed.")
         if safe_name in {"", ".", ".."}:
             raise ValueError("Invalid filename: file name is empty or invalid.")
 
@@ -42,6 +44,30 @@ class UploadService:
             raise ValueError("Invalid filename: path traversal is not allowed.")
 
         return safe_name
+
+    @staticmethod
+    def resolve_uploaded_file(filename: str) -> Path:
+        """Resolve an existing supported upload without allowing directory escape."""
+        safe_name = UploadService.validate_filename(filename)
+        upload_dir = UPLOAD_DIR.resolve()
+        target_path = (upload_dir / safe_name).resolve()
+
+        if target_path.parent != upload_dir:
+            raise ValueError("Invalid filename: path traversal is not allowed.")
+        if not UploadService.is_csv_file(safe_name):
+            raise ValueError("Unsupported ingestion file type. Only CSV files are supported.")
+        if not target_path.exists():
+            raise FileNotFoundError(f"CSV file '{safe_name}' was not found in the upload directory.")
+        if not target_path.is_file():
+            raise ValueError(f"Path '{safe_name}' is not a valid CSV file.")
+
+        try:
+            with target_path.open("rb"):
+                pass
+        except OSError as exc:
+            raise ValueError(f"CSV file '{safe_name}' cannot be read.") from exc
+
+        return target_path
 
     @staticmethod
     def is_csv_file(filename: str) -> bool:

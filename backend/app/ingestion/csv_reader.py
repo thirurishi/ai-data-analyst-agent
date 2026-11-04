@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from backend.app.ingestion.upload_service import UPLOAD_DIR, UploadService
+from backend.app.ingestion.upload_service import UploadService
 
 
 class CsvReaderService:
@@ -15,19 +15,7 @@ class CsvReaderService:
 
     @staticmethod
     def resolve_upload_path(filename: str) -> Path:
-        safe_name = UploadService.validate_filename(filename)
-        target_path = UPLOAD_DIR / safe_name
-
-        if not target_path.exists():
-            raise FileNotFoundError(f"CSV file '{safe_name}' was not found in the upload directory.")
-
-        if not target_path.is_file():
-            raise ValueError(f"Path '{safe_name}' is not a valid CSV file.")
-
-        if not UploadService.is_csv_file(safe_name):
-            raise ValueError("Only CSV files are allowed.")
-
-        return target_path.resolve()
+        return UploadService.resolve_uploaded_file(filename)
 
     @staticmethod
     def read_csv_metadata(filename: str) -> dict:
@@ -72,7 +60,10 @@ class CsvReaderService:
 
     @staticmethod
     def _get_csv_format(file_path: Path) -> tuple[str, str, list[str]]:
-        raw_contents = file_path.read_bytes()
+        try:
+            raw_contents = file_path.read_bytes()
+        except OSError as exc:
+            raise ValueError(f"CSV file '{file_path.name}' cannot be read.") from exc
         if not raw_contents.strip():
             raise ValueError("CSV file is empty.")
 
