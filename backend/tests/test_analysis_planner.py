@@ -9,6 +9,7 @@ import pytest
 from backend.app.analysis.service import DeterministicAnalysisService
 from backend.app.api.routes.analysis import analyze_question
 from backend.app.ingestion.upload_service import UPLOAD_DIR, UploadService
+from backend.app.llm.answer_service import AnswerGenerationService
 from backend.app.llm.exceptions import LLMProviderError
 from backend.app.llm.planner import AnalysisPlannerService, AnalysisPlanValidationError
 from backend.app.llm.schemas import AnalysisPlan, DatasetMetadata, LLMChatResponse
@@ -214,6 +215,7 @@ def test_filename_analysis_question_uses_plan_and_preserves_bytes(
         )
     )
     planner = AnalysisPlannerService(llm)
+    answer_service = AnswerGenerationService(FakeLLMService("verified total"))
 
     response = analyze_question(
         QuestionAnalysisRequest(
@@ -221,6 +223,7 @@ def test_filename_analysis_question_uses_plan_and_preserves_bytes(
             question="What is the total revenue?",
         ),
         planner=planner,
+        answer_service=answer_service,
     )
 
     assert isinstance(response, QuestionAnalysisResponse)
@@ -246,6 +249,7 @@ def test_file_id_analysis_question_uses_safe_resolution(uploaded_csv):
         )
     )
     planner = AnalysisPlannerService(llm)
+    answer_service = AnswerGenerationService(FakeLLMService("verified summary"))
 
     response = analyze_question(
         QuestionAnalysisRequest(
@@ -253,6 +257,7 @@ def test_file_id_analysis_question_uses_safe_resolution(uploaded_csv):
             question="Summarize the dataset.",
         ),
         planner=planner,
+        answer_service=answer_service,
     )
 
     assert response.plan.operation == "summary"

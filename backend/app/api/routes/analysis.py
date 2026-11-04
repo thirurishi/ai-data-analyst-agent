@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from backend.app.analysis.service import AnalysisValidationError, DeterministicAnalysisService
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
 from backend.app.ingestion.csv_reader import CsvReaderService
+from backend.app.llm.answer_service import AnswerGenerationError, AnswerGenerationService
 from backend.app.llm.planner import AnalysisPlannerService, AnalysisPlanValidationError
 from backend.app.llm.schemas import DatasetMetadata
 from backend.app.llm.service import LLMService
@@ -66,6 +67,7 @@ def analyze_request(payload: AnalysisRequest):
 def analyze_question(
     payload: QuestionAnalysisRequest,
     planner: AnalysisPlannerService | None = None,
+    answer_service: AnswerGenerationService | None = None,
 ) -> QuestionAnalysisResponse:
     dataframe = CsvReaderService.read_csv(payload.filename, payload.file_id)
     metadata = DatasetMetadata(
@@ -102,10 +104,14 @@ def analyze_question(
             plan.n,
         )
 
+    answer_service_instance = answer_service or AnswerGenerationService(LLMService())
+    answer = answer_service_instance.answer(payload.question, plan, result)
+
     return QuestionAnalysisResponse(
         question=payload.question,
         plan=plan,
         result=result,
+        answer=answer,
     )
 
 
@@ -113,6 +119,8 @@ def analyze_question(
 def analyze_question_route(payload: QuestionAnalysisRequest):
     try:
         return analyze_question(payload)
+    except AnswerGenerationError as exc:
+        return ingestion_error(502, "answer_generation_failed", str(exc))
     except AnalysisPlanValidationError as exc:
         return ingestion_error(400, "invalid_analysis_plan", str(exc))
     except (FileNotFoundError, ValueError) as exc:

@@ -54,3 +54,4 @@ class QuestionAnalysisResponse(BaseModel):
     question: str
     plan: AnalysisPlan
     result: AnalysisResponse
+    answer: str
