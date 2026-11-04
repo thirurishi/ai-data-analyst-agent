@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analyst Agent</title>
+  <meta name="description" content="Upload a dataset or document, get grounded insights, ask questions in plain English and export a report.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232C46D8'/%3E%3Cpath d='M8 22l5-7 4 4 7-10' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" aria-label="Files">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M8 22l5-7 4 4 7-10"/></svg>
+        <span>Analyst Agent</span>
+      </div>
+
+      <label class="drop" id="drop">
+        <input type="file" id="file-input" accept=".csv,.pdf,.docx,.txt" hidden>
+        <strong>Add a file</strong>
+        <span>Drop a CSV, PDF, DOCX or TXT here, or click to browse. Up to 10 MB.</span>
+      </label>
+      <button class="link-button" id="load-sample" type="button">Try the sample retail dataset</button>
+
+      <h2 class="rail-title">Your files</h2>
+      <ul class="files" id="files"><li class="files-empty">No files yet.</li></ul>
+
+      <div class="engine" id="engine" role="status"></div>
+    </aside>
+
+    <main class="main" id="main">
+      <section class="welcome" id="welcome">
+        <h1>Ask your data a question.<br>Get the number, the chart and the reason.</h1>
+        <p>Upload a spreadsheet export and the agent profiles it, scores its quality, finds the headline patterns and answers questions in plain English. Every figure comes from a real Pandas calculation you can inspect.</p>
+        <ol class="steps">
+          <li><span><b>Upload</b> a CSV, or a PDF, Word or text document.</span></li>
+          <li><span><b>Read</b> the overview: key metrics, health score, findings and charts.</span></li>
+          <li><span><b>Ask</b> things like “top 5 products by revenue”.</span></li>
+          <li><span><b>Fix</b> quality issues with approved cleaning steps, then <b>export</b> a PDF report.</span></li>
+        </ol>
+      </section>
+
+      <section class="workspace" id="workspace" hidden>
+        <header class="ws-head">
+          <div class="ws-title">
+            <h1 id="ws-name"></h1>
+            <p id="ws-meta"></p>
+          </div>
+          <div class="ws-actions" id="ws-actions">
+            <a class="btn ghost" id="export-md" download>Markdown</a>
+            <a class="btn primary" id="export-pdf" download>Export PDF report</a>
+          </div>
+        </header>
+
+        <nav class="tabs" role="tablist" id="tabs">
+          <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+          <button role="tab" data-tab="ask">Ask</button>
+          <button role="tab" data-tab="charts">Chart builder</button>
+          <button role="tab" data-tab="quality">Quality</button>
+          <button role="tab" data-tab="data">Data</button>
+        </nav>
+
+        <div class="panel" data-panel="overview" id="panel-overview"></div>
+        <div class="panel" data-panel="ask" id="panel-ask" hidden>
+          <form class="ask" id="ask-form" autocomplete="off">
+            <label for="ask-input" class="sr-only">Question about this dataset</label>
+            <input id="ask-input" placeholder="Ask about this data, e.g. total revenue by region" maxlength="1000">
+            <button class="btn primary" type="submit">Ask</button>
+          </form>
+          <div class="chips" id="ask-chips"></div>
+          <div class="thread" id="thread"></div>
+        </div>
+        <div class="panel" data-panel="charts" id="panel-charts" hidden>
+          <form class="builder" id="builder">
+            <label>Chart<select name="chart_type">
+              <option value="bar">Bar</option><option value="line">Line</option><option value="doughnut">Doughnut</option>
+              <option value="pie">Pie</option><option value="histogram">Histogram</option><option value="scatter">Scatter</option>
+            </select></label>
+            <label>X axis<select name="x" id="builder-x"></select></label>
+            <label>Value<select name="y" id="builder-y"></select></label>
+            <label>Aggregate<select name="aggregation">
+              <option value="sum">Sum</option><option value="mean">Average</option><option value="median">Median</option>
+              <option value="min">Minimum</option><option value="max">Maximum</option><option value="count">Count rows</option>
+            </select></label>
+            <button class="btn primary" type="submit">Draw chart</button>
+          </form>
+          <div class="figure big" id="builder-out"><p class="hint">Pick columns and draw a chart.</p></div>
+        </div>
+        <div class="panel" data-panel="quality" id="panel-quality" hidden></div>
+        <div class="panel" data-panel="data" id="panel-data" hidden></div>
+      </section>
+
+      <section class="workspace" id="docspace" hidden>
+        <header class="ws-head">
+          <div class="ws-title"><h1 id="doc-name"></h1><p id="doc-meta"></p></div>
+          <div class="ws-actions"><button class="btn primary" id="doc-index" type="button">Index for questions</button></div>
+        </header>
+        <div class="doc-grid">
+          <div>
+            <form class="ask" id="doc-form" autocomplete="off">
+              <label for="doc-input" class="sr-only">Question about this document</label>
+              <input id="doc-input" placeholder="Ask about this document" maxlength="1000">
+              <button class="btn primary" type="submit">Ask</button>
+            </form>
+            <div class="thread" id="doc-thread"></div>
+          </div>
+          <article class="doc-text" id="doc-text" tabindex="0" aria-label="Extracted text"></article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,644 @@
+order_id,order_date,region,category,product,channel,units,unit_price,discount_pct,revenue,customer_rating
+ORD-10380,2025-01-02,Nouvelle-Aquitaine,Home,Coffee Grinder,Online,4,46.7,0.0,186.8,3.8
+ORD-10464,2025-01-03,Hauts-de-France,Electronics,Laptop Stand,Store,1,39.69,5.0,37.71,4.6
+ORD-10103,2025-01-03,Occitanie,Sports,Dumbbell Set,Store,1,72.1,0.0,72.1,3.8
+ORD-10574,2025-01-03,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Store,4,77.61,20.0,248.35,3.5
+ORD-10302,2025-01-04,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,2,192.22,10.0,346.0,3.9
+ORD-10409,2025-01-06,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,1,39.89,5.0,18999.0,3.5
+ORD-10477,2025-01-07,Occitanie,Apparel,Wool Scarf,Store,2,24.95,15.0,42.41,4.4
+ORD-10414,2025-01-07,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Store,3,69.13,15.0,176.28,4.2
+ORD-10299,2025-01-08,Occitanie,Apparel,Running Shoes,Marketplace,1,118.45,0.0,118.45,2.9
+ORD-10539,2025-01-08,Occitanie,Home,Desk Lamp,Online,1,29.44,0.0,29.44,4.0
+ORD-10232,2025-01-08,Île-de-France,Home,Air Purifier,Store,1,150.37,20.0,120.3,4.8
+ORD-10169,2025-01-09,Île-de-France,Apparel,Running Shoes,Marketplace,2,114.56,0.0,229.12,3.3
+ORD-10271,2025-01-09,Nouvelle-Aquitaine,Apparel,Rain Jacket,Online,1,91.78,5.0,87.19,4.6
+ORD-10368,2025-01-09,Auvergne-Rhône-Alpes,Electronics,Smart Watch,,1,192.1,10.0,172.89,3.7
+ORD-10428,2025-01-10,Occitanie,Electronics,Laptop Stand,Store,2,37.78,0.0,75.56,
+ORD-10453,2025-01-10,Hauts-de-France,Apparel,Running Shoes,Online,2,115.92,20.0,185.47,4.4
+ORD-10137,2025-01-12,Hauts-de-France,Home,Desk Lamp,Store,2,28.2,5.0,53.58,3.5
+ORD-10384,2025-01-12,Île-de-France,Electronics,Smart Watch,Store,2,198.4,15.0,337.28,4.8
+ORD-10146,2025-01-13,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Online,1,71.39,0.0,71.39,4.4
+ORD-10327,2025-01-14,Île-de-France,Electronics,Smart Watch,Online,1,206.62,0.0,206.62,5.0
+ORD-10116,2025-01-14,Occitanie,Sports,Cycling Gloves,Marketplace,1,20.98,10.0,18.88,5.0
+ORD-10249,2025-01-16,Île-de-France,Electronics,Smart Watch,Marketplace,3,198.89,20.0,477.34,5.0
+ORD-10561,2025-01-16,Nouvelle-Aquitaine,Home,Coffee Grinder,Online,1,46.86,0.0,46.86,
+ORD-10055,2025-01-16,Occitanie,Sports,Dumbbell Set,Online,1,65.9,5.0,62.61,4.3
+ORD-10351,2025-01-17,Île-de-France,Sports,Dumbbell Set,Store,1,69.13,20.0,55.3,3.3
+ORD-10396,2025-01-17,Île-de-France,Home,Desk Lamp,Online,1,29.56,0.0,29.56,3.3
+ORD-10573,2025-01-18,Occitanie,Electronics,Bluetooth Speaker,Marketplace,1,56.16,0.0,56.16,4.5
+ORD-10583,2025-01-19,Île-de-France,Apparel,Wool Scarf,Online,1,25.07,0.0,25.07,4.5
+ORD-10545,2025-01-20,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Online,1,201.75,0.0,201.75,4.4
+ORD-10541,2025-01-21,Grand Est,Home,Air Purifier,Online,2,152.45,15.0,259.16,2.8
+ORD-10149,2025-01-22,Hauts-de-France,Electronics,Laptop Stand,Marketplace,2,38.59,0.0,77.18,4.9
+ORD-10618,2025-01-23,Grand Est,Electronics,Bluetooth Speaker,Online,1,58.28,10.0,52.45,4.5
+ORD-10035,2025-01-24,  occitanie,Sports,Cycling Gloves,Marketplace,1,21.42,15.0,18.21,4.1
+ORD-10278,2025-01-24,Île-de-France,Home,Coffee Grinder,Online,1,51.16,0.0,51.16,4.0
+ORD-10386,2025-01-25,Île-de-France,Electronics,Laptop Stand,Online,2,40.77,0.0,81.54,5.0
+ORD-10044,2025-01-25,Île-de-France,Electronics,Laptop Stand,Online,1,37.21,20.0,29.77,3.6
+ORD-10517,2025-01-25,Occitanie,Electronics,Smart Watch,Online,3,194.55,0.0,583.65,4.8
+ORD-10068,2025-01-28,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Online,1,78.32,15.0,66.57,4.7
+ORD-10126,2025-01-29,Île-de-France,Electronics,Laptop Stand,Online,1,40.7,15.0,34.59,3.1
+ORD-10216,2025-01-29,Île-de-France,Sports,Dumbbell Set,Online,1,68.2,20.0,54.56,4.6
+ORD-10438,2025-01-30,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,2,113.86,20.0,182.18,4.4
+ORD-10245,2025-01-31,Île-de-France,Home,Desk Lamp,Marketplace,3,30.04,15.0,76.6,4.0
+ORD-10430,2025-01-31,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Marketplace,5,113.55,15.0,482.59,3.6
+ORD-10279,2025-01-31,Île-de-France,Sports,Dumbbell Set,Store,2,72.27,10.0,130.09,4.4
+ORD-10195,2025-02-01,Île-de-France,Electronics,Wireless Earbuds,Online,1,75.91,20.0,60.73,4.1
+ORD-10006,2025-02-01,Hauts-de-France,Sports,Dumbbell Set,Online,2,72.01,5.0,136.82,4.1
+ORD-10000,2025-02-02,Nouvelle-Aquitaine,Sports,Cycling Gloves,Store,1,22.77,5.0,21.63,3.9
+ORD-10171,2025-02-02,Île-de-France,Electronics,Wireless Earbuds,Store,1,81.76,0.0,81.76,4.5
+ORD-10358,2025-02-03,Grand Est,Sports,Cycling Gloves,Store,2,21.61,10.0,38.9,3.9
+ORD-10132,2025-02-03,Île-de-France,Apparel,Wool Scarf,Online,1,24.12,0.0,24.12,4.1
+ORD-10032,2025-02-03,Île-de-France,Sports,Yoga Mat,Online,2,34.46,20.0,55.14,3.8
+ORD-10375,2025-02-04,Nouvelle-Aquitaine,Apparel,Running Shoes,Marketplace,5,113.98,20.0,455.92,3.3
+ORD-10580,2025-02-04,Île-de-France,Electronics,Laptop Stand,Store,1,39.82,0.0,39.82,4.2
+ORD-10242,2025-02-04,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Marketplace,1,59.0,0.0,59.0,3.8
+ORD-10009,2025-02-04,Nouvelle-Aquitaine,Apparel,Running Shoes,Store,4,124.94,0.0,499.76,4.6
+ORD-10217,2025-02-05,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,,2,75.58,15.0,128.49,4.2
+ORD-10086,2025-02-05,Hauts-de-France,Electronics,Laptop Stand,Online,4,37.59,0.0,150.36,4.2
+ORD-10587,2025-02-06,Île-de-France,Electronics,Bluetooth Speaker,Online,1,60.91,20.0,48.73,4.0
+ORD-10257,2025-02-07,Île-de-France,Sports,Dumbbell Set,Online,3,71.21,0.0,213.63,4.5
+ORD-10579,2025-02-07,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,2,38.23,10.0,68.81,3.8
+ORD-10582,2025-02-08,Grand Est,Sports,Yoga Mat,Store,2,33.96,5.0,64.52,4.0
+ORD-10170,2025-02-08,Île-de-France,Electronics,Wireless Earbuds,Store,1,77.55,15.0,65.92,3.9
+ORD-10515,2025-02-08,Île-de-France,Electronics,Laptop Stand,Online,1,40.87,15.0,34.74,3.6
+ORD-10459,2025-02-08,Hauts-de-France,Home,Desk Lamp,Online,1,29.48,5.0,28.01,5.0
+ORD-10321,2025-02-09,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,2,114.3,15.0,194.31,4.3
+ORD-10309,2025-02-09,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Online,2,92.27,10.0,166.09,4.1
+ORD-10479,2025-02-09,Occitanie,Electronics,Smart Watch,Online,1,206.98,15.0,175.93,5.0
+ORD-10500,2025-02-11,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Online,1,66.38,0.0,66.38,4.8
+ORD-10119,2025-02-11,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Store,1,61.17,0.0,61.17,4.6
+ORD-10537,2025-02-12,Occitanie,Electronics,Wireless Earbuds,Online,1,80.21,0.0,80.21,5.0
+ORD-10364,2025-02-12,Occitanie,Electronics,Smart Watch,Online,1,196.61,0.0,196.61,3.5
+ORD-10197,2025-02-13,Hauts-de-France,Sports,Dumbbell Set,Store,2,70.89,20.0,113.42,4.2
+ORD-10496,2025-02-13,Occitanie,Apparel,Running Shoes,Store,1,120.01,5.0,114.01,3.5
+ORD-10312,2025-02-13,Hauts-de-France,Home,Desk Lamp,Marketplace,1,30.25,0.0,30.25,3.7
+ORD-10385,2025-02-14,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Online,1,69.83,0.0,69.83,3.5
+ORD-10417,2025-02-14,Auvergne-Rhône-Alpes,Apparel,Wool Scarf,Online,1,25.09,5.0,23.84,4.5
+ORD-10435,2025-02-15,Île-de-France,Apparel,Rain Jacket,Online,2,90.06,15.0,153.1,4.4
+ORD-10220,2025-02-16,Île-de-France,Apparel,Rain Jacket,Marketplace,2,84.76,0.0,169.52,2.4
+ORD-10156,2025-02-16,Grand Est,Apparel,Rain Jacket,Marketplace,1,93.2,0.0,93.2,3.8
+ORD-10017,2025-02-16,Occitanie,Electronics,Laptop Stand,Store,1,38.72,0.0,38.72,4.3
+ORD-10433,2025-02-17,Grand Est,Home,Coffee Grinder,Online,3,50.05,5.0,142.64,3.9
+ORD-10073,2025-02-17,Hauts-de-France,Home,Air Purifier,Store,2,146.65,0.0,293.3,4.1
+ORD-10413,2025-02-18,Hauts-de-France,Electronics,Bluetooth Speaker,Online,3,59.53,15.0,151.8,
+ORD-10442,2025-02-18,Occitanie,Sports,Dumbbell Set,Online,1,70.52,20.0,56.42,4.0
+ORD-10603,2025-02-19,Grand Est,Home,Coffee Grinder,Marketplace,2,50.4,20.0,80.64,4.0
+ORD-10328,2025-02-21,Nouvelle-Aquitaine,Apparel,Running Shoes,Store,1,119.04,0.0,119.04,4.7
+ORD-10117,2025-02-21,Hauts-de-France,Electronics,Wireless Earbuds,Online,2,82.44,10.0,148.39,4.5
+ORD-10305,2025-02-21,Île-de-France,Apparel,Rain Jacket,Store,1,93.41,0.0,93.41,4.2
+ORD-10099,2025-02-21,Île-de-France,Electronics,Smart Watch,Online,1,202.57,0.0,202.57,3.3
+ORD-10461,2025-02-21,Île-de-France,Electronics,Smart Watch,Store,1,202.5,10.0,182.25,4.0
+ORD-10240,2025-02-21,Grand Est,Sports,Yoga Mat,Store,4,33.31,20.0,106.59,4.2
+ORD-10619,2025-02-21,Hauts-de-France,Apparel,Wool Scarf,Store,3,25.79,20.0,61.9,3.5
+ORD-10255,2025-02-22,Nouvelle-Aquitaine,Home,Desk Lamp,Online,2,29.92,5.0,56.85,3.7
+ORD-10527,2025-02-22,Grand Est,Electronics,Bluetooth Speaker,Online,1,61.9,10.0,55.71,3.6
+ORD-10407,2025-02-22,Île-de-France,Apparel,Wool Scarf,Store,1,25.72,0.0,25.72,3.7
+ORD-10521,2025-02-23,Nouvelle-Aquitaine,Electronics,Laptop Stand,Marketplace,2,39.44,0.0,78.88,3.7
+ORD-10456,2025-02-24,Auvergne-Rhône-Alpes,Home,Air Purifier,Store,1,152.82,0.0,152.82,4.2
+ORD-10272,2025-02-25,Île-de-France,Home,Coffee Grinder,Store,3,48.37,15.0,123.34,4.4
+ORD-10181,2025-02-25,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Online,1,70.2,0.0,70.2,5.0
+ORD-10356,2025-02-25,Occitanie,Electronics,Smart Watch,Online,4,191.64,20.0,613.25,3.7
+ORD-10389,2025-02-25,Grand Est,Apparel,Wool Scarf,Online,2,25.78,10.0,46.4,5.0
+ORD-10535,2025-02-26,Île-de-France,Electronics,Smart Watch,Online,2,189.14,0.0,378.28,3.9
+ORD-10057,2025-02-26,Hauts-de-France,Apparel,Wool Scarf,Online,3,23.78,5.0,67.77,3.8
+ORD-10532,2025-02-26,Île-de-France,Electronics,Bluetooth Speaker,Online,1,57.07,15.0,48.51,3.7
+ORD-10177,2025-02-28,Occitanie,Sports,Dumbbell Set,Store,5,71.41,0.0,357.05,3.7
+ORD-10286,2025-02-28,Grand Est,Electronics,Bluetooth Speaker,Store,1,57.51,0.0,57.51,3.7
+ORD-10082,2025-02-28,Occitanie,Electronics,Bluetooth Speaker,Online,4,57.95,0.0,231.8,4.2
+ORD-10040,2025-03-02,Île-de-France,Home,Air Purifier,Marketplace,3,149.61,10.0,403.95,3.1
+ORD-10349,2025-03-02,Île-de-France,Electronics,Wireless Earbuds,Store,1,81.33,5.0,77.26,4.2
+ORD-10167,2025-03-02,Hauts-de-France,Electronics,Smart Watch,Marketplace,4,201.77,0.0,807.08,4.8
+ORD-10622,2025-03-02,Hauts-de-France,Apparel,Running Shoes,Marketplace,3,123.5,15.0,314.93,4.3
+ORD-10531,2025-03-02,Grand Est,Home,Desk Lamp,Marketplace,3,29.51,20.0,70.82,3.9
+ORD-10186,2025-03-02,Grand Est,Electronics,Laptop Stand,Online,1,40.1,0.0,40.1,4.7
+ORD-10466,2025-03-02,Nouvelle-Aquitaine,Sports,Cycling Gloves,Marketplace,1,21.77,5.0,20.68,2.8
+ORD-10261,2025-03-04,Occitanie,Electronics,Wireless Earbuds,Online,1,77.41,0.0,77.41,3.8
+ORD-10258,2025-03-05,Île-de-France,Apparel,Wool Scarf,Online,3,25.98,5.0,74.04,4.3
+ORD-10410,2025-03-05,Île-de-France,Home,Coffee Grinder,Store,1,47.42,10.0,42.68,3.7
+ORD-10543,2025-03-05,Île-de-France,Electronics,Bluetooth Speaker,Store,5,57.6,5.0,273.6,3.1
+ORD-10229,2025-03-06,Occitanie,Apparel,Rain Jacket,Store,3,93.07,15.0,237.33,4.8
+ORD-10250,2025-03-07,Occitanie,Sports,Dumbbell Set,Online,3,68.47,20.0,164.33,4.4
+ORD-10391,2025-03-07,Occitanie,Home,Desk Lamp,Store,3,29.17,0.0,87.51,4.0
+ORD-10348,2025-03-07,Hauts-de-France,Electronics,Bluetooth Speaker,Online,2,56.96,0.0,113.92,3.8
+ORD-10468,2025-03-08,Occitanie,Apparel,Wool Scarf,Online,1,24.09,5.0,22.89,4.2
+ORD-10563,2025-03-08,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Store,1,37.87,10.0,34.08,3.6
+ORD-10634,2025-03-08,Île-de-France,Apparel,Rain Jacket,Online,1,87.38,0.0,87.38,4.5
+ORD-10022,2025-03-08,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Marketplace,1,66.38,0.0,66.38,
+ORD-10252,2025-03-10,Hauts-de-France,Apparel,Wool Scarf,Store,3,25.57,15.0,65.2,3.6
+ORD-10071,2025-03-11,Île-de-France,Home,Air Purifier,Online,1,144.64,20.0,115.71,4.6
+ORD-10522,2025-03-12,Nouvelle-Aquitaine,Sports,Yoga Mat,Online,1,35.02,10.0,31.52,3.9
+ORD-10542,2025-03-13,Occitanie,Electronics,Laptop Stand,Online,1,40.11,0.0,40.11,3.0
+ORD-10397,2025-03-13,Île-de-France,Home,Desk Lamp,Online,1,30.32,0.0,30.32,4.9
+ORD-10051,2025-03-13,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Store,4,36.1,0.0,144.4,4.4
+ORD-10425,2025-03-14,Île-de-France,Sports,Yoga Mat,Online,1,34.42,10.0,30.98,3.5
+ORD-10101,2025-03-14,Grand Est,Electronics,Smart Watch,Online,1,206.73,0.0,206.73,3.3
+ORD-10338,2025-03-15,Grand Est,Home,Desk Lamp,Store,1,30.1,0.0,30.1,3.6
+ORD-10223,2025-03-15,Occitanie,Electronics,Laptop Stand,Online,1,40.45,0.0,40.45,4.7
+ORD-10008,2025-03-15,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,2,118.51,0.0,237.02,4.4
+ORD-10141,2025-03-20,Hauts-de-France,Sports,Dumbbell Set,Online,2,70.9,0.0,141.8,3.2
+ORD-10362,2025-03-23,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Online,1,21.35,0.0,21.35,4.3
+ORD-10077,2025-03-24,Auvergne-Rhône-Alpes,Home,Air Purifier,Store,2,152.55,10.0,274.59,4.6
+ORD-10031,2025-03-24,Auvergne-Rhône-Alpes,Apparel,Wool Scarf,Store,6,25.58,5.0,145.81,4.2
+ORD-10566,2025-03-25,Hauts-de-France,Electronics,Smart Watch,Store,2,197.01,10.0,354.62,3.7
+ORD-10411,2025-03-25,Grand Est,Electronics,Wireless Earbuds,Online,2,80.48,0.0,160.96,4.4
+ORD-10325,2025-03-26,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Online,1,190.75,0.0,190.75,4.4
+ORD-10485,2025-03-26,Occitanie,Home,Air Purifier,Online,3,151.37,5.0,431.4,4.4
+ORD-10625,2025-03-26,Occitanie,Sports,Cycling Gloves,Online,2,21.49,5.0,40.83,4.5
+ORD-10147,2025-03-27,Hauts-de-France,Apparel,Running Shoes,Online,4,113.65,15.0,386.41,3.6
+ORD-10636,2025-03-27,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Store,1,75.81,5.0,72.02,4.2
+ORD-10509,2025-03-28,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Online,2,33.84,10.0,60.91,4.4
+ORD-10326,2025-03-28,Grand Est,Apparel,Rain Jacket,Online,4,86.54,15.0,294.24,4.3
+ORD-10565,2025-03-28,Île-de-France,Electronics,Laptop Stand,Online,3,37.14,0.0,111.42,4.1
+ORD-10096,2025-03-29,Occitanie,Home,Desk Lamp,Online,1,27.69,15.0,23.54,4.0
+ORD-10188,2025-03-29,Grand Est,Sports,Yoga Mat,Online,2,34.93,0.0,69.86,4.1
+ORD-10592,2025-03-29,Grand Est,Apparel,Wool Scarf,Marketplace,2,24.21,15.0,41.16,4.6
+ORD-10383,2025-03-29,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,1,116.35,0.0,116.35,4.8
+ORD-10118,2025-03-31,Île-de-France,Apparel,Wool Scarf,Marketplace,3,24.86,0.0,74.58,4.6
+ORD-10314,2025-03-31,Auvergne-Rhône-Alpes,Apparel,Wool Scarf,Online,1,25.62,15.0,21.78,4.3
+ORD-10507,2025-04-01,Grand Est,Sports,Cycling Gloves,Marketplace,2,22.69,10.0,40.84,3.1
+ORD-10482,2025-04-02,Nouvelle-Aquitaine,Electronics,Laptop Stand,Online,2,37.56,20.0,60.1,5.0
+ORD-10567,2025-04-02,Île-de-France,Home,Coffee Grinder,Online,1,51.36,5.0,48.79,3.9
+ORD-10616,2025-04-02,Occitanie,Electronics,Wireless Earbuds,Marketplace,3,75.42,15.0,192.32,4.7
+ORD-10345,2025-04-04,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Marketplace,2,70.78,10.0,127.4,4.2
+ORD-10210,2025-04-06,Nouvelle-Aquitaine,Sports,Yoga Mat,Marketplace,2,34.75,5.0,66.02,4.9
+ORD-10379,2025-04-06,Île-de-France,Electronics,Smart Watch,Online,4,200.28,10.0,721.01,4.3
+ORD-10208,2025-04-07,Île-de-France,Electronics,Laptop Stand,Online,2,38.49,0.0,76.98,3.0
+ORD-10205,2025-04-08,Grand Est,Electronics,Bluetooth Speaker,Marketplace,5,56.72,0.0,283.6,3.7
+ORD-10291,2025-04-08,Occitanie,Electronics,Smart Watch,Online,1,204.46,15.0,173.79,4.9
+ORD-10617,2025-04-08,Occitanie,Electronics,Bluetooth Speaker,Online,1,59.98,15.0,50.98,
+ORD-10508,2025-04-09,Grand Est,Electronics,Laptop Stand,Online,2,37.79,0.0,75.58,4.2
+ORD-10215,2025-04-10,Occitanie,Electronics,Laptop Stand,Online,4,38.32,15.0,130.29,4.8
+ORD-10142,2025-04-11,Occitanie,Electronics,Bluetooth Speaker,Store,2,57.28,0.0,114.56,3.7
+ORD-10504,2025-04-11,Île-de-France,Home,Desk Lamp,Marketplace,4,29.7,15.0,100.98,3.6
+ORD-10280,2025-04-11,Grand Est,Home,Desk Lamp,Online,2,29.43,20.0,47.09,4.5
+ORD-10038,2025-04-12,Occitanie,Electronics,Bluetooth Speaker,Marketplace,4,56.86,0.0,227.44,3.3
+ORD-10412,2025-04-12,Nouvelle-Aquitaine,Home,Desk Lamp,Marketplace,1,29.61,0.0,29.61,4.0
+ORD-10110,2025-04-12,Île-de-France,Electronics,Bluetooth Speaker,Store,3,57.65,15.0,147.01,2.8
+ORD-10313,2025-04-13,Île-de-France,Apparel,Running Shoes,Online,1,113.79,20.0,91.03,4.9
+ORD-10151,2025-04-13,Hauts-de-France,Electronics,Smart Watch,Online,2,197.26,10.0,355.07,3.7
+ORD-10398,2025-04-13,Occitanie,Electronics,Bluetooth Speaker,Store,1,56.87,0.0,56.87,3.9
+ORD-10572,2025-04-14,Grand Est,Apparel,Rain Jacket,Online,2,86.1,0.0,172.2,3.5
+ORD-10298,2025-04-14,Île-de-France,Apparel,Running Shoes,Store,5,115.69,15.0,491.68,3.8
+ORD-10533,2025-04-14,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,1,37.34,0.0,37.34,5.0
+ORD-10449,2025-04-15,Grand Est,Home,Air Purifier,Store,2,154.1,0.0,308.2,4.4
+ORD-10095,2025-04-16,Île-de-France,Home,Coffee Grinder,Store,3,49.76,20.0,119.42,3.5
+ORD-10494,2025-04-16,Grand Est,Electronics,Bluetooth Speaker,Online,3,56.56,15.0,144.23,4.1
+ORD-10480,2025-04-16,Île-de-France,Home,Coffee Grinder,Store,1,49.21,5.0,46.75,4.9
+ORD-10341,2025-04-17,Grand Est,Apparel,Rain Jacket,Store,3,84.86,0.0,254.58,3.5
+ORD-10270,2025-04-18,Île-de-France,Home,Desk Lamp,Marketplace,3,29.52,0.0,88.56,3.1
+ORD-10153,2025-04-18,Hauts-de-France,Electronics,Laptop Stand,Online,2,38.41,10.0,69.14,4.0
+ORD-10637,2025-04-19,Île-de-France,Apparel,Wool Scarf,Online,5,24.81,0.0,124.05,4.6
+ORD-10418,2025-04-19,Île-de-France,Electronics,Smart Watch,Online,1,198.02,20.0,158.42,4.3
+ORD-10441,2025-04-20,Auvergne-Rhône-Alpes,Home,Coffee Grinder,Online,3,49.11,0.0,147.33,4.9
+ORD-10262,2025-04-20,Île-de-France,Home,Air Purifier,Store,3,154.13,0.0,462.39,4.7
+ORD-10352,2025-04-20,Hauts-de-France,Sports,Dumbbell Set,Marketplace,4,72.27,10.0,260.17,4.7
+ORD-10189,2025-04-21,Grand Est,Sports,Cycling Gloves,Online,1,21.83,0.0,21.83,3.6
+ORD-10135,2025-04-21,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Online,1,88.46,0.0,88.46,3.1
+ORD-10306,2025-04-21,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Online,2,89.88,10.0,161.78,3.8
+ORD-10225,2025-04-22,Grand Est,Apparel,Rain Jacket,Online,3,89.85,0.0,269.55,3.7
+ORD-10238,2025-04-23,  occitanie,Home,Air Purifier,Online,1,145.02,0.0,145.02,3.4
+ORD-10332,2025-04-24,Auvergne-Rhône-Alpes,Home,Air Purifier,Marketplace,1,155.19,0.0,155.19,4.7
+ORD-10525,2025-04-24,Grand Est,Sports,Cycling Gloves,Online,3,22.74,10.0,61.4,4.0
+ORD-10399,2025-04-24,Île-de-France,Home,Coffee Grinder,Online,1,46.9,10.0,42.21,3.3
+ORD-10446,2025-04-25,Auvergne-Rhône-Alpes,Home,Coffee Grinder,Online,2,49.45,0.0,98.9,4.2
+ORD-10087,2025-04-25,Occitanie,Apparel,Running Shoes,Store,2,119.62,0.0,239.24,4.2
+ORD-10308,2025-04-26,Île-de-France,Electronics,Wireless Earbuds,Store,2,76.54,15.0,130.12,4.9
+ORD-10367,2025-04-26,Île-de-France,Home,Desk Lamp,Online,3,27.69,0.0,83.07,4.2
+ORD-10337,2025-04-26,Hauts-de-France,Electronics,Bluetooth Speaker,Online,2,61.07,0.0,122.14,4.0
+ORD-10553,2025-04-27,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Marketplace,1,192.85,0.0,192.85,3.5
+ORD-10402,2025-04-27,Occitanie,Home,Desk Lamp,Online,1,28.02,0.0,28.02,4.3
+ORD-10524,2025-04-27,Île-de-France,Electronics,Laptop Stand,Online,2,39.0,0.0,78.0,3.5
+ORD-10320,2025-04-28,Occitanie,Electronics,Wireless Earbuds,Store,3,82.63,0.0,247.89,4.7
+ORD-10166,2025-04-28,Hauts-de-France,Apparel,Rain Jacket,Marketplace,3,91.28,0.0,273.84,2.9
+ORD-10606,2025-04-28,Île-de-France,Electronics,Wireless Earbuds,Online,2,80.68,0.0,161.36,4.4
+ORD-10594,2025-04-28,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Store,5,59.69,0.0,298.45,4.7
+ORD-10065,2025-04-29,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Store,7,76.14,0.0,532.98,2.6
+ORD-10631,2025-04-30,Nouvelle-Aquitaine,Home,Coffee Grinder,Online,2,49.18,10.0,88.52,3.6
+ORD-10076,2025-05-01,Grand Est,Sports,Dumbbell Set,Store,3,68.65,0.0,205.95,4.5
+ORD-10253,2025-05-01,Île-de-France,Sports,Yoga Mat,Store,5,33.62,0.0,168.1,4.0
+ORD-10293,2025-05-02,Hauts-de-France,Apparel,Running Shoes,Store,2,116.23,5.0,220.84,4.1
+ORD-10486,2025-05-02,Île-de-France,Apparel,Rain Jacket,Online,1,88.52,0.0,88.52,3.5
+ORD-10370,2025-05-03,Île-de-France,Apparel,Wool Scarf,Marketplace,6,25.2,15.0,128.52,4.1
+ORD-10168,2025-05-03,Occitanie,Home,Air Purifier,Store,6,146.33,15.0,746.28,4.2
+ORD-10198,2025-05-04,Hauts-de-France,Home,Coffee Grinder,Online,3,51.42,15.0,131.12,3.7
+ORD-10626,2025-05-04,Île-de-France,Sports,Cycling Gloves,Store,1,20.98,0.0,20.98,4.3
+ORD-10196,2025-05-06,Île-de-France,Electronics,Laptop Stand,Online,2,37.4,0.0,74.8,4.2
+ORD-10138,2025-05-07,Grand Est,Sports,Yoga Mat,Online,2,35.37,20.0,56.59,3.6
+ORD-10267,2025-05-07,Grand Est,Apparel,Wool Scarf,Store,3,25.6,5.0,72.96,3.8
+ORD-10043,2025-05-10,Grand Est,Apparel,Running Shoes,Online,1,120.82,0.0,120.82,4.0
+ORD-10520,2025-05-11,Occitanie,Sports,Yoga Mat,Store,5,33.33,5.0,158.32,3.2
+ORD-10052,2025-05-13,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Online,1,56.23,0.0,56.23,3.8
+ORD-10193,2025-05-13,Île-de-France,Electronics,Wireless Earbuds,Online,1,78.96,20.0,63.17,
+ORD-10300,2025-05-13,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Online,1,33.54,5.0,31.86,3.8
+ORD-10200,2025-05-14,Occitanie,Electronics,Laptop Stand,Online,4,38.33,0.0,153.32,4.1
+ORD-10062,2025-05-14,Île-de-France,Sports,Dumbbell Set,Store,2,66.45,5.0,126.25,2.9
+ORD-10629,2025-05-14,Île-de-France,Apparel,Running Shoes,Online,1,123.24,0.0,123.24,4.5
+ORD-10392,2025-05-15,Île-de-France,Sports,Dumbbell Set,Online,2,68.98,5.0,131.06,4.0
+ORD-10627,2025-05-15,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Marketplace,1,21.78,10.0,19.6,3.4
+ORD-10067,2025-05-16,Île-de-France,Apparel,Wool Scarf,Marketplace,4,26.1,0.0,104.4,3.3
+ORD-10331,2025-05-16,Île-de-France,Electronics,Bluetooth Speaker,Marketplace,2,61.32,10.0,110.38,4.4
+ORD-10021,2025-05-16,Nouvelle-Aquitaine,Sports,Cycling Gloves,Online,2,21.59,0.0,43.18,2.9
+ORD-10575,2025-05-17,Occitanie,Home,Coffee Grinder,Store,4,46.6,0.0,186.4,3.5
+ORD-10373,2025-05-17,Île-de-France,Home,Desk Lamp,Marketplace,1,30.24,0.0,30.24,3.3
+ORD-10497,2025-05-17,Occitanie,Apparel,Rain Jacket,Online,1,89.86,0.0,89.86,3.5
+ORD-10378,2025-05-19,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,1,115.51,0.0,115.51,
+ORD-10633,2025-05-19,Île-de-France,Electronics,Wireless Earbuds,Online,3,81.87,20.0,196.49,3.8
+ORD-10187,2025-05-20,Occitanie,Apparel,Wool Scarf,Online,4,24.86,0.0,99.44,3.3
+ORD-10613,2025-05-21,Île-de-France,Home,Coffee Grinder,Online,5,50.55,0.0,252.75,3.8
+ORD-10093,2025-05-22,Île-de-France,Electronics,Smart Watch,Store,3,193.41,15.0,493.2,4.5
+ORD-10551,2025-05-24,Île-de-France,Sports,Dumbbell Set,Store,5,72.43,20.0,289.72,4.3
+ORD-10439,2025-05-26,Nouvelle-Aquitaine,Apparel,Wool Scarf,Marketplace,3,25.1,20.0,60.24,3.8
+ORD-10026,2025-05-27,Hauts-de-France,Home,Air Purifier,Store,1,145.18,10.0,130.66,4.0
+ORD-10584,2025-05-28,Grand Est,Electronics,Bluetooth Speaker,Online,5,59.09,20.0,236.36,3.4
+ORD-10163,2025-05-29,Occitanie,Home,Desk Lamp,Marketplace,1,29.05,10.0,26.14,4.5
+ORD-10143,2025-05-30,Auvergne-Rhône-Alpes,Home,Desk Lamp,Online,1,28.12,15.0,23.9,3.3
+ORD-10372,2025-05-30,Occitanie,Apparel,Rain Jacket,Online,2,85.31,0.0,170.62,4.1
+ORD-10064,2025-05-30,Grand Est,Electronics,Smart Watch,Store,2,198.63,5.0,377.4,3.0
+ORD-10162,2025-05-30,Occitanie,Home,Air Purifier,Marketplace,4,148.99,15.0,506.57,3.3
+ORD-10495,2025-05-31,Île-de-France,Electronics,Bluetooth Speaker,Online,4,56.73,0.0,226.92,4.6
+ORD-10247,2025-06-01,Île-de-France,Home,Air Purifier,Online,3,155.16,15.0,395.66,4.5
+ORD-10571,2025-06-01,Hauts-de-France,Electronics,Laptop Stand,Online,1,39.63,0.0,39.63,3.7
+ORD-10164,2025-06-02,Île-de-France,Home,Air Purifier,Online,2,142.97,20.0,228.75,3.9
+ORD-10623,2025-06-02,Île-de-France,Electronics,Bluetooth Speaker,Online,1,58.74,20.0,46.99,4.8
+ORD-10274,2025-06-02,Auvergne-Rhône-Alpes,Home,Coffee Grinder,Online,4,50.21,15.0,170.71,3.9
+ORD-10424,2025-06-02,Île-de-France,Home,Air Purifier,Store,3,150.01,0.0,450.03,4.5
+ORD-10463,2025-06-02,Hauts-de-France,Apparel,Rain Jacket,Online,4,87.79,0.0,351.16,3.6
+ORD-10499,2025-06-05,Hauts-de-France,Home,Coffee Grinder,Store,4,47.43,0.0,189.72,3.3
+ORD-10546,2025-06-06,Hauts-de-France,Sports,Yoga Mat,Online,1,35.47,0.0,35.47,4.0
+ORD-10472,2025-06-07,Auvergne-Rhône-Alpes,Sports,Yoga Mat,,4,33.69,0.0,134.76,4.2
+ORD-10237,2025-06-07,Grand Est,Sports,Dumbbell Set,Online,1,72.04,15.0,61.23,4.2
+ORD-10632,2025-06-08,  occitanie,Electronics,Bluetooth Speaker,Online,4,58.22,15.0,197.95,4.0
+ORD-10090,2025-06-08,Île-de-France,Apparel,Wool Scarf,Online,2,25.95,15.0,44.11,4.3
+ORD-10620,2025-06-08,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Marketplace,1,58.99,5.0,56.04,4.4
+ORD-10004,2025-06-08,Île-de-France,Home,Air Purifier,Store,5,143.29,5.0,680.63,4.6
+ORD-10154,2025-06-08,Hauts-de-France,Sports,Cycling Gloves,Online,5,22.07,0.0,110.35,3.1
+ORD-10406,2025-06-08,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Store,7,208.02,0.0,1456.14,3.5
+ORD-10434,2025-06-08,Île-de-France,Electronics,Smart Watch,Store,5,205.36,5.0,975.46,4.8
+ORD-10353,2025-06-08,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Online,2,88.52,0.0,177.04,5.0
+ORD-10081,2025-06-09,Grand Est,Electronics,Laptop Stand,Online,4,38.3,5.0,145.54,3.8
+ORD-10139,2025-06-09,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Store,1,82.55,0.0,82.55,3.7
+ORD-10120,2025-06-10,Grand Est,Sports,Dumbbell Set,Marketplace,2,69.3,20.0,110.88,4.8
+ORD-10003,2025-06-10,Île-de-France,Home,Desk Lamp,Store,4,29.34,15.0,99.76,4.5
+ORD-10297,2025-06-10,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Online,3,80.83,20.0,193.99,4.8
+ORD-10284,2025-06-11,Île-de-France,Electronics,Bluetooth Speaker,Store,1,61.87,0.0,61.87,3.6
+ORD-10029,2025-06-11,Île-de-France,Sports,Dumbbell Set,Marketplace,1,66.87,10.0,60.18,4.4
+ORD-10046,2025-06-12,Hauts-de-France,Electronics,Laptop Stand,Online,2,37.49,0.0,74.98,4.0
+ORD-10185,2025-06-12,Occitanie,Electronics,Smart Watch,Online,3,199.61,0.0,598.83,4.2
+ORD-10266,2025-06-13,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Online,1,59.81,0.0,59.81,4.2
+ORD-10218,2025-06-13,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Store,2,35.28,0.0,70.56,4.3
+ORD-10019,2025-06-14,Nouvelle-Aquitaine,Home,Desk Lamp,Online,4,28.8,10.0,103.68,4.2
+ORD-10213,2025-06-14,Grand Est,Home,Coffee Grinder,Store,2,47.01,0.0,94.02,3.6
+ORD-10030,2025-06-14,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Store,1,77.25,10.0,69.53,3.2
+ORD-10505,2025-06-15,Île-de-France,Electronics,Smart Watch,Online,2,192.21,20.0,307.54,3.2
+ORD-10221,2025-06-16,Île-de-France,Home,Air Purifier,Online,4,153.93,0.0,615.72,4.1
+ORD-10204,2025-06-16,Occitanie,Electronics,Wireless Earbuds,Store,3,77.6,10.0,209.52,3.7
+ORD-10536,2025-06-16,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Store,3,33.63,0.0,100.89,4.0
+ORD-10113,2025-06-17,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Store,1,59.12,0.0,59.12,3.6
+ORD-10334,2025-06-17,Grand Est,Electronics,Laptop Stand,Online,2,39.94,0.0,79.88,3.1
+ORD-10484,2025-06-18,Grand Est,Electronics,Laptop Stand,Online,4,38.67,0.0,154.68,4.6
+ORD-10175,2025-06-18,Île-de-France,Apparel,Rain Jacket,Online,1,89.92,10.0,80.93,3.8
+ORD-10611,2025-06-18,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Store,5,60.46,10.0,272.07,3.7
+ORD-10072,2025-06-18,Grand Est,Sports,Yoga Mat,Store,3,33.91,0.0,101.73,1.9
+ORD-10230,2025-06-19,Occitanie,Apparel,Running Shoes,Store,1,119.47,20.0,95.58,3.8
+ORD-10276,2025-06-20,Île-de-France,Apparel,Wool Scarf,Online,1,24.37,5.0,23.15,3.9
+ORD-10053,2025-06-20,Nouvelle-Aquitaine,Apparel,Wool Scarf,Online,4,24.11,10.0,86.8,4.1
+ORD-10473,2025-06-20,Occitanie,Electronics,Laptop Stand,Online,3,37.37,10.0,100.9,4.6
+ORD-10366,2025-06-21,Occitanie,Home,Coffee Grinder,Online,1,51.22,0.0,51.22,4.6
+ORD-10123,2025-06-21,Île-de-France,Home,Desk Lamp,Online,2,28.0,20.0,44.8,4.5
+ORD-10069,2025-06-21,Île-de-France,Sports,Dumbbell Set,Marketplace,2,67.24,20.0,107.58,4.2
+ORD-10108,2025-06-22,Auvergne-Rhône-Alpes,Home,Air Purifier,Marketplace,5,155.64,15.0,661.47,3.7
+ORD-10289,2025-06-22,Hauts-de-France,Electronics,Smart Watch,Online,2,204.79,0.0,409.58,4.6
+ORD-10075,2025-06-23,Nouvelle-Aquitaine,Electronics,Smart Watch,Store,4,198.23,0.0,792.92,4.4
+ORD-10518,2025-06-23,Nouvelle-Aquitaine,Home,Air Purifier,Online,3,146.76,5.0,418.27,3.7
+ORD-10621,2025-06-24,Île-de-France,Sports,Dumbbell Set,Online,1,69.87,15.0,59.39,3.8
+ORD-10275,2025-06-26,Occitanie,Electronics,Bluetooth Speaker,Marketplace,1,58.47,0.0,58.47,4.2
+ORD-10281,2025-06-27,Île-de-France,Home,Desk Lamp,Online,2,28.87,10.0,51.97,4.9
+ORD-10443,2025-06-28,Île-de-France,Home,Coffee Grinder,Store,2,50.26,10.0,90.47,3.7
+ORD-10234,2025-06-29,Île-de-France,Electronics,Laptop Stand,Online,3,37.97,0.0,113.91,3.5
+ORD-10562,2025-06-29,Nouvelle-Aquitaine,Apparel,Rain Jacket,Online,3,85.41,0.0,256.23,3.4
+ORD-10283,2025-06-29,  occitanie,Apparel,Running Shoes,Store,3,119.75,10.0,323.32,3.0
+ORD-10251,2025-06-30,Île-de-France,Electronics,Laptop Stand,Store,4,38.86,0.0,155.44,3.5
+ORD-10184,2025-06-30,Auvergne-Rhône-Alpes,Home,Desk Lamp,Store,1,29.33,5.0,27.86,3.0
+ORD-10202,2025-06-30,Occitanie,Sports,Dumbbell Set,Online,2,71.2,15.0,121.04,3.9
+ORD-10054,2025-07-01,  occitanie,Sports,Yoga Mat,Online,1,36.73,0.0,36.73,4.2
+ORD-10182,2025-07-01,Nouvelle-Aquitaine,Apparel,Rain Jacket,Online,4,93.03,0.0,372.12,4.2
+ORD-10404,2025-07-02,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,7,196.12,0.0,1372.84,3.6
+ORD-10452,2025-07-02,Nouvelle-Aquitaine,Sports,Cycling Gloves,Online,1,21.99,0.0,21.99,5.0
+ORD-10020,2025-07-02,Occitanie,Apparel,Running Shoes,Online,4,123.01,20.0,393.63,4.5
+ORD-10179,2025-07-02,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Marketplace,2,37.91,20.0,60.66,4.9
+ORD-10405,2025-07-02,Occitanie,Electronics,Laptop Stand,Online,4,40.66,15.0,138.24,3.9
+ORD-10158,2025-07-04,Auvergne-Rhône-Alpes,Apparel,Wool Scarf,Online,6,24.62,10.0,132.95,3.6
+ORD-10628,2025-07-04,Île-de-France,Electronics,Wireless Earbuds,Store,2,75.15,0.0,150.3,
+ORD-10114,2025-07-04,Occitanie,Apparel,Rain Jacket,Online,1,88.66,0.0,88.66,4.0
+ORD-10419,2025-07-04,Occitanie,Sports,Yoga Mat,Online,2,34.66,0.0,69.32,3.4
+ORD-10555,2025-07-04,Nouvelle-Aquitaine,Apparel,Rain Jacket,Online,1,89.47,0.0,89.47,4.3
+ORD-10444,2025-07-05,Hauts-de-France,Apparel,Running Shoes,Online,3,117.52,0.0,352.56,5.0
+ORD-10016,2025-07-07,Occitanie,Home,Desk Lamp,Online,5,27.98,0.0,139.9,5.0
+ORD-10607,2025-07-07,Île-de-France,Apparel,Wool Scarf,Store,1,24.4,20.0,19.52,4.8
+ORD-10343,2025-07-07,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Store,4,200.05,0.0,800.2,3.8
+ORD-10548,2025-07-08,Occitanie,Apparel,Wool Scarf,Online,3,25.92,10.0,69.98,4.7
+ORD-10365,2025-07-09,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Online,4,75.47,0.0,301.88,3.8
+ORD-10448,2025-07-10,Hauts-de-France,Electronics,Smart Watch,Marketplace,1,195.31,0.0,195.31,2.9
+ORD-10295,2025-07-10,Grand Est,Electronics,Bluetooth Speaker,Online,6,59.84,10.0,323.14,4.0
+ORD-10577,2025-07-11,Île-de-France,Electronics,Smart Watch,Store,2,203.2,10.0,365.76,4.1
+ORD-10010,2025-07-12,Île-de-France,Sports,Cycling Gloves,Marketplace,1,22.61,0.0,22.61,4.4
+ORD-10487,2025-07-13,Île-de-France,Electronics,Laptop Stand,Store,7,39.97,0.0,279.79,4.4
+ORD-10506,2025-07-13,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,2,201.41,0.0,402.82,4.0
+ORD-10350,2025-07-14,Occitanie,Electronics,Smart Watch,Marketplace,3,198.42,20.0,476.21,4.9
+ORD-10560,2025-07-15,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Online,3,79.59,15.0,202.95,4.4
+ORD-10605,2025-07-15,Nouvelle-Aquitaine,Apparel,Wool Scarf,Online,3,24.24,10.0,65.45,3.0
+ORD-10288,2025-07-17,Île-de-France,Apparel,Rain Jacket,Store,7,87.03,0.0,609.21,5.0
+ORD-10538,2025-07-17,Hauts-de-France,Apparel,Rain Jacket,Store,1,86.85,5.0,82.51,4.1
+ORD-10294,2025-07-18,Nouvelle-Aquitaine,Apparel,Running Shoes,Store,1,124.78,0.0,124.78,4.1
+ORD-10304,2025-07-18,Hauts-de-France,Sports,Yoga Mat,Store,2,35.77,0.0,71.54,4.2
+ORD-10330,2025-07-19,Occitanie,Electronics,Bluetooth Speaker,Store,3,58.09,5.0,165.56,4.7
+ORD-10228,2025-07-19,Île-de-France,Electronics,Wireless Earbuds,Store,2,80.78,0.0,161.56,4.1
+ORD-10056,2025-07-19,Occitanie,Apparel,Rain Jacket,Online,3,89.99,0.0,269.97,4.3
+ORD-10028,2025-07-19,Occitanie,Home,Desk Lamp,Online,5,29.0,15.0,123.25,4.1
+ORD-10131,2025-07-22,Occitanie,Electronics,Bluetooth Speaker,Marketplace,2,57.77,0.0,115.54,4.3
+ORD-10033,2025-07-22,Hauts-de-France,Home,Air Purifier,Marketplace,4,149.83,20.0,479.46,4.6
+ORD-10307,2025-07-22,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Marketplace,1,82.29,0.0,82.29,3.6
+ORD-10329,2025-07-22,Île-de-France,Apparel,Rain Jacket,Online,1,85.58,0.0,85.58,2.8
+ORD-10455,2025-07-22,Occitanie,Sports,Yoga Mat,Online,1,34.84,15.0,29.61,4.1
+ORD-10112,2025-07-22,Île-de-France,Apparel,Running Shoes,Store,4,118.02,5.0,448.48,3.7
+ORD-10157,2025-07-23,Grand Est,Electronics,Smart Watch,Online,1,190.47,0.0,190.47,4.2
+ORD-10133,2025-07-24,Hauts-de-France,Home,Air Purifier,Store,1,148.72,10.0,133.85,4.5
+ORD-10078,2025-07-26,Île-de-France,Home,Air Purifier,Online,3,148.11,20.0,355.46,4.5
+ORD-10125,2025-07-26,Nouvelle-Aquitaine,Electronics,Smart Watch,Store,4,195.43,5.0,742.63,4.6
+ORD-10130,2025-07-26,Nouvelle-Aquitaine,Apparel,Running Shoes,Store,2,115.41,5.0,219.28,4.0
+ORD-10436,2025-07-27,Hauts-de-France,Electronics,Wireless Earbuds,Online,4,78.8,15.0,267.92,4.2
+ORD-10115,2025-07-27,Grand Est,Electronics,Smart Watch,Online,2,205.15,0.0,410.3,4.5
+ORD-10287,2025-07-28,Occitanie,Electronics,Bluetooth Speaker,Online,2,57.72,10.0,103.9,3.8
+ORD-10569,2025-07-28,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Online,4,201.12,15.0,683.81,3.4
+ORD-10128,2025-07-29,Nouvelle-Aquitaine,Apparel,Running Shoes,Store,4,122.83,0.0,491.32,5.0
+ORD-10534,2025-07-30,Île-de-France,Sports,Yoga Mat,Online,2,34.27,0.0,68.54,3.5
+ORD-10227,2025-07-31,Occitanie,Apparel,Wool Scarf,Online,3,24.34,20.0,58.42,4.6
+ORD-10596,2025-07-31,Hauts-de-France,Electronics,Smart Watch,Store,4,206.55,20.0,660.96,4.6
+ORD-10265,2025-08-01,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Store,4,91.26,15.0,310.28,4.1
+ORD-10423,2025-08-01,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Online,1,80.94,15.0,68.8,4.4
+ORD-10241,2025-08-02,Occitanie,Electronics,Smart Watch,Online,3,194.02,0.0,582.06,4.6
+ORD-10259,2025-08-03,Île-de-France,Sports,Yoga Mat,Online,1,36.26,0.0,36.26,3.7
+ORD-10269,2025-08-04,Nouvelle-Aquitaine,Apparel,Wool Scarf,Online,1,25.93,0.0,25.93,3.9
+ORD-10547,2025-08-04,Île-de-France,Electronics,Laptop Stand,Online,4,38.01,10.0,136.84,4.3
+ORD-10519,2025-08-05,Nouvelle-Aquitaine,Home,Desk Lamp,Online,5,28.75,0.0,143.75,4.7
+ORD-10454,2025-08-06,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,4,38.11,0.0,152.44,3.5
+ORD-10467,2025-08-06,Grand Est,Apparel,Running Shoes,Marketplace,2,114.32,10.0,205.78,4.5
+ORD-10530,2025-08-07,Île-de-France,Apparel,Running Shoes,Marketplace,1,121.07,0.0,121.07,4.0
+ORD-10393,2025-08-07,Île-de-France,Home,Air Purifier,Store,1,144.32,0.0,144.32,3.9
+ORD-10136,2025-08-09,Île-de-France,Apparel,Rain Jacket,Online,8,85.27,20.0,545.73,4.5
+ORD-10624,2025-08-09,Auvergne-Rhône-Alpes,Sports,Dumbbell Set,Online,1,68.49,20.0,54.79,
+ORD-10493,2025-08-09,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,3,38.59,0.0,115.77,3.9
+ORD-10489,2025-08-10,Hauts-de-France,Home,Coffee Grinder,Store,1,48.82,0.0,48.82,4.0
+ORD-10192,2025-08-10,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Marketplace,2,118.6,0.0,237.2,4.5
+ORD-10268,2025-08-12,Île-de-France,Apparel,Wool Scarf,Online,4,25.24,0.0,100.96,4.7
+ORD-10322,2025-08-13,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Store,3,78.47,0.0,235.41,4.8
+ORD-10600,2025-08-13,Île-de-France,Electronics,Smart Watch,Online,3,203.4,0.0,610.2,4.5
+ORD-10342,2025-08-15,Nouvelle-Aquitaine,Sports,Yoga Mat,Store,3,34.26,0.0,102.78,3.2
+ORD-10239,2025-08-17,Nouvelle-Aquitaine,Home,Air Purifier,Marketplace,1,147.03,0.0,147.03,3.8
+ORD-10084,2025-08-18,Hauts-de-France,Electronics,Smart Watch,Online,1,205.29,10.0,184.76,4.1
+ORD-10244,2025-08-18,Nouvelle-Aquitaine,Home,Coffee Grinder,Marketplace,1,47.04,0.0,47.04,
+ORD-10598,2025-08-18,Occitanie,Sports,Dumbbell Set,Store,3,69.44,10.0,187.49,4.4
+ORD-10191,2025-08-19,Île-de-France,Electronics,Bluetooth Speaker,Store,1,58.36,0.0,58.36,4.7
+ORD-10039,2025-08-19,Île-de-France,Home,Coffee Grinder,Online,2,48.34,0.0,96.68,4.3
+ORD-10474,2025-08-20,Île-de-France,Electronics,Smart Watch,Online,1,195.15,20.0,156.12,4.4
+ORD-10129,2025-08-20,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Store,4,87.85,15.0,298.69,4.1
+ORD-10340,2025-08-20,Hauts-de-France,Home,Coffee Grinder,Online,1,48.34,0.0,48.34,4.3
+ORD-10457,2025-08-20,Île-de-France,Sports,Cycling Gloves,Store,1,21.85,0.0,21.85,3.6
+ORD-10098,2025-08-21,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Online,3,206.77,0.0,620.31,3.9
+ORD-10615,2025-08-22,Occitanie,Home,Coffee Grinder,Online,2,47.31,0.0,94.62,4.7
+ORD-10599,2025-08-23,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,2,121.13,0.0,242.26,4.2
+ORD-10568,2025-08-23,Grand Est,Home,Desk Lamp,Online,2,28.37,5.0,53.9,4.8
+ORD-10025,2025-08-24,Île-de-France,Home,Desk Lamp,Online,1,30.18,5.0,28.67,4.5
+ORD-10501,2025-08-26,Île-de-France,Electronics,Wireless Earbuds,Marketplace,4,76.32,15.0,259.49,4.7
+ORD-10243,2025-08-26,Nouvelle-Aquitaine,Apparel,Wool Scarf,Store,2,25.29,0.0,50.58,4.3
+ORD-10122,2025-08-27,Île-de-France,Sports,Cycling Gloves,Marketplace,1,21.25,10.0,19.12,4.5
+ORD-10002,2025-08-27,Île-de-France,Electronics,Bluetooth Speaker,Marketplace,1,61.57,15.0,52.33,3.8
+ORD-10315,2025-08-29,Nouvelle-Aquitaine,Electronics,Laptop Stand,Online,3,40.2,0.0,120.6,4.0
+ORD-10155,2025-08-30,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,4,198.0,20.0,633.6,
+ORD-10371,2025-08-30,Hauts-de-France,Apparel,Wool Scarf,Online,1,24.22,15.0,20.59,5.0
+ORD-10445,2025-08-30,Occitanie,Electronics,Bluetooth Speaker,Online,1,60.62,15.0,51.53,4.1
+ORD-10254,2025-08-30,Auvergne-Rhône-Alpes,Home,Desk Lamp,Store,3,29.22,0.0,87.66,3.7
+ORD-10478,2025-08-31,Île-de-France,Home,Air Purifier,Online,1,145.97,0.0,145.97,3.9
+ORD-10107,2025-08-31,Nouvelle-Aquitaine,Electronics,Laptop Stand,Online,1,37.7,0.0,37.7,4.6
+ORD-10236,2025-08-31,Occitanie,Sports,Cycling Gloves,Online,2,22.7,20.0,36.32,3.8
+ORD-10161,2025-08-31,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Online,2,197.94,10.0,356.29,4.6
+ORD-10121,2025-09-01,Île-de-France,Home,Desk Lamp,Store,2,27.81,5.0,52.84,3.6
+ORD-10310,2025-09-01,Île-de-France,Sports,Cycling Gloves,Store,1,21.03,0.0,21.03,4.6
+ORD-10282,2025-09-02,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,1,192.25,10.0,173.03,3.2
+ORD-10079,2025-09-02,Île-de-France,Apparel,Wool Scarf,Store,1,24.57,10.0,22.11,3.1
+ORD-10311,2025-09-03,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Store,1,59.32,0.0,59.32,4.2
+ORD-10048,2025-09-05,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Online,1,58.77,0.0,58.77,4.4
+ORD-10256,2025-09-05,Nouvelle-Aquitaine,Sports,Yoga Mat,Online,2,34.09,0.0,68.18,4.2
+ORD-10415,2025-09-05,Occitanie,Apparel,Wool Scarf,Marketplace,2,23.8,10.0,42.84,3.5
+ORD-10549,2025-09-06,Nouvelle-Aquitaine,Apparel,Wool Scarf,,2,25.63,15.0,43.57,3.9
+ORD-10059,2025-09-07,Hauts-de-France,Home,Air Purifier,Store,3,152.44,15.0,388.72,3.4
+ORD-10190,2025-09-07,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Online,2,40.39,5.0,76.74,4.9
+ORD-10097,2025-09-07,Auvergne-Rhône-Alpes,Home,Coffee Grinder,Store,3,49.11,15.0,125.23,3.6
+ORD-10635,2025-09-08,Île-de-France,Electronics,Wireless Earbuds,Marketplace,2,77.65,0.0,155.3,4.2
+ORD-10614,2025-09-08,Île-de-France,Apparel,Running Shoes,Online,2,118.5,0.0,237.0,3.9
+ORD-10074,2025-09-08,Île-de-France,Apparel,Wool Scarf,Online,3,26.23,0.0,78.69,4.7
+ORD-10586,2025-09-09,Hauts-de-France,Electronics,Laptop Stand,Store,2,39.13,15.0,66.52,4.3
+ORD-10421,2025-09-11,Île-de-France,Electronics,Laptop Stand,Online,3,37.57,10.0,101.44,4.4
+ORD-10007,2025-09-12,Nouvelle-Aquitaine,Sports,Yoga Mat,Online,1,36.23,15.0,30.8,5.0
+ORD-10174,2025-09-12,Nouvelle-Aquitaine,Electronics,Smart Watch,Store,1,197.79,10.0,178.01,4.2
+ORD-10183,2025-09-12,Île-de-France,Home,Coffee Grinder,Online,1,46.78,0.0,46.78,3.8
+ORD-10085,2025-09-13,Île-de-France,Electronics,Smart Watch,Online,1,204.46,15.0,173.79,3.1
+ORD-10203,2025-09-13,Hauts-de-France,Electronics,Smart Watch,Online,1,200.95,5.0,190.9,4.2
+ORD-10042,2025-09-13,Nouvelle-Aquitaine,Sports,Yoga Mat,Store,4,36.73,0.0,146.92,3.8
+ORD-10222,2025-09-14,Occitanie,Apparel,Wool Scarf,Online,1,24.67,10.0,22.2,4.9
+ORD-10109,2025-09-15,Hauts-de-France,Electronics,Bluetooth Speaker,Online,2,60.44,0.0,120.88,4.6
+ORD-10540,2025-09-16,Hauts-de-France,Electronics,Smart Watch,Store,3,208.08,0.0,624.24,5.0
+ORD-10176,2025-09-19,Grand Est,Home,Coffee Grinder,Online,2,47.54,0.0,95.08,4.5
+ORD-10429,2025-09-19,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Online,4,60.87,5.0,231.31,4.4
+ORD-10014,2025-09-19,Île-de-France,Sports,Cycling Gloves,Marketplace,1,22.26,10.0,20.03,
+ORD-10211,2025-09-19,Occitanie,Electronics,Smart Watch,Store,1,204.01,5.0,193.81,3.2
+ORD-10394,2025-09-20,Île-de-France,Sports,Yoga Mat,Online,1,36.32,0.0,36.32,3.4
+ORD-10235,2025-09-20,Grand Est,Home,Air Purifier,Online,1,150.62,15.0,128.03,4.7
+ORD-10224,2025-09-21,Hauts-de-France,Sports,Yoga Mat,Marketplace,1,33.42,0.0,33.42,4.6
+ORD-10173,2025-09-21,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,,4,38.91,10.0,140.08,4.5
+ORD-10460,2025-09-22,Île-de-France,Electronics,Wireless Earbuds,Store,3,82.79,0.0,248.37,4.2
+ORD-10317,2025-09-23,Occitanie,Sports,Yoga Mat,Marketplace,1,36.39,0.0,36.39,3.5
+ORD-10316,2025-09-24,Île-de-France,Home,Coffee Grinder,Online,1,49.09,5.0,46.64,4.1
+ORD-10556,2025-09-26,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,,2,57.16,15.0,97.17,4.4
+ORD-10012,2025-09-26,Île-de-France,Electronics,Bluetooth Speaker,Online,4,57.24,15.0,194.62,4.9
+ORD-10376,2025-09-26,Grand Est,Apparel,Rain Jacket,Online,1,92.81,20.0,74.25,3.6
+ORD-10214,2025-09-26,Île-de-France,Electronics,Wireless Earbuds,Store,2,77.41,20.0,123.86,3.7
+ORD-10630,2025-09-26,Nouvelle-Aquitaine,Electronics,Laptop Stand,Online,2,38.41,0.0,76.82,4.7
+ORD-10470,2025-09-27,Île-de-France,Electronics,Smart Watch,Online,2,201.96,0.0,403.92,4.6
+ORD-10602,2025-09-27,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Online,1,21.73,5.0,20.64,4.7
+ORD-10431,2025-09-27,Île-de-France,Apparel,Wool Scarf,Marketplace,2,25.99,0.0,51.98,3.7
+ORD-10058,2025-09-29,Île-de-France,Electronics,Laptop Stand,Online,2,40.8,20.0,65.28,3.4
+ORD-10061,2025-09-29,Occitanie,Electronics,Laptop Stand,Online,2,39.42,15.0,67.01,4.7
+ORD-10390,2025-09-30,Occitanie,Home,Coffee Grinder,Online,2,48.04,5.0,91.28,4.2
+ORD-10377,2025-09-30,Occitanie,Apparel,Rain Jacket,Store,1,85.92,0.0,85.92,3.9
+ORD-10511,2025-09-30,Île-de-France,Home,Coffee Grinder,Online,1,50.11,0.0,50.11,4.0
+ORD-10462,2025-10-01,Hauts-de-France,Apparel,Running Shoes,Online,2,116.31,0.0,232.62,4.3
+ORD-10359,2025-10-01,Île-de-France,Home,Coffee Grinder,Marketplace,4,47.48,15.0,161.43,3.6
+ORD-10492,2025-10-02,Hauts-de-France,Sports,Yoga Mat,Online,2,34.41,10.0,61.94,4.2
+ORD-10041,2025-10-04,Île-de-France,Electronics,Laptop Stand,Online,3,38.22,20.0,91.73,4.3
+ORD-10246,2025-10-04,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,1,118.35,0.0,118.35,4.8
+ORD-10233,2025-10-04,Nouvelle-Aquitaine,Home,Air Purifier,Online,1,154.43,10.0,138.99,5.0
+ORD-10050,2025-10-05,Occitanie,Electronics,Wireless Earbuds,Online,2,81.79,5.0,155.4,3.9
+ORD-10013,2025-10-05,Île-de-France,Apparel,Rain Jacket,Online,1,91.09,15.0,77.43,4.6
+ORD-10206,2025-10-06,Île-de-France,Electronics,Bluetooth Speaker,Store,1,61.35,5.0,58.28,4.4
+ORD-10488,2025-10-07,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Store,2,37.78,0.0,75.56,4.2
+ORD-10422,2025-10-07,Grand Est,Apparel,Wool Scarf,Online,2,24.04,5.0,45.68,5.0
+ORD-10127,2025-10-07,Île-de-France,Home,Coffee Grinder,Store,3,48.62,5.0,138.57,5.0
+ORD-10319,2025-10-08,Nouvelle-Aquitaine,Electronics,Laptop Stand,Online,1,37.36,0.0,37.36,3.9
+ORD-10088,2025-10-08,Grand Est,Sports,Yoga Mat,Online,1,35.8,20.0,28.64,4.8
+ORD-10172,2025-10-09,Grand Est,Home,Desk Lamp,Online,2,28.07,0.0,56.14,4.2
+ORD-10369,2025-10-09,Occitanie,Apparel,Wool Scarf,Marketplace,8,25.35,20.0,162.24,3.9
+ORD-10001,2025-10-10,Hauts-de-France,Apparel,Rain Jacket,Online,1,90.73,0.0,90.73,4.8
+ORD-10401,2025-10-11,Auvergne-Rhône-Alpes,Home,Air Purifier,Marketplace,1,152.22,0.0,152.22,5.0
+ORD-10106,2025-10-12,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Store,1,22.15,0.0,22.15,3.7
+ORD-10209,2025-10-12,Hauts-de-France,Electronics,Smart Watch,Online,1,199.67,10.0,179.7,4.5
+ORD-10111,2025-10-12,Hauts-de-France,Home,Coffee Grinder,Online,2,49.46,20.0,79.14,2.6
+ORD-10597,2025-10-12,Hauts-de-France,Apparel,Rain Jacket,Store,1,85.57,10.0,77.01,4.2
+ORD-10049,2025-10-12,Île-de-France,Electronics,Wireless Earbuds,Online,1,76.54,20.0,61.23,2.8
+ORD-10601,2025-10-12,Nouvelle-Aquitaine,Apparel,Wool Scarf,Online,3,24.58,0.0,73.74,3.7
+ORD-10277,2025-10-13,Île-de-France,Home,Coffee Grinder,Online,1,47.34,5.0,44.97,4.6
+ORD-10024,2025-10-13,Auvergne-Rhône-Alpes,Apparel,Wool Scarf,Online,3,24.87,20.0,59.69,4.2
+ORD-10612,2025-10-14,Île-de-France,Apparel,Wool Scarf,Online,1,26.23,15.0,22.3,5.0
+ORD-10159,2025-10-14,Hauts-de-France,Electronics,Smart Watch,Online,2,202.7,0.0,405.4,4.3
+ORD-10015,2025-10-14,Auvergne-Rhône-Alpes,Electronics,Smart Watch,Store,1,208.55,0.0,208.55,4.0
+ORD-10475,2025-10-14,Hauts-de-France,Electronics,Wireless Earbuds,Marketplace,1,75.66,0.0,75.66,4.4
+ORD-10248,2025-10-15,Occitanie,Sports,Dumbbell Set,Online,3,66.54,0.0,199.62,4.4
+ORD-10212,2025-10-15,Île-de-France,Apparel,Wool Scarf,Marketplace,3,25.14,10.0,67.88,4.3
+ORD-10105,2025-10-15,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,Store,2,38.64,0.0,77.28,3.9
+ORD-10558,2025-10-17,Auvergne-Rhône-Alpes,Sports,Yoga Mat,Store,3,35.55,15.0,90.65,4.5
+ORD-10638,2025-10-17,Grand Est,Electronics,Smart Watch,Store,2,200.4,20.0,320.64,3.1
+ORD-10260,2025-10-17,Île-de-France,Electronics,Smart Watch,Store,2,197.22,5.0,374.72,
+ORD-10070,2025-10-18,Île-de-France,Apparel,Rain Jacket,Online,2,88.42,5.0,168.0,4.4
+ORD-10483,2025-10-18,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Store,1,113.48,0.0,113.48,3.2
+ORD-10104,2025-10-18,Occitanie,Sports,Yoga Mat,Online,2,34.64,5.0,65.82,4.4
+ORD-10134,2025-10-18,Auvergne-Rhône-Alpes,Home,Desk Lamp,Online,1,28.06,15.0,23.85,2.8
+ORD-10595,2025-10-20,Nouvelle-Aquitaine,Sports,Cycling Gloves,Online,1,20.98,0.0,20.98,3.0
+ORD-10590,2025-10-20,Île-de-France,Sports,Cycling Gloves,Online,2,22.89,15.0,38.91,4.0
+ORD-10091,2025-10-21,Hauts-de-France,Electronics,Bluetooth Speaker,Online,1,58.62,0.0,58.62,3.9
+ORD-10471,2025-10-21,Île-de-France,Electronics,Laptop Stand,Online,1,38.9,0.0,38.9,3.4
+ORD-10550,2025-10-21,Nouvelle-Aquitaine,Sports,Dumbbell Set,Online,1,71.2,10.0,64.08,4.3
+ORD-10427,2025-10-21,Nouvelle-Aquitaine,Home,Air Purifier,Online,4,149.13,20.0,477.22,3.1
+ORD-10102,2025-10-21,Nouvelle-Aquitaine,Electronics,Smart Watch,Store,1,206.01,10.0,185.41,4.3
+ORD-10290,2025-10-22,Île-de-France,Home,Coffee Grinder,Store,1,51.35,5.0,48.78,3.6
+ORD-10335,2025-10-23,Occitanie,Apparel,Running Shoes,Marketplace,1,122.98,10.0,110.68,4.1
+ORD-10226,2025-10-23,Île-de-France,Electronics,Smart Watch,Online,5,200.11,5.0,950.52,5.0
+ORD-10165,2025-10-25,Île-de-France,Apparel,Wool Scarf,Store,1,26.1,0.0,26.1,4.4
+ORD-10513,2025-10-26,Occitanie,Electronics,Laptop Stand,Online,1,39.1,15.0,33.23,4.2
+ORD-10148,2025-10-27,Hauts-de-France,Apparel,Running Shoes,Store,5,121.91,0.0,609.55,3.8
+ORD-10027,2025-10-28,Occitanie,Apparel,Wool Scarf,Online,1,24.67,15.0,20.97,4.3
+ORD-10523,2025-10-29,Île-de-France,Home,Air Purifier,Marketplace,1,148.1,5.0,140.69,3.6
+ORD-10604,2025-10-29,Occitanie,Electronics,Smart Watch,Online,3,194.07,0.0,582.21,4.2
+ORD-10432,2025-10-29,Île-de-France,Sports,Cycling Gloves,Store,1,21.04,10.0,18.94,3.6
+ORD-10301,2025-10-29,Île-de-France,Sports,Yoga Mat,Marketplace,4,35.51,0.0,142.04,4.2
+ORD-10037,2025-10-30,Île-de-France,Sports,Dumbbell Set,Marketplace,2,68.29,0.0,136.58,3.4
+ORD-10552,2025-10-30,Île-de-France,Apparel,Rain Jacket,Store,1,91.93,0.0,91.93,4.4
+ORD-10333,2025-10-30,Occitanie,Sports,Dumbbell Set,Marketplace,1,70.28,20.0,56.22,4.5
+ORD-10481,2025-10-30,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Marketplace,1,58.47,15.0,49.7,5.0
+ORD-10387,2025-10-31,Hauts-de-France,Sports,Dumbbell Set,Marketplace,2,72.36,10.0,130.25,4.1
+ORD-10083,2025-10-31,Île-de-France,Electronics,Laptop Stand,Store,7,38.83,0.0,271.81,4.3
+ORD-10089,2025-10-31,Hauts-de-France,Home,Coffee Grinder,Online,2,50.63,0.0,101.26,4.6
+ORD-10100,2025-10-31,Auvergne-Rhône-Alpes,Home,Desk Lamp,Online,1,30.04,0.0,30.04,3.6
+ORD-10544,2025-10-31,Grand Est,Apparel,Running Shoes,Online,1,120.57,0.0,120.57,3.5
+ORD-10581,2025-11-01,Île-de-France,Apparel,Running Shoes,Online,2,119.96,15.0,203.93,3.9
+ORD-10610,2025-11-01,Île-de-France,Apparel,Rain Jacket,Online,1,93.1,10.0,83.79,4.2
+ORD-10588,2025-11-02,Hauts-de-France,Home,Coffee Grinder,Store,2,49.57,0.0,99.14,3.8
+ORD-10458,2025-11-03,Hauts-de-France,Electronics,Bluetooth Speaker,Online,6,59.3,0.0,355.8,4.0
+ORD-10512,2025-11-03,Auvergne-Rhône-Alpes,Home,Desk Lamp,Store,6,28.81,10.0,155.57,3.8
+ORD-10018,2025-11-03,Auvergne-Rhône-Alpes,Home,Air Purifier,Online,2,147.78,0.0,295.56,3.5
+ORD-10092,2025-11-04,Île-de-France,Apparel,Running Shoes,Online,3,122.8,0.0,368.4,4.9
+ORD-10589,2025-11-04,Hauts-de-France,Apparel,Running Shoes,Online,3,114.24,0.0,342.72,4.6
+ORD-10360,2025-11-05,Île-de-France,Home,Desk Lamp,Store,1,29.93,10.0,26.94,3.9
+ORD-10476,2025-11-06,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,3,123.24,15.0,314.26,2.6
+ORD-10296,2025-11-07,Île-de-France,Electronics,Laptop Stand,Store,4,37.89,10.0,136.4,4.5
+ORD-10559,2025-11-07,Hauts-de-France,Apparel,Running Shoes,Store,2,122.71,0.0,245.42,2.9
+ORD-10145,2025-11-08,Île-de-France,Electronics,Wireless Earbuds,Online,4,77.15,0.0,308.6,4.1
+ORD-10231,2025-11-09,Occitanie,Home,Air Purifier,Online,5,149.56,10.0,673.02,4.3
+ORD-10124,2025-11-09,Grand Est,Sports,Yoga Mat,Online,3,36.27,5.0,103.37,3.6
+ORD-10150,2025-11-09,Nouvelle-Aquitaine,Apparel,Rain Jacket,Marketplace,2,93.1,10.0,167.58,5.0
+ORD-10005,2025-11-10,Auvergne-Rhône-Alpes,Apparel,Rain Jacket,Online,3,87.79,10.0,237.03,4.3
+ORD-10036,2025-11-10,Grand Est,Home,Coffee Grinder,Store,1,48.52,10.0,43.67,3.5
+ORD-10609,2025-11-10,Hauts-de-France,Electronics,Wireless Earbuds,Online,1,76.14,15.0,64.72,4.0
+ORD-10426,2025-11-12,Hauts-de-France,Home,Air Purifier,Online,3,152.46,0.0,457.38,4.3
+ORD-10503,2025-11-13,Île-de-France,Apparel,Running Shoes,Store,3,123.26,0.0,369.78,5.0
+ORD-10491,2025-11-13,Île-de-France,Home,Air Purifier,Online,4,147.54,5.0,560.65,4.4
+ORD-10395,2025-11-16,Grand Est,Sports,Cycling Gloves,Marketplace,1,22.21,15.0,18.88,5.0
+ORD-10557,2025-11-16,Île-de-France,Sports,Dumbbell Set,Marketplace,2,70.97,0.0,141.94,4.3
+ORD-10516,2025-11-18,Île-de-France,Electronics,Bluetooth Speaker,Online,2,59.61,15.0,101.34,4.3
+ORD-10374,2025-11-20,Occitanie,Electronics,Smart Watch,Online,1,204.77,0.0,204.77,4.4
+ORD-10034,2025-11-21,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Store,1,75.91,0.0,75.91,4.4
+ORD-10564,2025-11-21,Nouvelle-Aquitaine,Electronics,Smart Watch,Online,4,197.25,0.0,789.0,4.3
+ORD-10047,2025-11-22,Île-de-France,Home,Coffee Grinder,Online,3,48.13,0.0,144.39,3.5
+ORD-10388,2025-11-22,Île-de-France,Electronics,Laptop Stand,Online,4,38.61,10.0,139.0,4.3
+ORD-10357,2025-11-22,Nouvelle-Aquitaine,Electronics,Bluetooth Speaker,Online,1,57.38,0.0,57.38,3.2
+ORD-10361,2025-11-22,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Online,2,60.51,0.0,121.02,4.9
+ORD-10578,2025-11-23,Auvergne-Rhône-Alpes,Electronics,Wireless Earbuds,Store,2,78.55,5.0,149.24,2.7
+ORD-10363,2025-11-23,Grand Est,Home,Air Purifier,Marketplace,1,144.72,20.0,115.78,4.4
+ORD-10303,2025-11-24,Occitanie,Electronics,Laptop Stand,Online,2,37.8,0.0,75.6,3.8
+ORD-10094,2025-11-24,Île-de-France,Electronics,Smart Watch,Store,2,208.76,0.0,417.52,4.5
+ORD-10178,2025-11-25,Hauts-de-France,Home,Desk Lamp,Online,1,29.67,0.0,29.67,4.1
+ORD-10591,2025-11-26,Grand Est,Apparel,Wool Scarf,Online,2,25.42,20.0,40.67,3.3
+ORD-10219,2025-11-26,Île-de-France,Home,Coffee Grinder,Store,3,47.38,10.0,127.93,3.8
+ORD-10066,2025-11-27,Île-de-France,Sports,Cycling Gloves,Marketplace,1,21.46,10.0,19.31,3.7
+ORD-10344,2025-11-27,Nouvelle-Aquitaine,Sports,Yoga Mat,Online,5,35.62,5.0,169.19,4.1
+ORD-10201,2025-11-28,Île-de-France,Home,Coffee Grinder,Marketplace,2,50.59,0.0,101.18,3.9
+ORD-10528,2025-12-01,Nouvelle-Aquitaine,Apparel,Rain Jacket,Store,2,87.5,15.0,148.75,4.7
+ORD-10323,2025-12-01,Auvergne-Rhône-Alpes,Home,Coffee Grinder,Online,4,51.17,5.0,194.45,4.5
+ORD-10152,2025-12-01,Nouvelle-Aquitaine,Home,Desk Lamp,Store,3,29.31,20.0,70.34,3.9
+ORD-10060,2025-12-03,Nouvelle-Aquitaine,Sports,Cycling Gloves,Online,1,21.35,20.0,17.08,5.0
+ORD-10529,2025-12-03,Île-de-France,Electronics,Bluetooth Speaker,Online,1,57.18,0.0,57.18,3.9
+ORD-10526,2025-12-04,Île-de-France,Electronics,Wireless Earbuds,Online,1,78.79,10.0,70.91,4.1
+ORD-10263,2025-12-04,Île-de-France,Apparel,Rain Jacket,Store,1,84.84,0.0,84.84,3.3
+ORD-10576,2025-12-04,Grand Est,Home,Coffee Grinder,Online,2,50.95,10.0,91.71,3.9
+ORD-10585,2025-12-04,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,2,120.0,0.0,240.0,4.4
+ORD-10451,2025-12-04,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Marketplace,1,76.36,20.0,61.09,4.7
+ORD-10420,2025-12-05,Nouvelle-Aquitaine,Apparel,Rain Jacket,Marketplace,3,93.32,20.0,223.97,4.7
+ORD-10498,2025-12-05,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Online,3,21.52,0.0,64.56,4.5
+ORD-10437,2025-12-05,Île-de-France,Electronics,Laptop Stand,Store,2,39.27,5.0,74.61,3.6
+ORD-10023,2025-12-05,Occitanie,Apparel,Running Shoes,Online,4,115.54,0.0,462.16,3.7
+ORD-10490,2025-12-07,Île-de-France,Home,Desk Lamp,Online,4,28.79,5.0,109.4,4.1
+ORD-10469,2025-12-07,Hauts-de-France,Electronics,Bluetooth Speaker,Online,2,59.72,20.0,95.55,4.3
+ORD-10347,2025-12-08,Hauts-de-France,Sports,Dumbbell Set,Online,2,69.3,20.0,110.88,5.0
+ORD-10381,2025-12-08,Île-de-France,Electronics,Laptop Stand,Online,3,38.88,20.0,93.31,4.9
+ORD-10408,2025-12-08,Auvergne-Rhône-Alpes,Electronics,Laptop Stand,,2,37.16,0.0,74.32,3.3
+ORD-10285,2025-12-09,Île-de-France,Electronics,Bluetooth Speaker,Marketplace,4,60.63,0.0,242.52,3.9
+ORD-10180,2025-12-09,Grand Est,Electronics,Laptop Stand,Online,2,39.46,20.0,63.14,3.4
+ORD-10318,2025-12-09,Occitanie,Electronics,Laptop Stand,Online,5,38.11,5.0,181.02,3.5
+ORD-10080,2025-12-10,Île-de-France,Electronics,Laptop Stand,Store,1,37.59,10.0,33.83,4.3
+ORD-10382,2025-12-12,Grand Est,Electronics,Laptop Stand,Online,3,39.42,15.0,100.52,3.3
+ORD-10639,2025-12-13,Grand Est,Home,Air Purifier,Store,4,147.89,0.0,591.56,5.0
+ORD-10570,2025-12-13,Nouvelle-Aquitaine,Home,Coffee Grinder,Store,2,51.31,10.0,92.36,
+ORD-10339,2025-12-14,Auvergne-Rhône-Alpes,Home,Air Purifier,Online,1,149.92,20.0,119.94,4.1
+ORD-10447,2025-12-15,Occitanie,Electronics,Smart Watch,Store,3,200.51,0.0,601.53,4.7
+ORD-10292,2025-12-15,Île-de-France,Apparel,Rain Jacket,Online,4,92.99,0.0,371.96,3.9
+ORD-10273,2025-12-16,Hauts-de-France,Home,Air Purifier,Online,2,142.51,0.0,285.02,4.1
+ORD-10450,2025-12-17,Hauts-de-France,Home,Coffee Grinder,Online,1,46.77,0.0,46.77,3.9
+ORD-10514,2025-12-17,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,Online,2,57.92,20.0,92.67,3.3
+ORD-10194,2025-12-17,Occitanie,Apparel,Wool Scarf,Online,5,25.05,20.0,100.2,4.7
+ORD-10199,2025-12-18,Auvergne-Rhône-Alpes,Electronics,Bluetooth Speaker,,3,57.68,15.0,147.08,4.6
+ORD-10502,2025-12-18,Nouvelle-Aquitaine,Electronics,Laptop Stand,Store,2,40.01,0.0,80.02,4.1
+ORD-10336,2025-12-18,Île-de-France,Apparel,Running Shoes,Online,2,120.89,5.0,229.69,4.0
+ORD-10465,2025-12-19,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,4,118.96,15.0,404.46,3.9
+ORD-10608,2025-12-19,Île-de-France,Sports,Cycling Gloves,Store,2,22.61,10.0,40.7,4.4
+ORD-10063,2025-12-20,Grand Est,Sports,Cycling Gloves,Online,1,22.56,0.0,22.56,4.6
+ORD-10207,2025-12-20,Nouvelle-Aquitaine,Electronics,Wireless Earbuds,Marketplace,2,82.55,10.0,148.59,4.0
+ORD-10416,2025-12-20,Auvergne-Rhône-Alpes,Apparel,Running Shoes,Online,1,117.61,0.0,117.61,4.3
+ORD-10354,2025-12-20,Hauts-de-France,Electronics,Bluetooth Speaker,Online,1,60.57,15.0,51.48,4.9
+ORD-10045,2025-12-21,Auvergne-Rhône-Alpes,Home,Air Purifier,Online,1,143.21,0.0,143.21,3.5
+ORD-10403,2025-12-21,Île-de-France,Sports,Dumbbell Set,Store,2,68.67,0.0,137.34,3.2
+ORD-10440,2025-12-22,Île-de-France,Home,Air Purifier,Online,1,145.78,10.0,131.2,3.3
+ORD-10324,2025-12-22,  occitanie,Electronics,Wireless Earbuds,Online,1,82.42,0.0,82.42,4.8
+ORD-10011,2025-12-23,Hauts-de-France,Electronics,Wireless Earbuds,Online,1,79.84,0.0,79.84,2.7
+ORD-10593,2025-12-24,Île-de-France,Electronics,Laptop Stand,Online,2,39.43,0.0,78.86,3.1
+ORD-10140,2025-12-25,Hauts-de-France,Electronics,Bluetooth Speaker,Online,3,60.05,0.0,180.15,3.7
+ORD-10554,2025-12-26,Auvergne-Rhône-Alpes,Home,Air Purifier,Store,2,146.2,20.0,233.92,4.5
+ORD-10346,2025-12-28,Grand Est,Home,Desk Lamp,Store,5,28.36,0.0,141.8,3.1
+ORD-10264,2025-12-28,Île-de-France,Electronics,Bluetooth Speaker,Marketplace,7,57.91,20.0,324.3,4.2
+ORD-10144,2025-12-29,Nouvelle-Aquitaine,Apparel,Wool Scarf,Online,4,25.57,10.0,92.05,4.9
+ORD-10355,2025-12-29,Auvergne-Rhône-Alpes,Sports,Cycling Gloves,Store,3,22.67,15.0,57.81,3.3
+ORD-10510,2025-12-30,Hauts-de-France,Electronics,Bluetooth Speaker,Store,2,58.64,10.0,105.55,5.0
+ORD-10160,2025-12-30,Nouvelle-Aquitaine,Electronics,Laptop Stand,Store,4,39.21,0.0,156.84,3.5
+ORD-10400,2025-12-31,Île-de-France,Sports,Cycling Gloves,Online,1,21.61,20.0,17.29,3.1
+ORD-10438,2025-01-30,Nouvelle-Aquitaine,Apparel,Running Shoes,Online,2,113.86,20.0,182.18,4.4
+ORD-10245,2025-01-31,Île-de-France,Home,Desk Lamp,Marketplace,3,30.04,15.0,76.6,4.0
+ORD-10072,2025-06-18,Grand Est,Sports,Yoga Mat,Store,3,33.91,0.0,101.73,1.9

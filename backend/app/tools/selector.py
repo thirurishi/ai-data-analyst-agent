@@ -134,11 +134,11 @@ class ToolSelectionService:
                 raise ValueError("The LLM requested an unknown column.")
             return
         if isinstance(arguments, (SqlAggregateInput, SqlGroupByInput, SqlTopNInput)):
-            if "column" in arguments.model_fields and arguments.column not in columns:
+            if "column" in type(arguments).model_fields and arguments.column not in columns:
                 raise ValueError(f"The LLM requested unknown column '{arguments.column}'.")
-            if "group_by" in arguments.model_fields and arguments.group_by not in columns:
+            if "group_by" in type(arguments).model_fields and arguments.group_by not in columns:
                 raise ValueError("The LLM requested an unknown column.")
-            if "value_column" in arguments.model_fields and arguments.value_column not in columns:
+            if "value_column" in type(arguments).model_fields and arguments.value_column not in columns:
                 raise ValueError("The LLM requested an unknown column.")
             return
         if isinstance(arguments, SqlSummaryInput):
