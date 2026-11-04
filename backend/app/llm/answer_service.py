@@ -22,10 +22,11 @@ class AnswerGenerationService:
         question: str,
         plan: AnalysisPlan,
         result: dict[str, Any],
+        backend: str | None = None,
         tool_name: str | None = None,
         tool_arguments: dict[str, Any] | None = None,
     ) -> str:
-        prompt = self._build_prompt(question, plan, result, tool_name, tool_arguments)
+        prompt = self._build_prompt(question, plan, result, backend, tool_name, tool_arguments)
         try:
             response = self._llm_service.chat(prompt)
         except (LLMConfigurationError, LLMProviderError, LLMResponseError, LLMTimeoutError) as exc:
@@ -43,6 +44,7 @@ class AnswerGenerationService:
         question: str,
         plan: AnalysisPlan,
         result: dict[str, Any],
+        backend: str | None = None,
         tool_name: str | None = None,
         tool_arguments: dict[str, Any] | None = None,
     ) -> str:
@@ -50,6 +52,7 @@ class AnswerGenerationService:
             {
                 "question": question,
                 "analysis_plan": plan.model_dump(mode="json"),
+                "selected_backend": backend,
                 "selected_tool": tool_name,
                 "tool_arguments": tool_arguments,
                 "verified_analysis_result": result,

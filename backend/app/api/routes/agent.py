@@ -95,6 +95,7 @@ def agent_analyze(
         payload.question,
         plan,
         result,
+        backend=selected.backend,
         tool_name=selected.tool_name,
         tool_arguments=selected.arguments.model_dump(mode="json"),
     )
@@ -102,6 +103,7 @@ def agent_analyze(
     return AgentAnalysisResponse(
         question=payload.question,
         tool=AgentToolResponse(
+            backend=selected.backend,
             name=selected.tool_name,
             arguments=selected.arguments.model_dump(mode="json"),
         ),

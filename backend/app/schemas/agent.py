@@ -14,6 +14,7 @@ class AgentAnalysisRequest(BaseModel):
 
 
 class AgentToolResponse(BaseModel):
+    backend: str
     name: str
     arguments: dict
 
