@@ -13,6 +13,10 @@ from backend.app.tools.schemas import (
     AnalyzeGroupByInput,
     AnalyzeSummaryInput,
     AnalyzeTopNInput,
+    SqlAggregateInput,
+    SqlGroupByInput,
+    SqlSummaryInput,
+    SqlTopNInput,
 )
 
 
@@ -27,6 +31,10 @@ class ToolSelectionService:
         "analyze_aggregate": AnalyzeAggregateInput,
         "analyze_group_by": AnalyzeGroupByInput,
         "analyze_top_n": AnalyzeTopNInput,
+        "sql_summary": SqlSummaryInput,
+        "sql_aggregate": SqlAggregateInput,
+        "sql_group_by": SqlGroupByInput,
+        "sql_top_n": SqlTopNInput,
     }
 
     def __init__(self, llm_service: Any):
@@ -95,5 +103,15 @@ class ToolSelectionService:
         if isinstance(arguments, (AnalyzeGroupByInput, AnalyzeTopNInput)):
             if arguments.group_by not in columns or arguments.value_column not in columns:
                 raise ValueError("The LLM requested an unknown column.")
+            return
+        if isinstance(arguments, (SqlAggregateInput, SqlGroupByInput, SqlTopNInput)):
+            if "column" in arguments.model_fields and arguments.column not in columns:
+                raise ValueError(f"The LLM requested unknown column '{arguments.column}'.")
+            if "group_by" in arguments.model_fields and arguments.group_by not in columns:
+                raise ValueError("The LLM requested an unknown column.")
+            if "value_column" in arguments.model_fields and arguments.value_column not in columns:
+                raise ValueError("The LLM requested an unknown column.")
+            return
+        if isinstance(arguments, SqlSummaryInput):
             return
         raise ValueError("The tool arguments are invalid.")

@@ -7,11 +7,16 @@ import pandas as pd
 from pydantic import BaseModel
 
 from backend.app.analysis.service import DeterministicAnalysisService
+from backend.app.analysis.sql_analysis_service import SqlAnalysisService
 from backend.app.tools.schemas import (
     AnalyzeAggregateInput,
     AnalyzeGroupByInput,
     AnalyzeSummaryInput,
     AnalyzeTopNInput,
+    SqlAggregateInput,
+    SqlGroupByInput,
+    SqlSummaryInput,
+    SqlTopNInput,
 )
 
 
@@ -62,6 +67,51 @@ class ToolRegistry:
                 arguments.value_column,
                 arguments.aggregation,
                 arguments.n,
+            ),
+        ),
+        ToolDefinition(
+            name="sql_summary",
+            description="Return summary metadata for a registered database file.",
+            input_schema=SqlSummaryInput,
+            callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
+                file_id=arguments.file_id,
+                operation="summary",
+            ),
+        ),
+        ToolDefinition(
+            name="sql_aggregate",
+            description="Compute one allowlisted aggregate for a registered database file.",
+            input_schema=SqlAggregateInput,
+            callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
+                file_id=arguments.file_id,
+                operation="aggregate",
+                column=arguments.column,
+                aggregation=arguments.aggregation,
+            ),
+        ),
+        ToolDefinition(
+            name="sql_group_by",
+            description="Group rows and compute an allowlisted aggregate for a registered database file.",
+            input_schema=SqlGroupByInput,
+            callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
+                file_id=arguments.file_id,
+                operation="group_by",
+                group_by=arguments.group_by,
+                value_column=arguments.value_column,
+                aggregation=arguments.aggregation,
+            ),
+        ),
+        ToolDefinition(
+            name="sql_top_n",
+            description="Return the top groups for an allowlisted aggregate on a registered database file.",
+            input_schema=SqlTopNInput,
+            callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
+                file_id=arguments.file_id,
+                operation="top_n",
+                group_by=arguments.group_by,
+                value_column=arguments.value_column,
+                aggregation=arguments.aggregation,
+                n=arguments.n,
             ),
         ),
     )

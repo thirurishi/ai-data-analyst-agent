@@ -36,6 +36,29 @@ def _plan_from_tool_call(selected: SelectedToolCall) -> AnalysisPlan:
             value_column=arguments["value_column"],
             aggregation=arguments["aggregation"],
         )
+    if name == "analyze_top_n":
+        return AnalysisPlan(
+            operation="top_n",
+            group_by=arguments["group_by"],
+            value_column=arguments["value_column"],
+            aggregation=arguments["aggregation"],
+            n=arguments["n"],
+        )
+    if name == "sql_summary":
+        return AnalysisPlan(operation="summary")
+    if name == "sql_aggregate":
+        return AnalysisPlan(
+            operation="aggregate",
+            column=arguments["column"],
+            aggregation=arguments["aggregation"],
+        )
+    if name == "sql_group_by":
+        return AnalysisPlan(
+            operation="group_by",
+            group_by=arguments["group_by"],
+            value_column=arguments["value_column"],
+            aggregation=arguments["aggregation"],
+        )
     return AnalysisPlan(
         operation="top_n",
         group_by=arguments["group_by"],
