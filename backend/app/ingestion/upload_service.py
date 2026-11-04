@@ -2,13 +2,27 @@ from __future__ import annotations
 
 import os
 import uuid
+from dataclasses import dataclass
+from hashlib import sha256
 from pathlib import Path
 
 UPLOAD_DIR = Path(__file__).resolve().parents[1] / "uploads"
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 
 
+@dataclass(frozen=True)
+class UploadedFileRecord:
+    file_id: str
+    original_filename: str
+    saved_filename: str
+    content_type: str
+    file_size: int
+    file_fingerprint: str
+
+
 class UploadService:
+    _file_records: dict[str, UploadedFileRecord] = {}
+
     @staticmethod
     def ensure_upload_dir() -> Path:
         UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -68,6 +82,72 @@ class UploadService:
             raise ValueError(f"CSV file '{safe_name}' cannot be read.") from exc
 
         return target_path
+
+    @staticmethod
+    def register_uploaded_file(saved_path: Path, original_filename: str, content_type: str | None) -> UploadedFileRecord:
+        stored_path = UploadService.resolve_uploaded_file(saved_path.name)
+        record = UploadedFileRecord(
+            file_id=str(uuid.uuid4()),
+            original_filename=original_filename,
+            saved_filename=stored_path.name,
+            content_type=content_type or "unknown",
+            file_size=stored_path.stat().st_size,
+            file_fingerprint=UploadService._file_fingerprint(stored_path),
+        )
+        UploadService._file_records[record.file_id] = record
+        return record
+
+    @staticmethod
+    def resolve_file_id(file_id: str) -> Path:
+        try:
+            normalized_file_id = str(uuid.UUID(file_id))
+        except (AttributeError, TypeError, ValueError) as exc:
+            raise ValueError("Invalid file identifier.") from exc
+
+        if normalized_file_id != file_id.lower():
+            raise ValueError("Invalid file identifier.")
+
+        record = UploadService._file_records.get(normalized_file_id)
+        if record is None:
+            raise FileNotFoundError("The requested file identifier was not found.")
+
+        stored_path = UploadService.resolve_uploaded_file(record.saved_filename)
+        if UploadService._file_fingerprint(stored_path) != record.file_fingerprint:
+            raise FileNotFoundError("The requested file identifier is no longer valid.")
+
+        return stored_path
+
+    @staticmethod
+    def get_file_record(filename: str) -> UploadedFileRecord | None:
+        stored_path = UploadService.resolve_uploaded_file(filename)
+        fingerprint = UploadService._file_fingerprint(stored_path)
+        return next(
+            (
+                record
+                for record in reversed(UploadService._file_records.values())
+                if record.saved_filename == stored_path.name and record.file_fingerprint == fingerprint
+            ),
+            None,
+        )
+
+    @staticmethod
+    def _file_fingerprint(file_path: Path) -> str:
+        try:
+            file_stat = file_path.stat()
+            content_hash = sha256(file_path.read_bytes()).hexdigest()
+        except OSError as exc:
+            raise ValueError(f"CSV file '{file_path.name}' cannot be read.") from exc
+
+        return ":".join(
+            (
+                str(file_stat.st_dev),
+                str(file_stat.st_ino),
+                str(file_stat.st_ctime_ns),
+                str(file_stat.st_mtime_ns),
+                str(file_stat.st_size),
+                content_hash,
+            )
+        )
 
     @staticmethod
     def is_csv_file(filename: str) -> bool:

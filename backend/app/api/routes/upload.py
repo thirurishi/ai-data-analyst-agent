@@ -2,11 +2,12 @@ from fastapi import APIRouter, File, UploadFile
 
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
 from backend.app.ingestion.upload_service import MAX_FILE_SIZE_BYTES, UploadService
+from backend.app.schemas.upload import UploadResponse
 
 router = APIRouter()
 
 
-@router.post("/upload")
+@router.post("/upload", response_model=UploadResponse)
 async def upload_csv_file(file: UploadFile | None = File(None)):
     if file is None or file.filename is None:
         return ingestion_error(400, "missing_file", "A CSV file is required.")
@@ -29,16 +30,16 @@ async def upload_csv_file(file: UploadFile | None = File(None)):
     except Exception:  # pragma: no cover - defensive guard for filesystem issues
         return unexpected_ingestion_error()
 
-    file_size = None
     try:
-        file_size = saved_path.stat().st_size
-    except OSError:
-        file_size = None
+        record = UploadService.register_uploaded_file(saved_path, file.filename, file.content_type)
+    except Exception:  # pragma: no cover - defensive guard for filesystem issues
+        return unexpected_ingestion_error()
 
     return {
-        "original_filename": file.filename,
-        "saved_filename": saved_path.name,
+        "file_id": record.file_id,
+        "original_filename": record.original_filename,
+        "saved_filename": record.saved_filename,
         "saved_path": str(saved_path),
-        "content_type": file.content_type or "unknown",
-        "file_size": file_size,
+        "content_type": record.content_type,
+        "file_size": record.file_size,
     }

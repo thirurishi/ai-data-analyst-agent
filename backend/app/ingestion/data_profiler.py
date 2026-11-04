@@ -5,11 +5,11 @@ from backend.app.ingestion.csv_reader import CsvReaderService
 
 class DataProfilerService:
     @staticmethod
-    def profile_csv(filename: str) -> dict:
-        file_path = CsvReaderService.resolve_upload_path(filename)
+    def profile_csv(filename: str | None = None, file_id: str | None = None) -> dict:
+        file_path = CsvReaderService.resolve_upload_path(filename, file_id)
 
         try:
-            df = CsvReaderService.read_csv(filename)
+            df = CsvReaderService.read_csv(filename, file_id)
         except ValueError:
             raise
         except Exception as exc:  # pragma: no cover - defensive guard

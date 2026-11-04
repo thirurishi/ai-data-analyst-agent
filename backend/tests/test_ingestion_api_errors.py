@@ -6,6 +6,7 @@ import socket
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -16,6 +17,7 @@ import pytest
 from backend.app.ingestion.upload_service import UPLOAD_DIR
 from backend.app.schemas.errors import IngestionErrorResponse
 from backend.app.schemas.metadata import CsvMetadataResponse
+from backend.app.schemas.upload import UploadResponse
 
 
 @pytest.fixture(scope="module")
@@ -154,3 +156,125 @@ def test_valid_csv_preserves_the_existing_metadata_success_response(ingestion_ap
     assert status_code == 200
     assert CsvMetadataResponse.model_validate(payload).filename == path.name
     assert path.read_bytes() == original_bytes
+
+
+def upload_csv(ingestion_api: str, filename: str, contents: bytes):
+    boundary = "phase39-boundary"
+    body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+        "Content-Type: text/csv\r\n\r\n"
+    ).encode() + contents + f"\r\n--{boundary}--\r\n".encode()
+    return request_json(
+        ingestion_api,
+        "/upload",
+        method="POST",
+        data=body,
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+    )
+
+
+def test_upload_returns_a_canonical_uuid_file_id_and_preserves_csv(ingestion_api):
+    original_bytes = b"name,amount\nAda,10\n"
+    status_code, payload = upload_csv(ingestion_api, "phase39_identity.csv", original_bytes)
+    upload = UploadResponse.model_validate(payload)
+    stored_path = UPLOAD_DIR / upload.saved_filename
+    try:
+        assert status_code == 200
+        assert str(uuid.UUID(upload.file_id)) == upload.file_id
+        assert upload.original_filename == "phase39_identity.csv"
+        assert upload.file_size == len(original_bytes)
+        assert stored_path.read_bytes() == original_bytes
+    finally:
+        stored_path.unlink(missing_ok=True)
+
+
+def test_uploaded_files_receive_distinct_file_ids(ingestion_api):
+    _, first_payload = upload_csv(ingestion_api, "phase39_first.csv", b"name\nAda\n")
+    _, second_payload = upload_csv(ingestion_api, "phase39_second.csv", b"name\nBen\n")
+    first = UploadResponse.model_validate(first_payload)
+    second = UploadResponse.model_validate(second_payload)
+    try:
+        assert first.file_id != second.file_id
+    finally:
+        (UPLOAD_DIR / first.saved_filename).unlink(missing_ok=True)
+        (UPLOAD_DIR / second.saved_filename).unlink(missing_ok=True)
+
+
+def test_file_id_resolves_metadata_and_csv_read_operations(ingestion_api):
+    original_bytes = b"name,amount\nAda,10\n"
+    _, upload_payload = upload_csv(ingestion_api, "phase39_by_id.csv", original_bytes)
+    upload = UploadResponse.model_validate(upload_payload)
+    stored_path = UPLOAD_DIR / upload.saved_filename
+    try:
+        metadata_status, metadata_payload = request_json(
+            ingestion_api, f"/metadata?{urlencode({'file_id': upload.file_id})}"
+        )
+        read_status, read_payload = request_json(
+            ingestion_api, f"/read-csv?{urlencode({'file_id': upload.file_id})}"
+        )
+        profile_status, profile_payload = request_json(
+            ingestion_api, f"/profile-csv?{urlencode({'file_id': upload.file_id})}"
+        )
+
+        metadata = CsvMetadataResponse.model_validate(metadata_payload)
+        assert metadata_status == 200
+        assert metadata.file_id == upload.file_id
+        assert metadata.original_filename == upload.original_filename
+        assert metadata.content_type == "text/csv"
+        assert read_status == 200
+        assert read_payload["filename"] == upload.saved_filename
+        assert profile_status == 200
+        assert profile_payload["filename"] == upload.saved_filename
+        assert stored_path.read_bytes() == original_bytes
+    finally:
+        stored_path.unlink(missing_ok=True)
+
+
+@pytest.mark.parametrize("file_id", ["not-a-uuid", "../outside.csv"])
+def test_invalid_file_id_is_rejected_without_path_access(ingestion_api, file_id):
+    assert_error(
+        request_json(ingestion_api, f"/metadata?{urlencode({'file_id': file_id})}"),
+        400,
+        "invalid_file_id",
+    )
+
+
+def test_unregistered_valid_file_id_returns_not_found(ingestion_api):
+    assert_error(
+        request_json(ingestion_api, f"/metadata?{urlencode({'file_id': str(uuid.uuid4())})}"),
+        404,
+        "file_not_found",
+    )
+
+
+def test_deleted_or_reused_filename_does_not_resolve_an_old_file_id(ingestion_api):
+    _, first_payload = upload_csv(ingestion_api, "phase39_reused.csv", b"name\nFirst\n")
+    first = UploadResponse.model_validate(first_payload)
+    first_path = UPLOAD_DIR / first.saved_filename
+    first_path.unlink()
+
+    assert_error(
+        request_json(ingestion_api, f"/metadata?{urlencode({'file_id': first.file_id})}"),
+        404,
+        "file_not_found",
+    )
+
+    _, second_payload = upload_csv(ingestion_api, "phase39_reused.csv", b"name\nSecond\n")
+    second = UploadResponse.model_validate(second_payload)
+    second_path = UPLOAD_DIR / second.saved_filename
+    try:
+        assert second.saved_filename == first.saved_filename
+        assert second.file_id != first.file_id
+        assert_error(
+            request_json(ingestion_api, f"/metadata?{urlencode({'file_id': first.file_id})}"),
+            404,
+            "file_not_found",
+        )
+
+        status_code, payload = request_json(ingestion_api, f"/metadata?{urlencode({'file_id': second.file_id})}")
+        assert status_code == 200
+        assert CsvMetadataResponse.model_validate(payload).file_id == second.file_id
+        assert second_path.read_bytes() == b"name\nSecond\n"
+    finally:
+        second_path.unlink(missing_ok=True)

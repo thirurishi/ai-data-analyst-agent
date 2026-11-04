@@ -11,6 +11,9 @@ class NumericStatistics(BaseModel):
 class CsvMetadataResponse(BaseModel):
     filename: str
     saved_filename: str
+    file_id: str | None = None
+    original_filename: str | None = None
+    content_type: str | None = None
     file_type: str
     file_size: int
     rows: int

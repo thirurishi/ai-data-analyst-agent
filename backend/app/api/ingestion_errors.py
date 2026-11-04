@@ -17,6 +17,8 @@ def expected_ingestion_error(exc: Exception) -> JSONResponse:
         return ingestion_error(413, "file_too_large", "The uploaded file exceeds the size limit.")
     if "invalid filename" in detail or "path traversal" in detail or "directory paths" in detail:
         return ingestion_error(400, "invalid_filename", "The file name is invalid.")
+    if "file identifier" in detail:
+        return ingestion_error(400, "invalid_file_id", "The file identifier is invalid.")
     if "unsupported ingestion file type" in detail or "only csv files" in detail:
         return ingestion_error(400, "unsupported_file_type", "Only CSV files are supported.")
     if "cannot be read" in detail:

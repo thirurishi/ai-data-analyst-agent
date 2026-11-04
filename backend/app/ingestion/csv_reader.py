@@ -14,13 +14,19 @@ class CsvReaderService:
     COMMON_DELIMITERS = ",;\t|"
 
     @staticmethod
-    def resolve_upload_path(filename: str) -> Path:
+    def resolve_upload_path(filename: str | None = None, file_id: str | None = None) -> Path:
+        if filename is not None and file_id is not None:
+            raise ValueError("Provide either a file name or file identifier, not both.")
+        if file_id is not None:
+            return UploadService.resolve_file_id(file_id)
+        if filename is None:
+            raise ValueError("A CSV file name is required.")
         return UploadService.resolve_uploaded_file(filename)
 
     @staticmethod
-    def read_csv_metadata(filename: str) -> dict:
-        file_path = CsvReaderService.resolve_upload_path(filename)
-        df = CsvReaderService.read_csv(filename)
+    def read_csv_metadata(filename: str | None = None, file_id: str | None = None) -> dict:
+        file_path = CsvReaderService.resolve_upload_path(filename, file_id)
+        df = CsvReaderService.read_csv(filename, file_id)
 
         return {
             "filename": file_path.name,
@@ -31,9 +37,9 @@ class CsvReaderService:
         }
 
     @staticmethod
-    def read_csv(filename: str) -> pd.DataFrame:
+    def read_csv(filename: str | None = None, file_id: str | None = None) -> pd.DataFrame:
         """Read an uploaded CSV safely without changing its on-disk contents."""
-        file_path = CsvReaderService.resolve_upload_path(filename)
+        file_path = CsvReaderService.resolve_upload_path(filename, file_id)
         encoding, delimiter, column_names = CsvReaderService._get_csv_format(file_path)
 
         try:
