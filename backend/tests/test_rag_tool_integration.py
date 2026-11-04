@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pandas as pd
 import pytest
 from pydantic import ValidationError
 
 from backend.app.api.routes.agent import agent_analyze
+from backend.app.api.routes.agent import agent_analyze_route
 from backend.app.ingestion.upload_service import UPLOAD_DIR, UploadService
 from backend.app.llm.schemas import DatasetMetadata, LLMChatResponse
 from backend.app.schemas.agent import AgentAnalysisRequest
@@ -241,3 +241,111 @@ def test_agent_rejects_rag_tool_for_a_different_file(monkeypatch):
     finally:
         path.unlink(missing_ok=True)
         UploadService._file_records.pop(record.file_id, None)
+
+
+def test_agent_rejects_unknown_file_id_before_tool_selection():
+    selector_llm = FakeLLMService("{}")
+
+    with pytest.raises(FileNotFoundError):
+        agent_analyze(
+            AgentAnalysisRequest(file_id=FILE_ID, question="Question?"),
+            selector_service=ToolSelectionService(selector_llm),
+        )
+
+    assert selector_llm.messages == []
+
+
+def test_agent_rejects_invalid_rag_tool_arguments():
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    path = UPLOAD_DIR / "phase77_invalid_args.txt"
+    path.write_text("Registered document evidence.", encoding="utf-8")
+    record = UploadService.register_uploaded_file(
+        path,
+        path.name,
+        "text/plain",
+        allowed_extensions=(".txt",),
+    )
+    try:
+        selector_llm = FakeLLMService(
+            json.dumps(
+                {
+                    "backend": "rag",
+                    "tool_name": "rag_ask",
+                    "arguments": {
+                        "file_id": record.file_id,
+                        "question": "Question?",
+                        "raw_sql": "SELECT 1",
+                    },
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="valid tool call"):
+            agent_analyze(
+                AgentAnalysisRequest(file_id=record.file_id, question="Question?"),
+                selector_service=ToolSelectionService(selector_llm),
+            )
+    finally:
+        path.unlink(missing_ok=True)
+        UploadService._file_records.pop(record.file_id, None)
+
+
+def test_agent_empty_rag_retrieval_returns_controlled_result(monkeypatch):
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    path = UPLOAD_DIR / "phase77_empty_retrieval.txt"
+    path.write_text("Registered document evidence.", encoding="utf-8")
+    record = UploadService.register_uploaded_file(
+        path,
+        path.name,
+        "text/plain",
+        allowed_extensions=(".txt",),
+    )
+
+    class EmptyRetrievalService:
+        def retrieve(self, file_id, query, top_k):
+            return DocumentRetrievalResponse(
+                file_id=file_id,
+                query=query,
+                count=0,
+                items=[],
+            )
+
+    try:
+        monkeypatch.setattr(
+            "backend.app.tools.registry.DocumentRetrievalService",
+            EmptyRetrievalService,
+        )
+        selector_llm = FakeLLMService(
+            json.dumps(
+                {
+                    "backend": "rag",
+                    "tool_name": "rag_retrieve",
+                    "arguments": {"file_id": record.file_id, "query": "evidence"},
+                }
+            )
+        )
+
+        response = agent_analyze(
+            AgentAnalysisRequest(file_id=record.file_id, question="Find evidence."),
+            selector_service=ToolSelectionService(selector_llm),
+        )
+
+        assert response.result["count"] == 0
+        assert response.result["items"] == []
+        assert response.answer == "Retrieved 0 relevant document chunks."
+    finally:
+        path.unlink(missing_ok=True)
+        UploadService._file_records.pop(record.file_id, None)
+
+
+def test_agent_route_maps_provider_failure_safely(monkeypatch):
+    def fail_agent(payload):
+        raise ValueError("The document answer provider failed.")
+
+    monkeypatch.setattr("backend.app.api.routes.agent.agent_analyze", fail_agent)
+    response = agent_analyze_route(
+        AgentAnalysisRequest(file_id=FILE_ID, question="Question?")
+    )
+
+    assert response.status_code == 502
+    assert response.body
+    assert b"provider failed" in response.body
