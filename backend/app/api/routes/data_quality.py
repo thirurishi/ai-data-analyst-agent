@@ -4,8 +4,13 @@ from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion
 from backend.app.ingestion.csv_reader import CsvReaderService
 from backend.app.ingestion.upload_service import UploadService
 from backend.app.quality.data_quality_service import DataQualityService
+from backend.app.quality.data_quality_approval_service import DataQualityApprovalService
 from backend.app.quality.data_quality_recommendation_service import DataQualityRecommendationService
-from backend.app.schemas.data_quality import DataQualityRecommendationsResponse, DataQualityResponse
+from backend.app.schemas.data_quality import (
+    DataQualityApprovalResponse,
+    DataQualityRecommendationsResponse,
+    DataQualityResponse,
+)
 
 router = APIRouter()
 
@@ -50,7 +55,10 @@ async def get_data_quality_recommendations(
         dataframe = CsvReaderService.read_csv(filename, file_id)
         quality_report = DataQualityService.analyze_dataframe(dataframe)
         record = UploadService.get_file_record(file_path.name)
-        recommendations = DataQualityRecommendationService.generate_recommendations(quality_report)
+        recommendations = DataQualityRecommendationService.generate_recommendations(
+            quality_report,
+            record.file_id if record else file_path.name,
+        )
         return {
             "filename": file_path.name,
             "saved_filename": file_path.name,
@@ -65,3 +73,45 @@ async def get_data_quality_recommendations(
         return expected_ingestion_error(exc)
     except Exception:  # pragma: no cover - defensive guard for unexpected analysis errors
         return unexpected_ingestion_error()
+
+
+@router.post(
+    "/data-quality/recommendations/{recommendation_id}/approve",
+    response_model=DataQualityApprovalResponse,
+)
+async def approve_data_quality_recommendation(recommendation_id: str):
+    try:
+        previous_status, new_status = DataQualityApprovalService.set_status(
+            recommendation_id,
+            "approved",
+        )
+        return {
+            "recommendation_id": recommendation_id,
+            "previous_status": previous_status,
+            "new_status": new_status,
+        }
+    except KeyError:
+        return ingestion_error(404, "recommendation_not_found", "The requested recommendation was not found.")
+    except ValueError as exc:
+        return ingestion_error(409, "recommendation_status_conflict", str(exc))
+
+
+@router.post(
+    "/data-quality/recommendations/{recommendation_id}/reject",
+    response_model=DataQualityApprovalResponse,
+)
+async def reject_data_quality_recommendation(recommendation_id: str):
+    try:
+        previous_status, new_status = DataQualityApprovalService.set_status(
+            recommendation_id,
+            "rejected",
+        )
+        return {
+            "recommendation_id": recommendation_id,
+            "previous_status": previous_status,
+            "new_status": new_status,
+        }
+    except KeyError:
+        return ingestion_error(404, "recommendation_not_found", "The requested recommendation was not found.")
+    except ValueError as exc:
+        return ingestion_error(409, "recommendation_status_conflict", str(exc))

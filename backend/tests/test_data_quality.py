@@ -560,3 +560,141 @@ def test_recommendations_api_rejects_path_traversal(data_quality_api):
         400,
         "invalid_filename",
     )
+
+
+def test_recommendation_has_stable_id_and_pending_status(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase43_recommendations.csv", contents)
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+
+    assert status == 200
+    response = DataQualityRecommendationsResponse.model_validate(payload)
+    recommendation = response.recommendations[0]
+    assert recommendation.recommendation_id
+    assert recommendation.status == "pending"
+    assert recommendation.requires_human_review is True
+
+
+def test_approve_pending_recommendation_and_repeated_approval_are_idempotent(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase43_approve.csv", contents)
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+    recommendation_id = DataQualityRecommendationsResponse.model_validate(payload).recommendations[0].recommendation_id
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/approve",
+        method="POST",
+    )
+    assert status == 200
+    assert payload["previous_status"] == "pending"
+    assert payload["new_status"] == "approved"
+    assert payload["recommendation_id"] == recommendation_id
+
+    status, repeated_payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/approve",
+        method="POST",
+    )
+    assert status == 200
+    assert repeated_payload["previous_status"] == "approved"
+    assert repeated_payload["new_status"] == "approved"
+
+
+def test_reject_pending_recommendation_and_repeated_rejection_are_idempotent(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase43_reject.csv", contents)
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+    recommendation_id = DataQualityRecommendationsResponse.model_validate(payload).recommendations[0].recommendation_id
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/reject",
+        method="POST",
+    )
+    assert status == 200
+    assert payload["previous_status"] == "pending"
+    assert payload["new_status"] == "rejected"
+    assert payload["recommendation_id"] == recommendation_id
+
+    status, repeated_payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/reject",
+        method="POST",
+    )
+    assert status == 200
+    assert repeated_payload["previous_status"] == "rejected"
+    assert repeated_payload["new_status"] == "rejected"
+
+
+def test_unknown_recommendation_id_is_rejected_safely(data_quality_api):
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{uuid.uuid4()}/approve",
+        method="POST",
+    )
+
+    assert status == 404
+    assert payload["error"]["code"] == "recommendation_not_found"
+
+
+def test_conflicting_approval_and_rejection_do_not_overwrite_existing_decision(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase43_conflict.csv", contents)
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+    recommendation_id = DataQualityRecommendationsResponse.model_validate(payload).recommendations[0].recommendation_id
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/approve",
+        method="POST",
+    )
+    assert status == 200
+
+    status, conflict_payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/reject",
+        method="POST",
+    )
+    assert status == 409
+    assert conflict_payload["error"]["code"] == "recommendation_status_conflict"
+    assert conflict_payload["error"]["message"] == "Recommendation is already approved."
+
+    status, final_payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/approve",
+        method="POST",
+    )
+    assert status == 200
+    assert final_payload["new_status"] == "approved"
+
+
+def test_approval_and_rejection_do_not_modify_uploaded_csv(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase43_preservation.csv", contents)
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+    recommendation_id = DataQualityRecommendationsResponse.model_validate(payload).recommendations[0].recommendation_id
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations/{recommendation_id}/reject",
+        method="POST",
+    )
+    assert status == 200
+    assert path.read_bytes() == contents

@@ -1,3 +1,9 @@
+import hashlib
+import uuid
+
+from backend.app.quality.data_quality_approval_service import DataQualityApprovalService
+
+
 class DataQualityRecommendationService:
     RECOMMENDATION_RULES = {
         "missing_values": (
@@ -43,16 +49,28 @@ class DataQualityRecommendationService:
     }
 
     @classmethod
-    def generate_recommendations(cls, quality_report: dict) -> list[dict]:
+    def generate_recommendations(
+        cls,
+        quality_report: dict,
+        file_id: str | None = None,
+    ) -> list[dict]:
         recommendations = []
-        for detected_issue in quality_report["issues"]:
+        for index, detected_issue in enumerate(quality_report["issues"]):
             rule = cls.RECOMMENDATION_RULES.get(detected_issue["category"])
             if rule is None:
                 continue
 
             recommendation, reason = rule
+            identity = f"{file_id or 'unregistered'}:{detected_issue['category']}:{index}"
+            recommendation_id = str(
+                uuid.uuid5(
+                    uuid.NAMESPACE_URL,
+                    hashlib.sha256(identity.encode("utf-8")).hexdigest(),
+                )
+            )
             recommendations.append(
                 {
+                    "recommendation_id": recommendation_id,
                     "category": detected_issue["category"],
                     "severity": detected_issue["severity"],
                     "column": detected_issue["column"],
@@ -60,9 +78,13 @@ class DataQualityRecommendationService:
                     "recommendation": recommendation,
                     "reason": reason,
                     "requires_human_review": True,
+                    "status": "pending",
                 }
             )
-        return recommendations
+        return DataQualityApprovalService.register_recommendations(
+            file_id or "unregistered",
+            recommendations,
+        )
 
     @staticmethod
     def _describe_issue(detected_issue: dict) -> str:

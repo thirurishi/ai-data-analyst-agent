@@ -51,6 +51,7 @@ class DataQualityResponse(BaseModel):
 
 
 class DataQualityRecommendation(BaseModel):
+    recommendation_id: str
     category: str
     severity: str
     column: str | None = None
@@ -58,6 +59,7 @@ class DataQualityRecommendation(BaseModel):
     recommendation: str
     reason: str
     requires_human_review: bool
+    status: str
 
 
 class DataQualityRecommendationsResponse(BaseModel):
@@ -69,3 +71,9 @@ class DataQualityRecommendationsResponse(BaseModel):
     rows: int
     columns: int
     recommendations: list[DataQualityRecommendation]
+
+
+class DataQualityApprovalResponse(BaseModel):
+    recommendation_id: str
+    previous_status: str
+    new_status: str
