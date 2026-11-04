@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -63,7 +62,7 @@ def _register_csv(uploaded_files, filename, contents):
 def test_pandas_agent_grounding_uses_verified_deterministic_result(uploaded_files):
     record = _register_csv(
         uploaded_files,
-        "phase66_pandas.csv",
+        "sample66_pandas.csv",
         b"product,revenue\nA,100\nB,200\n",
     )
     selector_llm = FakeLLMService(
@@ -109,7 +108,7 @@ def test_sql_agent_grounding_uses_verified_deterministic_result(
 ):
     record = _register_csv(
         uploaded_files,
-        "phase66_sql.csv",
+        "sample66_sql.csv",
         b"region,revenue\nwest,100\neast,50\n",
     )
     DatabaseIngestionService.ingest(record.file_id)
@@ -155,7 +154,7 @@ def test_equivalent_pandas_and_sql_results_are_grounded_compatibly(
 ):
     record = _register_csv(
         uploaded_files,
-        "phase66_compatible.csv",
+        "sample66_compatible.csv",
         b"region,revenue\nwest,100\neast,50\nwest,200\n",
     )
     DatabaseIngestionService.ingest(record.file_id)
@@ -209,7 +208,7 @@ def test_answer_generation_receives_verified_result_and_does_not_invent_values()
 def test_sql_agent_rejects_unregistered_database_source(uploaded_files):
     record = _register_csv(
         uploaded_files,
-        "phase66_unregistered.csv",
+        "sample66_unregistered.csv",
         b"region,revenue\nwest,100\n",
     )
     selector_llm = FakeLLMService(

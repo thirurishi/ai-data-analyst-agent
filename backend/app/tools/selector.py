@@ -7,7 +7,6 @@ from pydantic import BaseModel, ValidationError
 
 from backend.app.llm.exceptions import LLMConfigurationError, LLMProviderError, LLMResponseError, LLMTimeoutError
 from backend.app.llm.schemas import DatasetMetadata
-from backend.app.tools.registry import ToolRegistry
 from backend.app.tools.schemas import (
     AnalyzeAggregateInput,
     AnalyzeGroupByInput,

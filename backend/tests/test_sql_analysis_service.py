@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pandas as pd
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
 from backend.app.analysis.sql_analysis_service import (
     SqlAnalysisError,
@@ -52,7 +50,7 @@ def test_summary_returns_database_metadata(isolated_engine, uploaded_files):
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_summary.csv",
+        "sample63_summary.csv",
         b"region,revenue,units\nwest,100,2\neast,50,1\n",
     )
 
@@ -89,7 +87,7 @@ def test_aggregate_supports_allowed_operations(
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_aggregate.csv",
+        "sample63_aggregate.csv",
         b"revenue\n100\n50\n",
     )
 
@@ -112,7 +110,7 @@ def test_group_by_returns_ordered_grouped_results(isolated_engine, uploaded_file
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_group.csv",
+        "sample63_group.csv",
         b"region,revenue\nwest,100\neast,50\nwest,200\n",
     )
 
@@ -140,7 +138,7 @@ def test_top_n_returns_highest_groups(isolated_engine, uploaded_files):
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_top.csv",
+        "sample63_top.csv",
         b"region,revenue\nwest,100\neast,50\nwest,200\n",
     )
 
@@ -167,7 +165,7 @@ def test_null_values_are_handled_deterministically(isolated_engine, uploaded_fil
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_null.csv",
+        "sample63_null.csv",
         b"group,value\nA,10\nA,\nB,20\n",
     )
 
@@ -189,7 +187,7 @@ def test_empty_result_set_returns_empty_rows(isolated_engine, uploaded_files):
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_empty.csv",
+        "sample63_empty.csv",
         b"group,value\n",
     )
 
@@ -208,7 +206,7 @@ def test_repeated_calls_reuse_registered_table(isolated_engine, uploaded_files):
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_repeat.csv",
+        "sample63_repeat.csv",
         b"value\n1\n2\n",
     )
 
@@ -232,7 +230,7 @@ def test_service_validation_rejects_invalid_requests(isolated_engine, uploaded_f
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_invalid.csv",
+        "sample63_invalid.csv",
         b"group,value\nA,1\nB,2\n",
     )
 
@@ -249,7 +247,7 @@ def test_raw_sql_is_not_an_acceptance_interface(isolated_engine, uploaded_files)
     file_id, _ = _ingest(
         uploaded_files,
         isolated_engine,
-        "phase63_safety.csv",
+        "sample63_safety.csv",
         b"value\n1\n",
     )
 

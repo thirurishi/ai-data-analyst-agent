@@ -154,7 +154,7 @@ class PostgresVectorStore(VectorStoreRepository):
         embedding_model: str,
     ) -> list[VectorDocumentRecord]:
         try:
-            from pgvector.sqlalchemy import Vector
+            from pgvector.sqlalchemy import Vector  # noqa: F401 - availability check only
         except ImportError as exc:
             raise VectorStoreError("pgvector is required for PostgreSQL vector search.") from exc
         statement = (

@@ -67,7 +67,7 @@ def test_valid_sql_tool_arguments_execute_sql_analysis_service(
 ):
     file_id, _ = _register_csv(
         uploaded_files,
-        "phase64_sql_tool.csv",
+        "sample64_sql_tool.csv",
         b"region,revenue\nwest,100\neast,50\n",
     )
     _ingest(uploaded_files, file_id)
@@ -138,7 +138,7 @@ def test_sql_and_pandas_tools_generate_compatible_results(
 ):
     file_id, _ = _register_csv(
         uploaded_files,
-        "phase64_compatibility.csv",
+        "sample64_compatibility.csv",
         b"region,revenue\nwest,100\neast,50\nwest,200\n",
     )
     _ingest(uploaded_files, file_id)

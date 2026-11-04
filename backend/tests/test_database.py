@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError
 
 from backend.app.db.config import build_database_url, create_database_url
 from backend.app.db.connectivity import DatabaseConnectivityService
-from backend.app.db.engine import create_engine, create_session_factory, get_engine
+from backend.app.db.engine import create_engine, get_engine
 from backend.app.db.session import session_scope
 
 

@@ -35,7 +35,7 @@ def _register_file(filename, contents, created_paths):
 
 
 def test_ingestion_derives_stable_table_name_and_is_idempotent(monkeypatch, created_paths):
-    record = _register_file("phase62_a.csv", b"name,amount\nAda,10\n", created_paths)
+    record = _register_file("sample62_a.csv", b"name,amount\nAda,10\n", created_paths)
     engine = create_engine("sqlite:///:memory:")
     monkeypatch.setattr("backend.app.db.ingestion.get_engine", lambda: engine)
 
@@ -52,8 +52,8 @@ def test_ingestion_derives_stable_table_name_and_is_idempotent(monkeypatch, crea
 
 
 def test_different_file_ids_use_different_tables(monkeypatch, created_paths):
-    first_record = _register_file("phase62_first.csv", b"name\nAda\n", created_paths)
-    second_record = _register_file("phase62_second.csv", b"name\nGrace\n", created_paths)
+    first_record = _register_file("sample62_first.csv", b"name\nAda\n", created_paths)
+    second_record = _register_file("sample62_second.csv", b"name\nGrace\n", created_paths)
     engine = create_engine("sqlite:///:memory:")
     monkeypatch.setattr("backend.app.db.ingestion.get_engine", lambda: engine)
     monkeypatch.setattr(

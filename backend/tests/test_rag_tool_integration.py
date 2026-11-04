@@ -168,7 +168,7 @@ def test_registry_invokes_existing_qa_service_and_preserves_citations(monkeypatc
 
 def test_agent_routes_registered_documents_to_rag_and_keeps_citations(monkeypatch):
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase76_document.txt"
+    path = UPLOAD_DIR / "sample76_document.txt"
     path.write_text("Registered document evidence.", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
@@ -212,7 +212,7 @@ def test_agent_routes_registered_documents_to_rag_and_keeps_citations(monkeypatc
 
 def test_agent_rejects_rag_tool_for_a_different_file(monkeypatch):
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase76_mismatch.txt"
+    path = UPLOAD_DIR / "sample76_mismatch.txt"
     path.write_text("Registered document evidence.", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
@@ -257,7 +257,7 @@ def test_agent_rejects_unknown_file_id_before_tool_selection():
 
 def test_agent_rejects_invalid_rag_tool_arguments():
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase77_invalid_args.txt"
+    path = UPLOAD_DIR / "sample77_invalid_args.txt"
     path.write_text("Registered document evidence.", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
@@ -291,7 +291,7 @@ def test_agent_rejects_invalid_rag_tool_arguments():
 
 def test_agent_empty_rag_retrieval_returns_controlled_result(monkeypatch):
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase77_empty_retrieval.txt"
+    path = UPLOAD_DIR / "sample77_empty_retrieval.txt"
     path.write_text("Registered document evidence.", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,

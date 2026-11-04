@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     APP_NAME: str = "AI Data Analyst Agent API"
     APP_ENV: str = "development"
-    DEBUG: bool = True
+    DEBUG: bool = False
     OPENROUTER_API_KEY: str | None = None
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     EMBEDDING_API_KEY: str | None = None

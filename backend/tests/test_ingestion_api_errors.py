@@ -91,7 +91,7 @@ def assert_error(response, status_code: int, code: str):
 
 def test_missing_file_uses_standard_not_found_error(ingestion_api):
     assert_error(
-        request_json(ingestion_api, f"/metadata?{urlencode({'filename': 'phase38_missing.csv'})}"),
+        request_json(ingestion_api, f"/metadata?{urlencode({'filename': 'sample38_missing.csv'})}"),
         404,
         "file_not_found",
     )
@@ -106,10 +106,10 @@ def test_path_traversal_uses_standard_invalid_filename_error(ingestion_api):
 
 
 def test_upload_unsupported_extension_uses_standard_error(ingestion_api):
-    boundary = "phase38-boundary"
+    boundary = "sample38-boundary"
     body = (
         f"--{boundary}\r\n"
-        'Content-Disposition: form-data; name="file"; filename="phase38.bin"\r\n'
+        'Content-Disposition: form-data; name="file"; filename="sample38.bin"\r\n'
         "Content-Type: application/octet-stream\r\n\r\n"
         "not a supported upload\r\n"
         f"--{boundary}--\r\n"
@@ -131,9 +131,9 @@ def test_upload_unsupported_extension_uses_standard_error(ingestion_api):
 @pytest.mark.parametrize(
     ("endpoint", "filename", "contents", "code"),
     [
-        ("/profile-csv", "phase38_empty.csv", b"", "empty_csv"),
-        ("/metadata", "phase38_malformed.csv", b'name,amount\nAda,"10\n', "malformed_csv"),
-        ("/read-csv", "phase38_headers.csv", b"name, name \nAda,10\n", "invalid_csv_headers"),
+        ("/profile-csv", "sample38_empty.csv", b"", "empty_csv"),
+        ("/metadata", "sample38_malformed.csv", b'name,amount\nAda,"10\n', "malformed_csv"),
+        ("/read-csv", "sample38_headers.csv", b"name, name \nAda,10\n", "invalid_csv_headers"),
     ],
 )
 def test_csv_input_errors_use_standard_schema(ingestion_api, uploaded_csv, endpoint, filename, contents, code):
@@ -147,7 +147,7 @@ def test_csv_input_errors_use_standard_schema(ingestion_api, uploaded_csv, endpo
 
 
 def test_valid_csv_preserves_the_existing_metadata_success_response(ingestion_api, uploaded_csv):
-    path = uploaded_csv("phase38_valid.csv", b"name,amount\nAda,10\n")
+    path = uploaded_csv("sample38_valid.csv", b"name,amount\nAda,10\n")
     original_bytes = path.read_bytes()
 
     status_code, payload = request_json(ingestion_api, f"/metadata?{urlencode({'filename': path.name})}")
@@ -158,7 +158,7 @@ def test_valid_csv_preserves_the_existing_metadata_success_response(ingestion_ap
 
 
 def upload_csv(ingestion_api: str, filename: str, contents: bytes):
-    boundary = "phase39-boundary"
+    boundary = "sample39-boundary"
     body = (
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
@@ -175,13 +175,13 @@ def upload_csv(ingestion_api: str, filename: str, contents: bytes):
 
 def test_upload_returns_a_canonical_uuid_file_id_and_preserves_csv(ingestion_api):
     original_bytes = b"name,amount\nAda,10\n"
-    status_code, payload = upload_csv(ingestion_api, "phase39_identity.csv", original_bytes)
+    status_code, payload = upload_csv(ingestion_api, "sample39_identity.csv", original_bytes)
     upload = UploadResponse.model_validate(payload)
     stored_path = UPLOAD_DIR / upload.saved_filename
     try:
         assert status_code == 200
         assert str(uuid.UUID(upload.file_id)) == upload.file_id
-        assert upload.original_filename == "phase39_identity.csv"
+        assert upload.original_filename == "sample39_identity.csv"
         assert upload.file_size == len(original_bytes)
         assert stored_path.read_bytes() == original_bytes
     finally:
@@ -189,8 +189,8 @@ def test_upload_returns_a_canonical_uuid_file_id_and_preserves_csv(ingestion_api
 
 
 def test_uploaded_files_receive_distinct_file_ids(ingestion_api):
-    _, first_payload = upload_csv(ingestion_api, "phase39_first.csv", b"name\nAda\n")
-    _, second_payload = upload_csv(ingestion_api, "phase39_second.csv", b"name\nBen\n")
+    _, first_payload = upload_csv(ingestion_api, "sample39_first.csv", b"name\nAda\n")
+    _, second_payload = upload_csv(ingestion_api, "sample39_second.csv", b"name\nBen\n")
     first = UploadResponse.model_validate(first_payload)
     second = UploadResponse.model_validate(second_payload)
     try:
@@ -202,7 +202,7 @@ def test_uploaded_files_receive_distinct_file_ids(ingestion_api):
 
 def test_file_id_resolves_metadata_and_csv_read_operations(ingestion_api):
     original_bytes = b"name,amount\nAda,10\n"
-    _, upload_payload = upload_csv(ingestion_api, "phase39_by_id.csv", original_bytes)
+    _, upload_payload = upload_csv(ingestion_api, "sample39_by_id.csv", original_bytes)
     upload = UploadResponse.model_validate(upload_payload)
     stored_path = UPLOAD_DIR / upload.saved_filename
     try:
@@ -248,7 +248,7 @@ def test_unregistered_valid_file_id_returns_not_found(ingestion_api):
 
 
 def test_deleted_or_reused_filename_does_not_resolve_an_old_file_id(ingestion_api):
-    _, first_payload = upload_csv(ingestion_api, "phase39_reused.csv", b"name\nFirst\n")
+    _, first_payload = upload_csv(ingestion_api, "sample39_reused.csv", b"name\nFirst\n")
     first = UploadResponse.model_validate(first_payload)
     first_path = UPLOAD_DIR / first.saved_filename
     first_path.unlink()
@@ -259,7 +259,7 @@ def test_deleted_or_reused_filename_does_not_resolve_an_old_file_id(ingestion_ap
         "file_not_found",
     )
 
-    _, second_payload = upload_csv(ingestion_api, "phase39_reused.csv", b"name\nSecond\n")
+    _, second_payload = upload_csv(ingestion_api, "sample39_reused.csv", b"name\nSecond\n")
     second = UploadResponse.model_validate(second_payload)
     second_path = UPLOAD_DIR / second.saved_filename
     try:

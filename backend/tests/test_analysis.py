@@ -7,7 +7,6 @@ import time
 import uuid
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 import pandas as pd
@@ -101,7 +100,7 @@ def request_json(base_url: str, path: str, method: str = "GET", data: dict | Non
 
 
 def upload_csv(base_url: str, filename: str, contents: bytes):
-    boundary = f"phase52-{uuid.uuid4().hex}"
+    boundary = f"sample52-{uuid.uuid4().hex}"
     body = (
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
@@ -249,7 +248,7 @@ def test_analysis_request_accepts_file_name_and_file_id_exclusively():
 
 def test_filename_works_for_analysis(analysis_api, uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase52_filename.csv", contents)
+    path = uploaded_csv("sample52_filename.csv", contents)
 
     status, payload = request_json(
         analysis_api,
@@ -271,7 +270,7 @@ def test_filename_works_for_analysis(analysis_api, uploaded_csv):
 
 def test_file_id_works_for_analysis(analysis_api):
     contents = b"product,revenue\nA,100\nB,200\n"
-    status, upload_payload = upload_csv(analysis_api, "phase52_file_id.csv", contents)
+    status, upload_payload = upload_csv(analysis_api, "sample52_file_id.csv", contents)
     assert status == 200
     upload = UploadResponse.model_validate(upload_payload)
 
@@ -294,7 +293,7 @@ def test_file_id_works_for_analysis(analysis_api):
 
 
 def test_analysis_rejects_invalid_numeric_column(analysis_api, uploaded_csv):
-    path = uploaded_csv("phase52_numeric.csv", b"product,revenue\nA,not-a-number\n")
+    path = uploaded_csv("sample52_numeric.csv", b"product,revenue\nA,not-a-number\n")
 
     status, payload = request_json(
         analysis_api,
@@ -314,7 +313,7 @@ def test_analysis_rejects_invalid_numeric_column(analysis_api, uploaded_csv):
 
 
 def test_analysis_rejects_unsupported_aggregation(analysis_api, uploaded_csv):
-    path = uploaded_csv("phase52_aggregation.csv", b"product,revenue\nA,100\n")
+    path = uploaded_csv("sample52_aggregation.csv", b"product,revenue\nA,100\n")
 
     status, payload = request_json(
         analysis_api,
@@ -334,7 +333,7 @@ def test_analysis_rejects_unsupported_aggregation(analysis_api, uploaded_csv):
 
 def test_original_csv_bytes_remain_unchanged(analysis_api, uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase52_read_only.csv", contents)
+    path = uploaded_csv("sample52_read_only.csv", contents)
 
     status, _ = request_json(
         analysis_api,

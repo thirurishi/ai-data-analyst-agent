@@ -29,15 +29,15 @@ def uploaded_csv():
 @pytest.mark.parametrize(
     ("filename", "contents", "expected_columns", "expected_rows"),
     [
-        ("phase36_utf8.csv", "city,comment\nMontréal,crème brûlée\n".encode("utf-8"), ["city", "comment"], 1),
+        ("sample36_utf8.csv", "city,comment\nMontréal,crème brûlée\n".encode("utf-8"), ["city", "comment"], 1),
         (
-            "phase36_bom_semicolon.csv",
+            "sample36_bom_semicolon.csv",
             " name ; amount \nAda;10\nBéla;20\n".encode("utf-8-sig"),
             ["name", "amount"],
             2,
         ),
-        ("phase36_short_row.csv", b"name,amount,region\nAda,10,Paris\nBen,20\n", ["name", "amount", "region"], 2),
-        ("phase36_cp1252.csv", "city\nCafé\n".encode("cp1252"), ["city"], 1),
+        ("sample36_short_row.csv", b"name,amount,region\nAda,10,Paris\nBen,20\n", ["name", "amount", "region"], 2),
+        ("sample36_cp1252.csv", "city\nCafé\n".encode("cp1252"), ["city"], 1),
     ],
 )
 def test_csv_variations_are_read_without_modifying_source(
@@ -51,10 +51,10 @@ def test_csv_variations_are_read_without_modifying_source(
     assert metadata["column_names"] == expected_columns
     assert metadata["rows"] == expected_rows
     expected_first_values = {
-        "phase36_utf8.csv": "Montr\u00e9al",
-        "phase36_bom_semicolon.csv": "Ada",
-        "phase36_short_row.csv": "Ada",
-        "phase36_cp1252.csv": "Caf\u00e9",
+        "sample36_utf8.csv": "Montr\u00e9al",
+        "sample36_bom_semicolon.csv": "Ada",
+        "sample36_short_row.csv": "Ada",
+        "sample36_cp1252.csv": "Caf\u00e9",
     }
     assert dataframe.iloc[0, 0] == expected_first_values[filename]
     assert (UPLOAD_DIR / filename).read_bytes() == original_bytes
@@ -62,7 +62,7 @@ def test_csv_variations_are_read_without_modifying_source(
 
 def test_header_whitespace_is_normalized_without_changing_data_values(uploaded_csv):
     filename, original_bytes = uploaded_csv(
-        "phase36_header_whitespace.csv",
+        "sample36_header_whitespace.csv",
         b" customer_name ,city\n John , Paris \n",
     )
 
@@ -77,9 +77,9 @@ def test_header_whitespace_is_normalized_without_changing_data_values(uploaded_c
 @pytest.mark.parametrize(
     ("filename", "contents", "message"),
     [
-        ("phase36_empty_header.csv", b"name,   \nAda,10\n", "empty or whitespace-only column name"),
-        ("phase36_duplicate_header.csv", b" name ,name\nAda,10\n", "duplicate column names"),
-        ("phase36_bad_rows.csv", b"name,amount\nAda,10\nBen,20,extra\n", "could not be parsed"),
+        ("sample36_empty_header.csv", b"name,   \nAda,10\n", "empty or whitespace-only column name"),
+        ("sample36_duplicate_header.csv", b" name ,name\nAda,10\n", "duplicate column names"),
+        ("sample36_bad_rows.csv", b"name,amount\nAda,10\nBen,20,extra\n", "could not be parsed"),
     ],
 )
 def test_unsafe_csv_variations_return_clear_errors(uploaded_csv, filename, contents, message):

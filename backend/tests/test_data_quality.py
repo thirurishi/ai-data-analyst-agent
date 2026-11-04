@@ -116,7 +116,7 @@ def assert_error(response, status_code: int, code: str):
 
 
 def upload_csv(base_url: str, filename: str, contents: bytes):
-    boundary = f"phase41-{uuid.uuid4().hex}"
+    boundary = f"sample41-{uuid.uuid4().hex}"
     body = (
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
@@ -355,7 +355,7 @@ def test_potential_date_column_reports_invalid_dates():
 
 def test_api_returns_quality_for_a_filename_and_preserves_bytes(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\nBen,20\n"
-    path = uploaded_csv("phase41_filename.csv", contents)
+    path = uploaded_csv("sample41_filename.csv", contents)
 
     status, payload = request_json(
         data_quality_api,
@@ -373,7 +373,7 @@ def test_api_returns_quality_for_a_filename_and_preserves_bytes(data_quality_api
 
 
 def test_api_returns_quality_for_a_registered_file_id(data_quality_api, uploaded_csv):
-    filename = f"phase41_id_{uuid.uuid4().hex}.csv"
+    filename = f"sample41_id_{uuid.uuid4().hex}.csv"
     contents = b"name,amount\nAda,10\nBen,20\n"
     status, upload_payload = upload_csv(data_quality_api, filename, contents)
     assert status == 200
@@ -532,7 +532,7 @@ def test_recommendation_response_schema_validates_output():
 
 def test_recommendations_api_works_with_filename_and_preserves_bytes(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase42_recommendations_filename.csv", contents)
+    path = uploaded_csv("sample42_recommendations_filename.csv", contents)
 
     status, payload = request_json(
         data_quality_api,
@@ -548,7 +548,7 @@ def test_recommendations_api_works_with_filename_and_preserves_bytes(data_qualit
 
 
 def test_recommendations_api_works_with_registered_file_id_and_preserves_bytes(data_quality_api):
-    filename = f"phase42_recommendations_id_{uuid.uuid4().hex}.csv"
+    filename = f"sample42_recommendations_id_{uuid.uuid4().hex}.csv"
     contents = b"name,amount\nAda,10\n,20\n"
     status, upload_payload = upload_csv(data_quality_api, filename, contents)
     assert status == 200
@@ -593,7 +593,7 @@ def test_recommendations_api_rejects_path_traversal(data_quality_api):
 
 def test_recommendation_has_stable_id_and_pending_status(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase43_recommendations.csv", contents)
+    path = uploaded_csv("sample43_recommendations.csv", contents)
 
     status, payload = request_json(
         data_quality_api,
@@ -610,7 +610,7 @@ def test_recommendation_has_stable_id_and_pending_status(data_quality_api, uploa
 
 def test_approve_pending_recommendation_and_repeated_approval_are_idempotent(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase43_approve.csv", contents)
+    path = uploaded_csv("sample43_approve.csv", contents)
     status, payload = request_json(
         data_quality_api,
         f"/data-quality/recommendations?filename={path.name}",
@@ -639,7 +639,7 @@ def test_approve_pending_recommendation_and_repeated_approval_are_idempotent(dat
 
 def test_reject_pending_recommendation_and_repeated_rejection_are_idempotent(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase43_reject.csv", contents)
+    path = uploaded_csv("sample43_reject.csv", contents)
     status, payload = request_json(
         data_quality_api,
         f"/data-quality/recommendations?filename={path.name}",
@@ -679,7 +679,7 @@ def test_unknown_recommendation_id_is_rejected_safely(data_quality_api):
 
 def test_conflicting_approval_and_rejection_do_not_overwrite_existing_decision(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase43_conflict.csv", contents)
+    path = uploaded_csv("sample43_conflict.csv", contents)
     status, payload = request_json(
         data_quality_api,
         f"/data-quality/recommendations?filename={path.name}",
@@ -713,7 +713,7 @@ def test_conflicting_approval_and_rejection_do_not_overwrite_existing_decision(d
 
 def test_approval_and_rejection_do_not_modify_uploaded_csv(data_quality_api, uploaded_csv):
     contents = b"name,amount\nAda,10\n,20\n"
-    path = uploaded_csv("phase43_preservation.csv", contents)
+    path = uploaded_csv("sample43_preservation.csv", contents)
     status, payload = request_json(
         data_quality_api,
         f"/data-quality/recommendations?filename={path.name}",
@@ -818,7 +818,7 @@ def test_clean_api_removes_duplicate_rows_to_separate_readable_file(
     generated_cleaned_csvs,
 ):
     contents = b"name,amount\nAda,10\nAda,10\nBen,20\n"
-    source_path = uploaded_csv("phase44_duplicates.csv", contents)
+    source_path = uploaded_csv("sample44_duplicates.csv", contents)
     recommendation_id = approve_recommendation(
         data_quality_api,
         f"filename={source_path.name}",
@@ -867,7 +867,7 @@ def test_clean_api_removes_only_approved_column(
     expected_columns,
 ):
     contents = b"id,empty,constant\n1,,x\n2,,x\n"
-    source_path = uploaded_csv(f"phase44_{category}.csv", contents)
+    source_path = uploaded_csv(f"sample44_{category}.csv", contents)
     recommendation_id = approve_recommendation(
         data_quality_api,
         f"filename={source_path.name}",
@@ -899,7 +899,7 @@ def test_clean_api_trims_only_explicit_categorical_whitespace_variants(
     generated_cleaned_csvs,
 ):
     contents = b'city\n" Paris"\nPARIS\nLyon\n"Lyon "\n'
-    source_path = uploaded_csv("phase44_categories.csv", contents)
+    source_path = uploaded_csv("sample44_categories.csv", contents)
     recommendation_id = approve_recommendation(
         data_quality_api,
         f"filename={source_path.name}",
@@ -926,7 +926,7 @@ def test_clean_api_trims_only_explicit_categorical_whitespace_variants(
 @pytest.mark.parametrize("decision", ["pending", "rejected"])
 def test_clean_api_rejects_non_approved_recommendation(data_quality_api, uploaded_csv, decision):
     contents = b"name,amount\nAda,10\nAda,10\n"
-    source_path = uploaded_csv(f"phase44_{decision}.csv", contents)
+    source_path = uploaded_csv(f"sample44_{decision}.csv", contents)
     status, payload = request_json(
         data_quality_api,
         f"/data-quality/recommendations?filename={source_path.name}",
@@ -955,7 +955,7 @@ def test_clean_api_rejects_non_approved_recommendation(data_quality_api, uploade
 
 
 def test_clean_api_rejects_unknown_recommendation(data_quality_api, uploaded_csv):
-    source_path = uploaded_csv("phase44_unknown.csv", b"name\nAda\n")
+    source_path = uploaded_csv("sample44_unknown.csv", b"name\nAda\n")
 
     status, payload = clean_recommendation(
         data_quality_api,
@@ -966,7 +966,7 @@ def test_clean_api_rejects_unknown_recommendation(data_quality_api, uploaded_csv
 
 
 def test_clean_api_supports_registered_file_id(data_quality_api, generated_cleaned_csvs):
-    filename = f"phase44_file_id_{uuid.uuid4().hex}.csv"
+    filename = f"sample44_file_id_{uuid.uuid4().hex}.csv"
     contents = b"name,amount\nAda,10\nAda,10\n"
     status, upload_payload = upload_csv(data_quality_api, filename, contents)
     assert status == 200
@@ -1018,7 +1018,7 @@ def test_unsupported_approved_cleaning_returns_noop_without_output(
         contents = b"name,amount\nAda,10\n,20\n"
     else:
         contents = b"value\n1\n2\n3\n4\n100\n"
-    source_path = uploaded_csv(f"phase44_unsupported_{category}.csv", contents)
+    source_path = uploaded_csv(f"sample44_unsupported_{category}.csv", contents)
     recommendation_id = approve_recommendation(
         data_quality_api,
         f"filename={source_path.name}",
@@ -1046,7 +1046,7 @@ def test_unsupported_approved_cleaning_returns_noop_without_output(
 
 def test_clean_api_rejects_reapplying_same_recommendation(data_quality_api, uploaded_csv, generated_cleaned_csvs):
     contents = b"name,amount\nAda,10\nAda,10\n"
-    source_path = uploaded_csv("phase44_idempotency.csv", contents)
+    source_path = uploaded_csv("sample44_idempotency.csv", contents)
     recommendation_id = approve_recommendation(
         data_quality_api,
         f"filename={source_path.name}",

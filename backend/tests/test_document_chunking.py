@@ -18,11 +18,11 @@ from backend.app.services.document_chunking import (
 def registered_document():
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     text = "One two three four five six seven eight nine ten."
-    path = UPLOAD_DIR / "phase72_chunk_source.txt"
+    path = UPLOAD_DIR / "sample72_chunk_source.txt"
     path.write_text(text, encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
-        "phase72_chunk_source.txt",
+        "sample72_chunk_source.txt",
         "text/plain",
         allowed_extensions=(".txt",),
     )

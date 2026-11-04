@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
 
 from backend.app.core.config import settings
 from backend.app.embeddings.provider import (

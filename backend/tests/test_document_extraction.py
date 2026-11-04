@@ -64,7 +64,7 @@ def test_txt_extraction_preserves_unicode_and_paragraphs(generated_documents):
     text = "Café naïve\r\n\r\nFirst paragraph.\r\nSecond line."
     record = _register(
         generated_documents,
-        "phase71.txt",
+        "sample71.txt",
         text.encode("utf-8"),
         "text/plain",
         allowed_extensions=(".txt",),
@@ -84,7 +84,7 @@ def test_txt_extraction_preserves_unicode_and_paragraphs(generated_documents):
 def test_pdf_extraction_returns_text_and_page_count(generated_documents):
     record = _register(
         generated_documents,
-        "phase71.pdf",
+        "sample71.pdf",
         _pdf_bytes("PDF text"),
         "application/pdf",
         allowed_extensions=(".pdf",),
@@ -100,7 +100,7 @@ def test_pdf_extraction_returns_text_and_page_count(generated_documents):
 def test_docx_extraction_returns_text_and_metadata(generated_documents):
     record = _register(
         generated_documents,
-        "phase71.docx",
+        "sample71.docx",
         _docx_bytes(["First heading", "Second paragraph"]),
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         allowed_extensions=(".docx",),
@@ -116,7 +116,7 @@ def test_docx_extraction_returns_text_and_metadata(generated_documents):
 def test_empty_document_is_rejected_without_modifying_file(generated_documents):
     record = _register(
         generated_documents,
-        "phase71_empty.txt",
+        "sample71_empty.txt",
         b"",
         "text/plain",
         allowed_extensions=(".txt",),
@@ -132,7 +132,7 @@ def test_empty_document_is_rejected_without_modifying_file(generated_documents):
 def test_unsupported_file_type_is_rejected(generated_documents):
     record = _register(
         generated_documents,
-        "phase71.csv",
+        "sample71.csv",
         b"value\n1\n",
         "text/csv",
         allowed_extensions=(".csv",),
@@ -150,7 +150,7 @@ def test_unknown_file_id_is_rejected():
 def test_extraction_failure_is_controlled(generated_documents):
     record = _register(
         generated_documents,
-        "phase71_corrupt.pdf",
+        "sample71_corrupt.pdf",
         b"not a valid pdf",
         "application/pdf",
         allowed_extensions=(".pdf",),
@@ -163,7 +163,7 @@ def test_extraction_failure_is_controlled(generated_documents):
 def test_route_uses_structured_response_and_safe_file_id(generated_documents):
     record = _register(
         generated_documents,
-        "phase71_route.txt",
+        "sample71_route.txt",
         b"Hello from the API.\n",
         "text/plain",
         allowed_extensions=(".txt",),
@@ -187,9 +187,9 @@ def test_route_rejects_unknown_file_id_without_path_access():
 @pytest.mark.parametrize(
     ("filename", "content_type", "contents"),
     [
-        ("phase71_upload_pdf.pdf", "application/pdf", b"%PDF-1.4\n"),
-        ("phase71_upload_docx.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", b"DOCX"),
-        ("phase71_upload_txt.txt", "text/plain", b"Uploaded text"),
+        ("sample71_upload_pdf.pdf", "application/pdf", b"%PDF-1.4\n"),
+        ("sample71_upload_docx.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", b"DOCX"),
+        ("sample71_upload_txt.txt", "text/plain", b"Uploaded text"),
     ],
 )
 def test_upload_route_accepts_supported_document_formats(

@@ -15,7 +15,7 @@ from backend.app.repositories.vector_store import (
     VectorStoreRepository,
 )
 from backend.app.repositories.vector_store_factory import get_vector_store
-from backend.app.schemas.embedding import DocumentRetrievalRequest, DocumentRetrievalResponse, RetrievalResult
+from backend.app.schemas.embedding import DocumentRetrievalResponse, RetrievalResult
 from backend.app.schemas.embedding import VectorDocumentRecord
 
 

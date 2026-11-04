@@ -34,11 +34,11 @@ class FailingVectorStore(InMemoryVectorStore):
 @pytest.fixture
 def registered_chunks():
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase73_embedding_source.txt"
+    path = UPLOAD_DIR / "sample73_embedding_source.txt"
     path.write_text("first chunk second chunk", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
-        "phase73_embedding_source.txt",
+        "sample73_embedding_source.txt",
         "text/plain",
         allowed_extensions=(".txt",),
     )
@@ -116,7 +116,7 @@ def test_persisted_records_preserve_metadata_and_chunk_identity(registered_chunk
     assert persisted[f"{record.file_id}:000000"].chunk_index == 0
     assert persisted[f"{record.file_id}:000000"].embedding_model == "test-model"
     assert persisted[f"{record.file_id}:000000"].metadata["character_count"] == 11
-    assert persisted[f"{record.file_id}:000000"].metadata["file_name"] == "phase73_embedding_source.txt"
+    assert persisted[f"{record.file_id}:000000"].metadata["file_name"] == "sample73_embedding_source.txt"
 
 
 def test_repeated_indexing_is_idempotent_for_same_chunk_and_model(registered_chunks):

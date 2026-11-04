@@ -62,7 +62,7 @@ def get_metadata(base_url: str, filename: str) -> tuple[int, dict]:
 @pytest.fixture
 def csv_file():
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase35_metadata_test.csv"
+    path = UPLOAD_DIR / "sample35_metadata_test.csv"
     contents = "name,amount\nAda,10\nAda,10\nBen,\n"
     path.write_text(contents, encoding="utf-8")
     original_bytes = path.read_bytes()
@@ -125,8 +125,8 @@ def test_metadata_works_for_existing_sample_without_changing_it(metadata_endpoin
 @pytest.mark.parametrize(
     ("filename", "contents", "expected_detail"),
     [
-        ("phase35_empty.csv", "", "CSV file is empty."),
-        ("phase35_malformed.csv", 'name,amount\nAda,"10\n', "CSV file could not be parsed"),
+        ("sample35_empty.csv", "", "CSV file is empty."),
+        ("sample35_malformed.csv", 'name,amount\nAda,"10\n', "CSV file could not be parsed"),
     ],
 )
 def test_metadata_rejects_invalid_csv(metadata_endpoint, filename, contents, expected_detail):

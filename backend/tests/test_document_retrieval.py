@@ -5,7 +5,6 @@ import pytest
 from backend.app.embeddings.provider import EmbeddingProviderError
 from backend.app.ingestion.upload_service import UPLOAD_DIR, UploadService
 from backend.app.repositories.vector_store import InMemoryVectorStore, VectorStoreError
-from backend.app.schemas.document import DocumentChunkResponse
 from backend.app.schemas.embedding import VectorDocumentRecord
 from backend.app.services.document_retrieval import (
     DocumentRetrievalError,
@@ -34,11 +33,11 @@ class FailingVectorStore(InMemoryVectorStore):
 @pytest.fixture
 def registered_file():
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    path = UPLOAD_DIR / "phase74_retrieval_source.txt"
+    path = UPLOAD_DIR / "sample74_retrieval_source.txt"
     path.write_text("source document", encoding="utf-8")
     record = UploadService.register_uploaded_file(
         path,
-        "phase74_retrieval_source.txt",
+        "sample74_retrieval_source.txt",
         "text/plain",
         allowed_extensions=(".txt",),
     )

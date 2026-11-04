@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
 from backend.app.analysis.service import AnalysisValidationError, DeterministicAnalysisService
@@ -122,7 +121,7 @@ def test_end_to_end_question_plan_analysis_and_answer():
     planner = AnalysisPlannerService(plan_llm)
     answer_service = AnswerGenerationService(answer_llm)
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = UPLOAD_DIR / "phase54_e2e.csv"
+    path = UPLOAD_DIR / "sample54_e2e.csv"
     path.write_bytes(contents)
 
     try:
@@ -148,7 +147,7 @@ def test_end_to_end_question_plan_analysis_and_answer():
 
 def test_answer_generation_receives_original_question_plan_and_result(uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase54_grounded.csv", contents)
+    path = uploaded_csv("sample54_grounded.csv", contents)
     plan_llm = FakeLLMService(
         [
             json.dumps(
@@ -182,7 +181,7 @@ def test_answer_generation_receives_original_question_plan_and_result(uploaded_c
 
 
 def test_planner_failure_prevents_answer_generation(uploaded_csv):
-    path = uploaded_csv("phase54_planner_failure.csv", b"product,revenue\nA,100\n")
+    path = uploaded_csv("sample54_planner_failure.csv", b"product,revenue\nA,100\n")
     answer_calls: list[tuple[str, AnalysisPlan, dict]] = []
 
     class RecordingAnswerService:
@@ -205,7 +204,7 @@ def test_planner_failure_prevents_answer_generation(uploaded_csv):
 
 
 def test_analysis_failure_prevents_answer_generation(uploaded_csv, monkeypatch):
-    path = uploaded_csv("phase54_analysis_failure.csv", b"product,revenue\nA,100\n")
+    path = uploaded_csv("sample54_analysis_failure.csv", b"product,revenue\nA,100\n")
     answer_calls: list[tuple[str, AnalysisPlan, dict]] = []
 
     class RecordingAnswerService:
@@ -243,7 +242,7 @@ def test_analysis_failure_prevents_answer_generation(uploaded_csv, monkeypatch):
 
 def test_file_id_workflow_preserves_csv(uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase54_file_id.csv", contents)
+    path = uploaded_csv("sample54_file_id.csv", contents)
     record = UploadService.register_uploaded_file(path, path.name, "text/csv")
     plan_llm = FakeLLMService(
         [json.dumps({"operation": "summary"})]

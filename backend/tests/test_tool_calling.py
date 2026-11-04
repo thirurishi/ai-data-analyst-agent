@@ -245,7 +245,7 @@ def test_provider_failure_is_handled(dataframe):
 
 def test_agent_analyze_filename_uses_one_tool_and_grounded_answer(uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase55_filename.csv", contents)
+    path = uploaded_csv("sample55_filename.csv", contents)
     selector_llm = FakeLLMService(
         json.dumps(
             {
@@ -272,7 +272,7 @@ def test_agent_analyze_filename_uses_one_tool_and_grounded_answer(uploaded_csv):
 
 def test_agent_analyze_file_id_and_missing_identifier(uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase55_file_id.csv", contents)
+    path = uploaded_csv("sample55_file_id.csv", contents)
     record = UploadService.register_uploaded_file(path, path.name, "text/csv")
     selector = ToolSelectionService(
         FakeLLMService(

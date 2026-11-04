@@ -204,7 +204,7 @@ def test_filename_analysis_question_uses_plan_and_preserves_bytes(
     uploaded_csv,
 ):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase53_filename.csv", contents)
+    path = uploaded_csv("sample53_filename.csv", contents)
     llm = FakeLLMService(
         json.dumps(
             {
@@ -235,7 +235,7 @@ def test_filename_analysis_question_uses_plan_and_preserves_bytes(
 
 def test_file_id_analysis_question_uses_safe_resolution(uploaded_csv):
     contents = b"product,revenue\nA,100\nB,200\n"
-    path = uploaded_csv("phase53_file_id.csv", contents)
+    path = uploaded_csv("sample53_file_id.csv", contents)
     record = UploadService.register_uploaded_file(
         path,
         path.name,
