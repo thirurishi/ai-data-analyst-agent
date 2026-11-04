@@ -23,12 +23,12 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-ACCENT = colors.HexColor("#6D5EF5")
+ACCENT = colors.HexColor("#3F6B57")
 INK = colors.HexColor("#14151A")
 MUTED = colors.HexColor("#6B6F7B")
 RULE = colors.HexColor("#E4E5EA")
-SOFT = colors.HexColor("#F5F5FA")
-WARN = colors.HexColor("#B4580A")
+SOFT = colors.HexColor("#F1F4EF")
+WARN = colors.HexColor("#A8702F")
 
 
 def _escape(text: Any) -> str:
@@ -187,7 +187,7 @@ class ReportService:
 
         story.append(Paragraph("Key findings", h2))
         for finding in insights["findings"] or [{"title": "No notable patterns", "detail": "Nothing stood out in the automatic scan.", "severity": "info"}]:
-            colour = "#B4580A" if finding.get("severity") == "warning" else "#6D5EF5"
+            colour = "#A8702F" if finding.get("severity") == "warning" else "#3F6B57"
             story.append(Paragraph(f"<font color='{colour}'>■</font>&nbsp; <b>{_escape(finding['title'])}</b> — {_escape(finding['detail'])}", body))
             story.append(Spacer(1, 3))
 
