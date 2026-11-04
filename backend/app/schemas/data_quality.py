@@ -77,3 +77,26 @@ class DataQualityApprovalResponse(BaseModel):
     recommendation_id: str
     previous_status: str
     new_status: str
+
+
+class DataCleaningRequest(BaseModel):
+    filename: str | None = None
+    file_id: str | None = None
+    recommendation_id: str
+
+
+class DataCleaningResponse(BaseModel):
+    source_filename: str
+    source_file_id: str | None = None
+    cleaned_filename: str | None = None
+    operation: str
+    recommendation_id: str
+    previous_approval_status: str
+    rows_before: int
+    rows_after: int
+    columns_before: int
+    columns_after: int
+    rows_removed: int
+    columns_removed: list[str]
+    data_modified: bool
+    message: str

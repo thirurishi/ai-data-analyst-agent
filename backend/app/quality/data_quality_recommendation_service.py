@@ -53,37 +53,55 @@ class DataQualityRecommendationService:
         cls,
         quality_report: dict,
         file_id: str | None = None,
+        source_fingerprint: str | None = None,
     ) -> list[dict]:
         recommendations = []
+        categorical_indexes: dict[str, int] = {}
         for index, detected_issue in enumerate(quality_report["issues"]):
             rule = cls.RECOMMENDATION_RULES.get(detected_issue["category"])
             if rule is None:
                 continue
 
             recommendation, reason = rule
-            identity = f"{file_id or 'unregistered'}:{detected_issue['category']}:{index}"
+            identity = (
+                f"{file_id or 'unregistered'}:{source_fingerprint or 'unfingerprinted'}:"
+                f"{detected_issue['category']}:{index}"
+            )
             recommendation_id = str(
                 uuid.uuid5(
                     uuid.NAMESPACE_URL,
                     hashlib.sha256(identity.encode("utf-8")).hexdigest(),
                 )
             )
-            recommendations.append(
-                {
-                    "recommendation_id": recommendation_id,
-                    "category": detected_issue["category"],
-                    "severity": detected_issue["severity"],
-                    "column": detected_issue["column"],
-                    "issue": cls._describe_issue(detected_issue),
-                    "recommendation": recommendation,
-                    "reason": reason,
-                    "requires_human_review": True,
-                    "status": "pending",
-                }
-            )
+            recommendation_data = {
+                "recommendation_id": recommendation_id,
+                "category": detected_issue["category"],
+                "severity": detected_issue["severity"],
+                "column": detected_issue["column"],
+                "issue": cls._describe_issue(detected_issue),
+                "recommendation": recommendation,
+                "reason": reason,
+                "requires_human_review": True,
+                "status": "pending",
+            }
+            if detected_issue["category"] == "categorical_inconsistency":
+                column = detected_issue["column"]
+                inconsistency_index = categorical_indexes.get(column, 0)
+                categorical_indexes[column] = inconsistency_index + 1
+                column_report = next(
+                    (item for item in quality_report["column_reports"] if item["column"] == column),
+                    None,
+                )
+                inconsistencies = column_report["categorical_inconsistencies"] if column_report else []
+                if inconsistency_index < len(inconsistencies):
+                    inconsistency = inconsistencies[inconsistency_index]
+                    if inconsistency["count"] == detected_issue["count"]:
+                        recommendation_data["variants"] = inconsistency["variants"]
+            recommendations.append(recommendation_data)
         return DataQualityApprovalService.register_recommendations(
             file_id or "unregistered",
             recommendations,
+            source_fingerprint,
         )
 
     @staticmethod

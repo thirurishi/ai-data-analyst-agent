@@ -17,7 +17,12 @@ import pytest
 from backend.app.ingestion.upload_service import UPLOAD_DIR
 from backend.app.quality.data_quality_service import DataQualityService
 from backend.app.quality.data_quality_recommendation_service import DataQualityRecommendationService
-from backend.app.schemas.data_quality import DataQualityRecommendationsResponse, DataQualityResponse
+from backend.app.quality.data_cleaning_service import DataCleaningService
+from backend.app.schemas.data_quality import (
+    DataCleaningResponse,
+    DataQualityRecommendationsResponse,
+    DataQualityResponse,
+)
 from backend.app.schemas.errors import IngestionErrorResponse
 from backend.app.schemas.upload import UploadResponse
 
@@ -82,6 +87,14 @@ def uploaded_csv():
         path.unlink(missing_ok=True)
 
 
+@pytest.fixture
+def generated_cleaned_csvs():
+    paths: list[Path] = []
+    yield paths
+    for path in paths:
+        path.unlink(missing_ok=True)
+
+
 def request_json(
     base_url: str,
     path: str,
@@ -128,6 +141,32 @@ def upload_csv(base_url: str, filename: str, contents: bytes):
         method="POST",
         data=body,
         headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+    )
+
+
+def approve_recommendation(base_url: str, identifier_query: str, category: str, column: str | None = None) -> str:
+    status, payload = request_json(base_url, f"/data-quality/recommendations?{identifier_query}")
+    assert status == 200
+    recommendations = DataQualityRecommendationsResponse.model_validate(payload).recommendations
+    recommendation = next(
+        item for item in recommendations if item.category == category and item.column == column
+    )
+    status, _ = request_json(
+        base_url,
+        f"/data-quality/recommendations/{recommendation.recommendation_id}/approve",
+        method="POST",
+    )
+    assert status == 200
+    return recommendation.recommendation_id
+
+
+def clean_recommendation(base_url: str, request_payload: dict):
+    return request_json(
+        base_url,
+        "/data-quality/clean",
+        method="POST",
+        data=json.dumps(request_payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -698,3 +737,338 @@ def test_approval_and_rejection_do_not_modify_uploaded_csv(data_quality_api, upl
     )
     assert status == 200
     assert path.read_bytes() == contents
+
+
+def test_cleaning_service_removes_duplicates_without_mutating_input():
+    dataframe = pd.DataFrame({"name": ["Ada", "Ada", "Ben"], "amount": [10, 10, 20]})
+    original = dataframe.copy(deep=True)
+
+    result = DataCleaningService.clean_dataframe(dataframe, {"category": "duplicate_rows"})
+
+    assert result.operation == "remove_duplicate_rows"
+    assert result.rows_removed == 1
+    assert result.columns_removed == []
+    assert result.data_modified is True
+    pd.testing.assert_frame_equal(result.dataframe, dataframe.iloc[[0, 2]])
+    pd.testing.assert_frame_equal(dataframe, original)
+
+
+@pytest.mark.parametrize(
+    ("dataframe", "recommendation", "expected_operation", "expected_column"),
+    [
+        (
+            pd.DataFrame({"empty": [None, None], "name": ["Ada", "Ben"]}),
+            {"category": "empty_column", "column": "empty"},
+            "remove_empty_column",
+            "empty",
+        ),
+        (
+            pd.DataFrame({"constant": ["x", "x"], "name": ["Ada", "Ben"]}),
+            {"category": "constant_column", "column": "constant"},
+            "remove_constant_column",
+            "constant",
+        ),
+    ],
+)
+def test_cleaning_service_removes_only_approved_target_column(
+    dataframe,
+    recommendation,
+    expected_operation,
+    expected_column,
+):
+    original = dataframe.copy(deep=True)
+
+    result = DataCleaningService.clean_dataframe(dataframe, recommendation)
+
+    assert result.operation == expected_operation
+    assert result.columns_removed == [expected_column]
+    assert result.rows_removed == 0
+    assert result.data_modified is True
+    assert list(result.dataframe.columns) == [column for column in dataframe.columns if column != expected_column]
+    pd.testing.assert_frame_equal(dataframe, original)
+
+
+def test_cleaning_service_trims_only_explicit_categorical_variants():
+    dataframe = pd.DataFrame({"city": [" Paris", "PARIS", "Lyon "]})
+    original = dataframe.copy(deep=True)
+    recommendation = {
+        "category": "categorical_inconsistency",
+        "column": "city",
+        "variants": {" Paris": 1, "PARIS": 1, "Lyon ": 1},
+    }
+
+    result = DataCleaningService.clean_dataframe(dataframe, recommendation)
+
+    assert result.operation == "trim_categorical_whitespace"
+    assert result.dataframe["city"].tolist() == ["Paris", "PARIS", "Lyon"]
+    assert result.data_modified is True
+    pd.testing.assert_frame_equal(dataframe, original)
+
+
+@pytest.mark.parametrize("category", ["missing_values", "numeric_outliers", "numeric_invalid_values", "date_invalid_values"])
+def test_cleaning_service_does_not_modify_unsupported_operations(category):
+    values = [1, float("inf"), 3] if category == "numeric_invalid_values" else [1, None, 3]
+    dataframe = pd.DataFrame({"value": values})
+    original = dataframe.copy(deep=True)
+
+    result = DataCleaningService.clean_dataframe(dataframe, {"category": category})
+
+    assert result.operation == "not_applied"
+    assert result.data_modified is False
+    assert result.rows_removed == 0
+    assert result.columns_removed == []
+    assert "no data was changed" in result.message.lower()
+    pd.testing.assert_frame_equal(result.dataframe, original)
+    pd.testing.assert_frame_equal(dataframe, original)
+
+
+def test_clean_api_removes_duplicate_rows_to_separate_readable_file(
+    data_quality_api,
+    uploaded_csv,
+    generated_cleaned_csvs,
+):
+    contents = b"name,amount\nAda,10\nAda,10\nBen,20\n"
+    source_path = uploaded_csv("phase44_duplicates.csv", contents)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"filename={source_path.name}",
+        "duplicate_rows",
+    )
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": recommendation_id},
+    )
+
+    assert status == 200
+    response = DataCleaningResponse.model_validate(payload)
+    cleaned_path = UPLOAD_DIR / response.cleaned_filename
+    generated_cleaned_csvs.append(cleaned_path)
+    assert response.source_filename == source_path.name
+    assert response.source_file_id is None
+    assert response.operation == "remove_duplicate_rows"
+    assert response.previous_approval_status == "approved"
+    assert (response.rows_before, response.rows_after, response.rows_removed) == (3, 2, 1)
+    assert (response.columns_before, response.columns_after) == (2, 2)
+    assert response.columns_removed == []
+    assert response.data_modified is True
+    assert response.cleaned_filename != source_path.name
+    assert cleaned_path.is_file()
+    assert pd.read_csv(cleaned_path).to_dict("records") == [
+        {"name": "Ada", "amount": 10},
+        {"name": "Ben", "amount": 20},
+    ]
+    assert source_path.read_bytes() == contents
+
+
+@pytest.mark.parametrize(
+    ("category", "column", "expected_columns"),
+    [
+        ("empty_column", "empty", ["id", "constant"]),
+        ("constant_column", "constant", ["id", "empty"]),
+    ],
+)
+def test_clean_api_removes_only_approved_column(
+    data_quality_api,
+    uploaded_csv,
+    generated_cleaned_csvs,
+    category,
+    column,
+    expected_columns,
+):
+    contents = b"id,empty,constant\n1,,x\n2,,x\n"
+    source_path = uploaded_csv(f"phase44_{category}.csv", contents)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"filename={source_path.name}",
+        category,
+        column,
+    )
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": recommendation_id},
+    )
+
+    assert status == 200
+    response = DataCleaningResponse.model_validate(payload)
+    cleaned_path = UPLOAD_DIR / response.cleaned_filename
+    generated_cleaned_csvs.append(cleaned_path)
+    cleaned_dataframe = pd.read_csv(cleaned_path)
+    assert list(cleaned_dataframe.columns) == expected_columns
+    assert response.columns_removed == [column]
+    assert response.columns_before == 3
+    assert response.columns_after == 2
+    assert response.rows_before == response.rows_after == 2
+    assert source_path.read_bytes() == contents
+
+
+def test_clean_api_trims_only_explicit_categorical_whitespace_variants(
+    data_quality_api,
+    uploaded_csv,
+    generated_cleaned_csvs,
+):
+    contents = b'city\n" Paris"\nPARIS\nLyon\n"Lyon "\n'
+    source_path = uploaded_csv("phase44_categories.csv", contents)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"filename={source_path.name}",
+        "categorical_inconsistency",
+        "city",
+    )
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": recommendation_id},
+    )
+
+    assert status == 200
+    response = DataCleaningResponse.model_validate(payload)
+    cleaned_path = UPLOAD_DIR / response.cleaned_filename
+    generated_cleaned_csvs.append(cleaned_path)
+    assert pd.read_csv(cleaned_path)["city"].tolist() == [" Paris", "PARIS", "Lyon", "Lyon"]
+    assert response.columns_before == response.columns_after == 1
+    assert response.rows_before == response.rows_after == 4
+    assert response.data_modified is True
+    assert source_path.read_bytes() == contents
+
+
+@pytest.mark.parametrize("decision", ["pending", "rejected"])
+def test_clean_api_rejects_non_approved_recommendation(data_quality_api, uploaded_csv, decision):
+    contents = b"name,amount\nAda,10\nAda,10\n"
+    source_path = uploaded_csv(f"phase44_{decision}.csv", contents)
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={source_path.name}",
+    )
+    assert status == 200
+    recommendation_id = next(
+        item["recommendation_id"]
+        for item in payload["recommendations"]
+        if item["category"] == "duplicate_rows"
+    )
+    if decision == "rejected":
+        status, _ = request_json(
+            data_quality_api,
+            f"/data-quality/recommendations/{recommendation_id}/reject",
+            method="POST",
+        )
+        assert status == 200
+
+    status, error_payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": recommendation_id},
+    )
+
+    assert_error((status, error_payload), 409, "recommendation_not_approved")
+    assert source_path.read_bytes() == contents
+
+
+def test_clean_api_rejects_unknown_recommendation(data_quality_api, uploaded_csv):
+    source_path = uploaded_csv("phase44_unknown.csv", b"name\nAda\n")
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": str(uuid.uuid4())},
+    )
+
+    assert_error((status, payload), 404, "recommendation_not_found")
+
+
+def test_clean_api_supports_registered_file_id(data_quality_api, generated_cleaned_csvs):
+    filename = f"phase44_file_id_{uuid.uuid4().hex}.csv"
+    contents = b"name,amount\nAda,10\nAda,10\n"
+    status, upload_payload = upload_csv(data_quality_api, filename, contents)
+    assert status == 200
+    upload_response = UploadResponse.model_validate(upload_payload)
+    generated_cleaned_csvs.append(UPLOAD_DIR / upload_response.saved_filename)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"file_id={upload_response.file_id}",
+        "duplicate_rows",
+    )
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"file_id": upload_response.file_id, "recommendation_id": recommendation_id},
+    )
+
+    assert status == 200
+    response = DataCleaningResponse.model_validate(payload)
+    cleaned_path = UPLOAD_DIR / response.cleaned_filename
+    generated_cleaned_csvs.append(cleaned_path)
+    assert response.source_file_id == upload_response.file_id
+    assert response.rows_removed == 1
+    assert (UPLOAD_DIR / upload_response.saved_filename).read_bytes() == contents
+    assert len(pd.read_csv(cleaned_path)) == 1
+
+
+def test_clean_api_rejects_path_traversal_and_missing_identifiers(data_quality_api):
+    recommendation_id = str(uuid.uuid4())
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": "../outside.csv", "recommendation_id": recommendation_id},
+    )
+    assert_error((status, payload), 400, "invalid_filename")
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"recommendation_id": recommendation_id},
+    )
+    assert_error((status, payload), 400, "missing_filename")
+
+
+@pytest.mark.parametrize("category", ["missing_values", "numeric_outliers"])
+def test_unsupported_approved_cleaning_returns_noop_without_output(
+    data_quality_api,
+    uploaded_csv,
+    category,
+):
+    if category == "missing_values":
+        contents = b"name,amount\nAda,10\n,20\n"
+    else:
+        contents = b"value\n1\n2\n3\n4\n100\n"
+    source_path = uploaded_csv(f"phase44_unsupported_{category}.csv", contents)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"filename={source_path.name}",
+        category,
+        "name" if category == "missing_values" else "value",
+    )
+    cleaned_names_before = {path.name for path in UPLOAD_DIR.glob("cleaned_*.csv")}
+
+    status, payload = clean_recommendation(
+        data_quality_api,
+        {"filename": source_path.name, "recommendation_id": recommendation_id},
+    )
+
+    assert status == 200
+    response = DataCleaningResponse.model_validate(payload)
+    assert response.cleaned_filename is None
+    assert response.operation == "not_applied"
+    assert response.data_modified is False
+    assert response.rows_before == response.rows_after
+    assert response.columns_before == response.columns_after
+    assert "not supported" in response.message.lower()
+    assert {path.name for path in UPLOAD_DIR.glob("cleaned_*.csv")} == cleaned_names_before
+    assert source_path.read_bytes() == contents
+
+
+def test_clean_api_rejects_reapplying_same_recommendation(data_quality_api, uploaded_csv, generated_cleaned_csvs):
+    contents = b"name,amount\nAda,10\nAda,10\n"
+    source_path = uploaded_csv("phase44_idempotency.csv", contents)
+    recommendation_id = approve_recommendation(
+        data_quality_api,
+        f"filename={source_path.name}",
+        "duplicate_rows",
+    )
+    request_payload = {"filename": source_path.name, "recommendation_id": recommendation_id}
+    status, payload = clean_recommendation(data_quality_api, request_payload)
+    assert status == 200
+    first_response = DataCleaningResponse.model_validate(payload)
+    generated_cleaned_csvs.append(UPLOAD_DIR / first_response.cleaned_filename)
+
+    status, payload = clean_recommendation(data_quality_api, request_payload)
+
+    assert_error((status, payload), 409, "recommendation_already_applied")
+    assert source_path.read_bytes() == contents
