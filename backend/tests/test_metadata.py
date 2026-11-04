@@ -4,7 +4,6 @@ import json
 import os
 import socket
 import subprocess
-import sys
 import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -18,13 +17,13 @@ from backend.app.schemas.metadata import CsvMetadataResponse
 
 
 @pytest.fixture(scope="module")
-def metadata_endpoint():
+def metadata_endpoint(api_server_command):
     with socket.socket() as socket_probe:
         socket_probe.bind(("127.0.0.1", 0))
         port = socket_probe.getsockname()[1]
 
     process = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "127.0.0.1", "--port", str(port)],
+        [*api_server_command, str(port)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         env={**os.environ, "DEBUG": "false"},
@@ -109,14 +108,18 @@ def test_metadata_returns_not_found_for_missing_file(metadata_endpoint):
 
 
 def test_metadata_works_for_existing_sample_without_changing_it(metadata_endpoint):
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     path = UPLOAD_DIR / "profile_sample.csv"
+    path.write_text("region,revenue\nwest,100\neast,50\n", encoding="utf-8")
     original_bytes = path.read_bytes()
+    try:
+        status_code, payload = get_metadata(metadata_endpoint, path.name)
 
-    status_code, payload = get_metadata(metadata_endpoint, path.name)
-
-    assert status_code == 200
-    assert CsvMetadataResponse.model_validate(payload).filename == path.name
-    assert path.read_bytes() == original_bytes
+        assert status_code == 200
+        assert CsvMetadataResponse.model_validate(payload).filename == path.name
+        assert path.read_bytes() == original_bytes
+    finally:
+        path.unlink(missing_ok=True)
 
 
 @pytest.mark.parametrize(

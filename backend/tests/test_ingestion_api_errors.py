@@ -4,7 +4,6 @@ import json
 import os
 import socket
 import subprocess
-import sys
 import time
 import uuid
 from pathlib import Path
@@ -21,13 +20,13 @@ from backend.app.schemas.upload import UploadResponse
 
 
 @pytest.fixture(scope="module")
-def ingestion_api():
+def ingestion_api(api_server_command):
     with socket.socket() as socket_probe:
         socket_probe.bind(("127.0.0.1", 0))
         port = socket_probe.getsockname()[1]
 
     process = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "127.0.0.1", "--port", str(port)],
+        [*api_server_command, str(port)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         env={**os.environ, "DEBUG": "false"},

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import socket
 import subprocess
-import sys
 import time
 import uuid
 from pathlib import Path
@@ -36,22 +35,13 @@ def dataframe() -> pd.DataFrame:
 
 
 @pytest.fixture
-def analysis_api():
+def analysis_api(api_server_command):
     with socket.socket() as socket_probe:
         socket_probe.bind(("127.0.0.1", 0))
         port = socket_probe.getsockname()[1]
 
     process = subprocess.Popen(
-        [
-            sys.executable,
-            "-m",
-            "uvicorn",
-            "backend.app.main:app",
-            "--host",
-            "127.0.0.1",
-            "--port",
-            str(port),
-        ],
+        [*api_server_command, str(port)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         env={**__import__("os").environ, "DEBUG": "false"},
