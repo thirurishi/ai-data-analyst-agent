@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile
 
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
-from backend.app.ingestion.upload_service import MAX_FILE_SIZE_BYTES, UploadService
+from backend.app.ingestion.upload_service import MAX_FILE_SIZE_BYTES, SUPPORTED_UPLOAD_EXTENSIONS, UploadService
 from backend.app.schemas.upload import UploadResponse
 
 router = APIRouter()
@@ -17,21 +17,31 @@ async def upload_csv_file(file: UploadFile | None = File(None)):
     except ValueError as exc:
         return expected_ingestion_error(exc)
 
-    if not UploadService.is_csv_file(safe_name):
-        return ingestion_error(400, "unsupported_file_type", "Only CSV files are supported.")
+    if not UploadService.is_supported_upload_file(safe_name):
+        return ingestion_error(400, "unsupported_file_type", "Only CSV, PDF, DOCX, and TXT files are supported.")
 
     if file.content_type is not None and not UploadService.is_allowed_content_type(file.content_type):
-        return ingestion_error(400, "unsupported_file_type", "Only CSV files are supported.")
+        return ingestion_error(400, "unsupported_file_type", "Only CSV, PDF, DOCX, and TXT files are supported.")
 
     try:
-        saved_path = UploadService.save_uploaded_file(file, safe_name, max_size_bytes=MAX_FILE_SIZE_BYTES)
+        saved_path = UploadService.save_uploaded_file(
+            file,
+            safe_name,
+            max_size_bytes=MAX_FILE_SIZE_BYTES,
+            allowed_extensions=SUPPORTED_UPLOAD_EXTENSIONS,
+        )
     except ValueError as exc:
         return expected_ingestion_error(exc)
     except Exception:  # pragma: no cover - defensive guard for filesystem issues
         return unexpected_ingestion_error()
 
     try:
-        record = UploadService.register_uploaded_file(saved_path, file.filename, file.content_type)
+        record = UploadService.register_uploaded_file(
+            saved_path,
+            file.filename,
+            file.content_type,
+            allowed_extensions=SUPPORTED_UPLOAD_EXTENSIONS,
+        )
     except Exception:  # pragma: no cover - defensive guard for filesystem issues
         return unexpected_ingestion_error()
 

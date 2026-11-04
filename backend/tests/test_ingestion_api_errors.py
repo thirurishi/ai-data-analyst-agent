@@ -110,9 +110,9 @@ def test_upload_unsupported_extension_uses_standard_error(ingestion_api):
     boundary = "phase38-boundary"
     body = (
         f"--{boundary}\r\n"
-        'Content-Disposition: form-data; name="file"; filename="phase38.txt"\r\n'
-        "Content-Type: text/plain\r\n\r\n"
-        "not a CSV\r\n"
+        'Content-Disposition: form-data; name="file"; filename="phase38.bin"\r\n'
+        "Content-Type: application/octet-stream\r\n\r\n"
+        "not a supported upload\r\n"
         f"--{boundary}--\r\n"
     ).encode()
 

@@ -6,6 +6,7 @@ from backend.app.api.routes.csv_read import router as csv_read_router
 from backend.app.api.routes.data_quality import router as data_quality_router
 from backend.app.api.routes.database_analysis import router as database_analysis_router
 from backend.app.api.routes.database_ingestion import router as database_ingestion_router
+from backend.app.api.routes.documents import router as documents_router
 from backend.app.api.routes.llm import router as llm_router
 from backend.app.api.routes.metadata import router as metadata_router
 from backend.app.api.routes.profile_csv import router as profile_csv_router
@@ -28,6 +29,7 @@ def health_check():
 app.include_router(agent_router)
 app.include_router(analysis_router)
 app.include_router(upload_router)
+app.include_router(documents_router)
 app.include_router(csv_read_router)
 app.include_router(profile_csv_router)
 app.include_router(metadata_router)
