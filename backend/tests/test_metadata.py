@@ -105,7 +105,7 @@ def test_metadata_returns_not_found_for_missing_file(metadata_endpoint):
     status_code, payload = get_metadata(metadata_endpoint, "does-not-exist.csv")
 
     assert status_code == 404
-    assert "was not found" in payload["detail"]
+    assert payload["error"]["code"] == "file_not_found"
 
 
 def test_metadata_works_for_existing_sample_without_changing_it(metadata_endpoint):
@@ -136,4 +136,4 @@ def test_metadata_rejects_invalid_csv(metadata_endpoint, filename, contents, exp
         path.unlink(missing_ok=True)
 
     assert status_code == 400
-    assert expected_detail in payload["detail"]
+    assert payload["error"]["message"]

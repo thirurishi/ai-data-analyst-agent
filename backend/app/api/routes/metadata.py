@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 
+from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
 from backend.app.ingestion.metadata_service import MetadataService
 from backend.app.schemas.metadata import CsvMetadataResponse
 
@@ -8,13 +9,14 @@ router = APIRouter()
 
 @router.get("/metadata", response_model=CsvMetadataResponse)
 async def get_uploaded_csv_metadata(
-    filename: str = Query(..., description="Name of an uploaded CSV in the safe upload directory."),
+    filename: str | None = Query(None, description="Name of an uploaded CSV in the safe upload directory."),
 ):
+    if filename is None:
+        return ingestion_error(400, "missing_filename", "A CSV file name is required.")
+
     try:
         return MetadataService.get_csv_metadata(filename)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception as exc:  # pragma: no cover - defensive guard for general read issues
-        raise HTTPException(status_code=400, detail=f"Could not retrieve CSV metadata: {str(exc)}") from exc
+    except (FileNotFoundError, ValueError) as exc:
+        return expected_ingestion_error(exc)
+    except Exception:  # pragma: no cover - defensive guard for general read issues
+        return unexpected_ingestion_error()

@@ -1,19 +1,21 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 
+from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
 from backend.app.ingestion.data_profiler import DataProfilerService
 
 router = APIRouter()
 
 
 @router.get("/profile-csv")
-async def profile_uploaded_csv(filename: str = Query(..., description="Name of an uploaded CSV in the safe upload directory.")):
+async def profile_uploaded_csv(filename: str | None = Query(None, description="Name of an uploaded CSV in the safe upload directory.")):
+    if filename is None:
+        return ingestion_error(400, "missing_filename", "A CSV file name is required.")
+
     try:
         profile = DataProfilerService.profile_csv(filename)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception as exc:  # pragma: no cover - defensive guard for general read issues
-        raise HTTPException(status_code=400, detail=f"Could not profile CSV file: {str(exc)}") from exc
+    except (FileNotFoundError, ValueError) as exc:
+        return expected_ingestion_error(exc)
+    except Exception:  # pragma: no cover - defensive guard for general read issues
+        return unexpected_ingestion_error()
 
     return profile
