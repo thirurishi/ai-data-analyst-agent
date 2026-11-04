@@ -3,7 +3,15 @@ from fastapi import APIRouter
 from backend.app.analysis.service import AnalysisValidationError, DeterministicAnalysisService
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
 from backend.app.ingestion.csv_reader import CsvReaderService
-from backend.app.schemas.analysis import AnalysisRequest, AnalysisResponse
+from backend.app.llm.planner import AnalysisPlannerService, AnalysisPlanValidationError
+from backend.app.llm.schemas import DatasetMetadata
+from backend.app.llm.service import LLMService
+from backend.app.schemas.analysis import (
+    AnalysisRequest,
+    AnalysisResponse,
+    QuestionAnalysisRequest,
+    QuestionAnalysisResponse,
+)
 
 router = APIRouter()
 
@@ -49,6 +57,64 @@ def analyze_request(payload: AnalysisRequest):
         return AnalysisResponse.model_validate(result)
     except AnalysisValidationError as exc:
         return ingestion_error(400, "invalid_analysis_request", str(exc))
+    except (FileNotFoundError, ValueError) as exc:
+        return expected_ingestion_error(exc)
+    except Exception:
+        return unexpected_ingestion_error()
+
+
+def analyze_question(
+    payload: QuestionAnalysisRequest,
+    planner: AnalysisPlannerService | None = None,
+) -> QuestionAnalysisResponse:
+    dataframe = CsvReaderService.read_csv(payload.filename, payload.file_id)
+    metadata = DatasetMetadata(
+        row_count=len(dataframe),
+        column_names=[str(column) for column in dataframe.columns],
+        dtypes={str(column): str(dtype) for column, dtype in dataframe.dtypes.items()},
+    )
+    planner_service = planner or AnalysisPlannerService(LLMService())
+    plan = planner_service.plan(payload.question, metadata)
+
+    if plan.operation == "summary":
+        result = DeterministicAnalysisService.analyze_dataset(dataframe)
+    elif plan.operation == "aggregate":
+        if plan.column is None or plan.aggregation is None:
+            raise AnalysisPlanValidationError("The aggregate operation requires column and aggregation.")
+        result = DeterministicAnalysisService.aggregate(dataframe, plan.column, plan.aggregation)
+    elif plan.operation == "group_by":
+        if plan.group_by is None or plan.value_column is None or plan.aggregation is None:
+            raise AnalysisPlanValidationError("The group_by operation requires group_by, value_column, and aggregation.")
+        result = DeterministicAnalysisService.group_by(
+            dataframe,
+            plan.group_by,
+            plan.value_column,
+            plan.aggregation,
+        )
+    else:
+        if plan.group_by is None or plan.value_column is None or plan.aggregation is None or plan.n is None:
+            raise AnalysisPlanValidationError("The top_n operation requires group_by, value_column, aggregation, and n.")
+        result = DeterministicAnalysisService.top_n(
+            dataframe,
+            plan.group_by,
+            plan.value_column,
+            plan.aggregation,
+            plan.n,
+        )
+
+    return QuestionAnalysisResponse(
+        question=payload.question,
+        plan=plan,
+        result=result,
+    )
+
+
+@router.post("/analyze/question", response_model=QuestionAnalysisResponse)
+def analyze_question_route(payload: QuestionAnalysisRequest):
+    try:
+        return analyze_question(payload)
+    except AnalysisPlanValidationError as exc:
+        return ingestion_error(400, "invalid_analysis_plan", str(exc))
     except (FileNotFoundError, ValueError) as exc:
         return expected_ingestion_error(exc)
     except Exception:
