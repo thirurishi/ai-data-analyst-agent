@@ -379,26 +379,35 @@ async function ask(question) {
   turn.className = "turn reveal";
   turn.innerHTML = `<div class="bubble">${esc(question)}</div>
     <div class="answer"><div class="avatar">${ICON.spark}</div><div class="answer-body card"><div class="typing" aria-label="Working"><i></i><i></i><i></i></div></div></div>`;
-  $("#thread").prepend(turn);
+  // Chat order: oldest at the top, newest at the bottom, and bring the new question into view.
+  $("#thread").append(turn);
+  turn.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
   const answer = $(".answer", turn), box = $(".answer-body", turn);
   try {
     const res = await api("/assistant/ask", { json: { file_id: state.current.file_id, question } });
     const args = Object.entries(res.tool.arguments).map(([k, v]) => `${k}: ${v}`).join(", ");
+    const preview = res.result?.operation === "preview" && res.result.rows?.length
+      ? `<div class="table-wrap answer-table"><table><thead><tr>${res.result.columns.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${res.result.rows.map((r) => `<tr>${res.result.columns.map((c) => `<td class="${typeof r[c] === "number" ? "num" : ""}">${r[c] === null ? '<span class="hint">empty</span>' : esc(typeof r[c] === "number" ? fmt(r[c]) : r[c])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`
+      : "";
     box.innerHTML = `
-      <p>${esc(res.answer)}</p>
+      <p class="asked">Answer to “${esc(question)}”</p>
+      <p>${esc(res.answer).replace(/\n/g, "<br>")}</p>
       ${res.note ? `<p class="note">${esc(res.note)}</p>` : ""}
+      ${preview}
       ${res.chart ? '<div class="canvas"><canvas></canvas></div>' : ""}
       <div class="meta"><span class="tag ${res.mode}">${res.mode === "llm" ? "AI agent" : "Built-in analyst"}</span><span class="tag">${esc(res.tool.name)}</span>${args ? `<span class="tag">${esc(args)}</span>` : ""}
         <span class="spacer"></span><button class="btn ghost small" type="button" data-act="copy">${ICON.copy} Copy</button></div>
       <details><summary>Show the calculation result</summary><pre>${esc(JSON.stringify(res.result, null, 2))}</pre></details>`;
     if (res.chart) drawChart($("canvas", box), res.chart);
+    // Keep the question visible: once the answer is in, line the question up at the top of the screen.
+    requestAnimationFrame(() => turn.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" }));
     $('[data-act="copy"]', box).addEventListener("click", async () => {
       try { await navigator.clipboard.writeText(res.answer); toast("Answer copied"); } catch { toast("Copy is not available in this browser.", true); }
     });
   } catch (error) {
     answer.classList.add("error");
     $(".avatar", answer).innerHTML = ICON.alert;
-    box.innerHTML = `<p>${esc(error.message)}</p>`;
+    box.innerHTML = `<p class="asked">Answer to “${esc(question)}”</p><p>${esc(error.message)}</p>`;
   }
 }
 
@@ -528,11 +537,12 @@ async function askDocument(question) {
   const turn = document.createElement("div");
   turn.className = "turn reveal";
   turn.innerHTML = `<div class="bubble">${esc(question)}</div><div class="answer"><div class="avatar">${ICON.spark}</div><div class="answer-body card"><div class="typing"><i></i><i></i><i></i></div></div></div>`;
-  $("#doc-thread").prepend(turn);
+  $("#doc-thread").append(turn);
+  turn.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
   const answer = $(".answer", turn), box = $(".answer-body", turn);
   try {
     const res = await api("/documents/ask", { json: { file_id: state.current.file_id, question } });
-    box.innerHTML = `<p>${esc(res.answer)}</p>${res.citations.length ? `<p class="cites">Sources: passages ${res.citations.map((c) => c.chunk_index + 1).join(", ")}</p>` : ""}`;
+    box.innerHTML = `<p class="asked">Answer to “${esc(question)}”</p><p>${esc(res.answer)}</p>${res.citations.length ? `<p class="cites">Sources: passages ${res.citations.map((c) => c.chunk_index + 1).join(", ")}</p>` : ""}`;
   } catch (error) {
     answer.classList.add("error");
     $(".avatar", answer).innerHTML = ICON.alert;

@@ -321,3 +321,108 @@ def test_offline_agent_row_count_and_grouped_counts_stay_distinct(kaggle_style_f
 
     assert agent.run("how many rows")["answer"] == "The dataset has 6 rows and 8 columns."
     assert agent.run("how many rows per gender")["tool_name"] == "analyze_group_by"
+
+
+@pytest.fixture(scope="module")
+def sample_agent() -> OfflineAgent:
+    return OfflineAgent(pd.read_csv(SAMPLE_CSV))
+
+
+@pytest.mark.parametrize(
+    ("question", "tool", "expected"),
+    [
+        ("what is this data about", "analyze_summary", "Each row looks like one order"),
+        ("list all columns", "list_columns", "11 columns"),
+        ("what are the data types", "column_types", "order_date: date"),
+        ("how many rows", "analyze_summary", "643 rows"),
+        ("show me the first 5 rows", "preview_rows", "first 5 rows"),
+        ("show last 3 rows", "preview_rows", "last 3 rows"),
+        ("any missing values?", "missing_values", "customer_rating: 14"),
+        ("missing values in customer rating", "missing_values", "14 missing values"),
+        ("are there duplicates?", "duplicates", "3 exact duplicate rows"),
+        ("is the data clean?", "data_quality", "Data health is"),
+        ("what is the date range?", "date_range", "02 Jan 2025 to 31 Dec 2025"),
+        ("what are the categories", "list_categories", "region (7)"),
+        ("unique values of region", "unique_values", "7 distinct values"),
+        ("most common product", "most_common", "'Laptop Stand'"),
+        ("describe revenue", "describe_column", "median"),
+        ("tell me about channel", "describe_column", "3 distinct values"),
+        ("correlation between units and revenue", "correlation", "r = "),
+        ("how many orders", "count_distinct", "640 distinct"),
+        ("how many units were sold", "analyze_aggregate", "1,452"),
+        ("which region has the highest revenue", "analyze_top_n", "'Auvergne-Rhône-Alpes' has the highest total revenue"),
+        ("which channel has the lowest average revenue", "analyze_top_n", "'Marketplace' has the lowest"),
+        ("total revenue for Electronics", "analyze_aggregate", "For category = 'Electronics'"),
+        ("revenue by month", "analyze_trend", "12 periods"),
+        ("quarterly revenue", "analyze_trend", "Q1 2025"),
+        ("help", "help", "Try:"),
+    ],
+)
+def test_offline_agent_answers_common_questions(sample_agent, question, tool, expected):
+    outcome = sample_agent.run(question)
+
+    assert outcome["tool_name"] == tool
+    assert expected in outcome["answer"]
+
+
+def test_assistant_api_returns_line_chart_for_trends_and_rows_for_preview(sample_file_id, monkeypatch):
+    monkeypatch.setattr(insights_routes.settings, "OPENROUTER_API_KEY", None)
+    trend = client.post("/assistant/ask", json={"file_id": sample_file_id, "question": "revenue by month"}).json()
+    preview = client.post("/assistant/ask", json={"file_id": sample_file_id, "question": "show me the first 3 rows"}).json()
+
+    assert trend["chart"]["type"] == "line" and len(trend["chart"]["labels"]) == 12
+    assert preview["result"]["operation"] == "preview" and len(preview["result"]["rows"]) == 3
+
+
+def test_table_questions_skip_the_llm_even_when_configured(sample_file_id, monkeypatch):
+    import backend.app.api.routes.agent as agent_routes
+
+    def must_not_be_called(*args, **kwargs):
+        raise AssertionError("LLM agent should not be used for table questions")
+
+    monkeypatch.setattr(insights_routes.settings, "OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setattr(agent_routes, "agent_analyze", must_not_be_called)
+    response = client.post("/assistant/ask", json={"file_id": sample_file_id, "question": "list all columns"})
+
+    assert response.status_code == 200
+    assert response.json()["tool"]["name"] == "list_columns"
+
+
+@pytest.mark.parametrize(
+    ("question", "tool", "expected"),
+    [
+        ("what is the best selling product", "analyze_top_n", "'Smart Watch' has the highest total revenue"),
+        ("which is the worst performing region", "analyze_top_n", "'Grand Est' has the lowest total revenue"),
+        ("which month had the highest revenue", "analyze_trend", "Jan 2025 had the highest total revenue"),
+        ("busiest month", "analyze_trend", "had the highest number of rows"),
+        ("compare online vs store revenue", "compare_groups", "'Online' is 2.06× 'Store'"),
+        ("what percentage of revenue comes from electronics", "share_of_total", "55.4% of total revenue"),
+        ("share of orders from online", "share_of_total", "of all rows"),
+        ("revenue in march", "analyze_aggregate", "In March (50 rows)"),
+        ("total revenue in 2025", "analyze_aggregate", "In 2025"),
+        ("are there any outliers in revenue", "outliers", "outliers"),
+        ("give me insights", "key_insights", "Key insights"),
+        ("revenue by region and channel", "analyze_group_by_two", "combinations"),
+        ("average discount by channel", "analyze_group_by", "'Marketplace' ranks first"),
+    ],
+)
+def test_offline_agent_answers_intermediate_questions(sample_agent, question, tool, expected):
+    outcome = sample_agent.run(question)
+
+    assert outcome["tool_name"] == tool
+    assert expected in outcome["answer"]
+    assert "'nan'" not in outcome["answer"]
+
+
+def test_rankings_merge_spelling_variants_of_the_same_group(sample_agent):
+    rows = sample_agent.run("how many rows per region")["result"]["rows"]
+    names = [row["region"] for row in rows]
+
+    assert "Occitanie" in names
+    assert not any(name.strip() != name or name == "occitanie" for name in names)
+
+
+def test_suggested_questions_use_plural_for_rankings():
+    questions = InsightService.suggested_questions("revenue", "product_category", {"numeric": ["revenue"], "categorical": ["product_category"], "datetime": [], "identifier": [], "text": []})
+
+    assert "Top 5 product categories by revenue" in questions

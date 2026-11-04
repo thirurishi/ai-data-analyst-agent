@@ -180,6 +180,16 @@ def assistant_ask(payload: AssistantRequest):
             "Questions about documents need OPENROUTER_API_KEY and EMBEDDING_API_KEY in your .env file.",
         )
 
+    if use_llm and not is_document:
+        # Questions about the table itself (columns, rows, missing values, ...) are answered directly.
+        try:
+            dataframe = CsvReaderService.read_csv(file_id=payload.file_id)
+            direct = OfflineAgent(dataframe)._intent(payload.question)
+        except Exception:  # noqa: BLE001 - fall through to the LLM agent
+            direct = None
+        if direct is not None:
+            return _offline_response(payload.question, direct, "offline")
+
     if use_llm:
         try:
             response = agent_analyze(AgentAnalysisRequest(file_id=payload.file_id, question=payload.question))
@@ -208,14 +218,18 @@ def assistant_ask(payload: AssistantRequest):
         logger.exception("Offline assistant failed")
         return unexpected_ingestion_error()
 
+    return {**_offline_response(payload.question, outcome, "offline"), "note": note}
+
+
+def _offline_response(question: str, outcome: dict, mode: str) -> dict:
     return {
-        "question": payload.question,
+        "question": question,
         "tool": {"backend": "pandas", "name": outcome["tool_name"], "arguments": outcome["arguments"]},
         "result": outcome["result"],
         "answer": outcome["answer"],
-        "mode": "offline",
-        "chart": InsightService.chart_from_result(outcome["result"]),
-        "note": note,
+        "mode": mode,
+        "chart": outcome.get("chart") or InsightService.chart_from_result(outcome["result"]),
+        "note": None,
     }
 
 

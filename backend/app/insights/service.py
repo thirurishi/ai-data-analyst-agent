@@ -395,19 +395,21 @@ class InsightService:
         group = result.get("group_by")
         if not rows or not group:
             return None
-        labels = [row.get(group) for row in rows][:25]
-        values = [row.get("value") for row in rows][:25]
+        limit = 60 if result.get("chart_type") == "line" else 25
+        labels = [row.get(group) for row in rows][:limit]
+        values = [row.get("value") for row in rows][:limit]
         if not all(isinstance(value, (int, float)) and not isinstance(value, bool) for value in values):
             return None
         aggregation = result.get("aggregation", "")
+        chart_type = result.get("chart_type", "bar")
         if aggregation == "count":
             return InsightService._chart(
-                "answer", f"Rows by {humanize(group)}", "bar", labels, values,
+                "answer", f"Rows by {humanize(group)}", chart_type, labels, values,
                 x_label=humanize(group), y_label="rows", series_label="rows",
             )
         value_name = humanize(result.get("value_column") or "value")
         return InsightService._chart(
-            "answer", f"{aggregation.capitalize()} {value_name} by {humanize(group)}", "bar", labels, values,
+            "answer", f"{aggregation.capitalize()} {value_name} by {humanize(group)}", chart_type, labels, values,
             x_label=humanize(group), y_label=value_name, series_label=f"{aggregation} {value_name}",
         )
 
@@ -631,7 +633,8 @@ class InsightService:
         total_m = m if m.startswith("total") else f"total {m}"
         if metric and category:
             questions.append(f"What is the {total_m} by {c}?")
-            questions.append(f"Top 5 {c} by {m}")
+            plural = c if c.endswith("s") else (c[:-1] + "ies" if c.endswith("y") and c[-2:-1] not in "aeiou" else c + "s")
+            questions.append(f"Top 5 {plural} by {m}")
             questions.append(f"Average {m.removeprefix('total ')} by {c}")
         if metric:
             questions.append(f"What is the {total_m}?")

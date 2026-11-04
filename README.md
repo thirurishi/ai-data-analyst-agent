@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://ai-data-analyst-agent-wbvy.onrender.com"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-open_app-3F6B57?style=for-the-badge"></a>
-  <img alt="Tests" src="https://img.shields.io/badge/tests-402_passing-3F6B57?style=for-the-badge">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-444_passing-3F6B57?style=for-the-badge">
   <img alt="Python" src="https://img.shields.io/badge/python-3.11+-1E2924?style=for-the-badge&logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-1E2924?style=for-the-badge&logo=fastapi&logoColor=white">
   <img alt="Pandas" src="https://img.shields.io/badge/pandas-1E2924?style=for-the-badge&logo=pandas&logoColor=white">
@@ -59,6 +59,28 @@ Upload a CSV and get what a junior analyst would hand you on day one: **key metr
 | 📚 **Document Q&A (RAG)** | PDF, DOCX and TXT extraction, deterministic chunking, embeddings, vector search (in memory or pgvector) and answers with cited passages. |
 | 🗄️ **SQL backend** | CSVs can be ingested into PostgreSQL, and the agent chooses between Pandas and SQL tools. |
 | 🔒 **Safe by design** | Filename and path-traversal protection, size and content-type limits, UUID file IDs with content fingerprints, read-only analysis and standard error codes. |
+
+<details>
+<summary><b>💬 Questions the built-in analyst understands (no API key needed)</b></summary>
+
+| Type | Examples |
+|---|---|
+| **About the table** | what is this data about · list all columns · what are the data types · how many rows · show me the first 5 rows |
+| **Data quality** | any missing values? · missing values in customer rating · are there duplicates? · is the data clean? |
+| **One column** | describe revenue · unique values of region · what are the categories · most common product · how many customers |
+| **Dates & trends** | what is the date range? · revenue by month · quarterly revenue · monthly orders |
+| **Calculations** | total revenue · average discount · total revenue by region · top 3 products by revenue |
+| **Rankings** | which region has the highest revenue · the best selling product · the worst performing region · highest revenue order |
+| **Filters** | total revenue for Electronics · average revenue in Occitanie · how many orders online · revenue in March · total revenue in 2025 |
+| **Comparisons & share** | compare online vs store revenue · what percentage of revenue comes from electronics · share of orders from online |
+| **Best periods** | which month had the highest revenue · busiest month · which quarter had the most orders |
+| **Two-way breakdowns** | revenue by region and channel |
+| **Relationships & outliers** | correlation between units and revenue · what correlates with revenue · are there any outliers in revenue? |
+| **Insights** | give me insights · what are the key insights |
+| **Help** | help · what can I ask? |
+
+Column names don't need to be exact: *products* finds `Product Category`, and *revenue* or *sales* finds the main money column.
+</details>
 
 ## 🧠 How it works
 
@@ -131,7 +153,7 @@ sequenceDiagram
 | **AI** | OpenRouter (LLM tool-calling), OpenAI-compatible embeddings, pgvector |
 | **Documents** | pypdf, python-docx, ReportLab (PDF reports) |
 | **Frontend** | Vanilla JavaScript, Chart.js, CSS (light and dark themes) |
-| **Quality** | pytest (402 tests), ruff |
+| **Quality** | pytest (444 tests), ruff |
 | **Delivery** | Docker, Docker Compose, Render |
 
 ## 🚀 Quick start
@@ -229,7 +251,7 @@ curl -X POST http://127.0.0.1:8000/assistant/ask \
 python -m pytest -q
 ```
 
-**402 tests** cover ingestion edge cases, security, data quality, cleaning, the analysis tools, the LLM planner and tool selection (with mocked providers), RAG, persistence, insights, reports and the offline assistant. They run against an isolated temporary upload directory and need no API keys or database.
+**444 tests** cover ingestion edge cases, security, data quality, cleaning, the analysis tools, the LLM planner and tool selection (with mocked providers), RAG, persistence, insights, reports and the offline assistant. They run against an isolated temporary upload directory and need no API keys or database.
 
 ## 🗂️ Project structure
 
@@ -250,7 +272,7 @@ ai-data-analyst-agent/
 │   │   ├── repositories/   # vector stores (memory / pgvector)
 │   │   ├── ingestion/      # safe uploads, file registry, CSV reader, profiler
 │   │   └── main.py
-│   └── tests/              # 402 pytest tests
+│   └── tests/              # 444 pytest tests
 ├── frontend/               # web app (HTML, CSS, JS) served at /app
 ├── sample_data/            # demo retail dataset
 ├── docs/                   # banner, demo GIF, screenshots

@@ -302,7 +302,16 @@ kbd { font: inherit; font-size: 11px; padding: 0 5px; border: 1px solid var(--li
 /* Ask (chat) --------------------------------------------------------------- */
 .panel[data-panel="ask"] { display: flex; flex-direction: column; gap: 18px; }
 .panel[data-panel="ask"][hidden] { display: none; }
-.ask-dock { position: sticky; bottom: 16px; z-index: 3; order: -1; }
+.panel[data-panel="ask"] { min-height: calc(100vh - 250px); }
+.panel[data-panel="ask"] .chat { flex: 1; align-content: start; padding-bottom: 40vh; }
+.panel[data-panel="ask"] .chat:has(.chat-empty) { padding-bottom: 0; }
+.ask-dock { position: sticky; bottom: 0; z-index: 3; order: 2; padding: 18px 0 16px; margin-top: auto;
+  background: linear-gradient(to bottom, transparent, var(--bg) 26px); }
+.ask-dock .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-top: 10px; padding-bottom: 2px; }
+.ask-dock .chips::-webkit-scrollbar { display: none; }
+.ask-dock .chip { flex: none; }
+.turn { scroll-margin-top: 78px; }
+.asked { margin: 0 0 8px; font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
 .ask {
   display: flex; align-items: center; gap: 8px; padding: 7px 7px 7px 14px; border-radius: 14px; background: var(--surface);
   border: 1px solid var(--line-strong); box-shadow: var(--shadow);
@@ -455,3 +464,4 @@ td.num { text-align: right; }
 /* Fixes ------------------------------------------------------------------- */
 .search[hidden], [hidden] { display: none !important; }
 .demo-chart rect { stroke: none; }
+.answer-table { margin-top: 14px; max-height: 360px; border: 1px solid var(--line); border-radius: var(--r-s); }
