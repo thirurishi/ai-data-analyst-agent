@@ -7,6 +7,11 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     OPENROUTER_API_KEY: str | None = None
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
+    EMBEDDING_API_KEY: str | None = None
+    EMBEDDING_MODEL: str = "text-embedding-3-small"
+    EMBEDDING_API_BASE_URL: str = "https://api.openai.com/v1/embeddings"
+    EMBEDDING_DIMENSIONS: int = 1536
+    EMBEDDING_VECTOR_STORE: str = "memory"
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str | None = None
