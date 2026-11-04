@@ -83,7 +83,12 @@ def agent_analyze(
     tool_registry = registry or ToolRegistry()
     selector = selector_service or ToolSelectionService(LLMService())
     selected = selector.select(payload.question, metadata, tool_registry.definitions())
-    result = tool_registry.execute(selected.tool_name, dataframe, selected.arguments)
+    result = tool_registry.execute(
+        selected.tool_name,
+        dataframe,
+        selected.arguments,
+        backend=selected.backend,
+    )
     plan = _plan_from_tool_call(selected)
     answer_service_instance = answer_service or AnswerGenerationService(LLMService())
     answer = answer_service_instance.answer(

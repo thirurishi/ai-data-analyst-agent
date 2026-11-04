@@ -21,6 +21,7 @@ from backend.app.tools.schemas import (
 
 
 class SelectedToolCall(BaseModel):
+    backend: str
     tool_name: str
     arguments: Any
 
@@ -63,13 +64,35 @@ class ToolSelectionService:
                 raise ValueError(f"Unknown tool '{tool_name}'.")
             if tool_name not in {item["name"] for item in definitions}:
                 raise ValueError(f"Unknown tool '{tool_name}'.")
+
             input_model = self._input_models[tool_name]
             validated_arguments = input_model.model_validate(arguments)
+            backend = payload.get("backend")
+            if backend is None:
+                backend = self._infer_backend(tool_name)
+            if not isinstance(backend, str) or backend not in {"pandas", "sql"}:
+                raise ValueError(f"Unsupported backend '{backend}'.")
+
+            tool_definition = next(
+                item for item in definitions if item["name"] == tool_name
+            )
+            if backend != tool_definition["backend"]:
+                raise ValueError(
+                    f"Backend '{backend}' is not supported for tool '{tool_name}'."
+                )
         except (json.JSONDecodeError, TypeError, ValidationError) as exc:
             raise ValueError(f"The LLM did not return a valid tool call: {exc}") from exc
 
         self._validate_against_metadata(validated_arguments, metadata)
-        return SelectedToolCall(tool_name=tool_name, arguments=validated_arguments)
+        return SelectedToolCall(
+            backend=backend,
+            tool_name=tool_name,
+            arguments=validated_arguments,
+        )
+
+    @staticmethod
+    def _infer_backend(tool_name: str) -> str:
+        return "sql" if tool_name.startswith("sql_") else "pandas"
 
     @staticmethod
     def _build_prompt(
@@ -83,7 +106,7 @@ class ToolSelectionService:
                 "dataset_metadata": metadata.model_dump(mode="json"),
                 "available_tools": definitions,
                 "instructions": (
-                    "Select exactly one registered tool and provide only its arguments. "
+                    "Select exactly one registered tool and provide its backend and arguments. "
                     "Do not execute code, invent columns, values, or functions, or return an answer. "
                     "Use only the supplied dataset metadata and registered tool definitions."
                 ),

@@ -23,6 +23,7 @@ from backend.app.tools.schemas import (
 @dataclass(frozen=True)
 class ToolDefinition:
     name: str
+    backend: str
     description: str
     input_schema: type[BaseModel]
     callable: Callable[[pd.DataFrame, BaseModel], dict[str, Any]]
@@ -32,12 +33,14 @@ class ToolRegistry:
     _definitions: tuple[ToolDefinition, ...] = (
         ToolDefinition(
             name="analyze_summary",
+            backend="pandas",
             description="Return dataset-level row and column summary information.",
             input_schema=AnalyzeSummaryInput,
             callable=lambda dataframe, arguments: DeterministicAnalysisService.analyze_dataset(dataframe),
         ),
         ToolDefinition(
             name="analyze_aggregate",
+            backend="pandas",
             description="Compute one aggregate value for a named column.",
             input_schema=AnalyzeAggregateInput,
             callable=lambda dataframe, arguments: DeterministicAnalysisService.aggregate(
@@ -48,6 +51,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="analyze_group_by",
+            backend="pandas",
             description="Group rows and aggregate a named value column.",
             input_schema=AnalyzeGroupByInput,
             callable=lambda dataframe, arguments: DeterministicAnalysisService.group_by(
@@ -59,6 +63,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="analyze_top_n",
+            backend="pandas",
             description="Return the top groups by an aggregated value.",
             input_schema=AnalyzeTopNInput,
             callable=lambda dataframe, arguments: DeterministicAnalysisService.top_n(
@@ -71,6 +76,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="sql_summary",
+            backend="sql",
             description="Return summary metadata for a registered database file.",
             input_schema=SqlSummaryInput,
             callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
@@ -80,6 +86,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="sql_aggregate",
+            backend="sql",
             description="Compute one allowlisted aggregate for a registered database file.",
             input_schema=SqlAggregateInput,
             callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
@@ -91,6 +98,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="sql_group_by",
+            backend="sql",
             description="Group rows and compute an allowlisted aggregate for a registered database file.",
             input_schema=SqlGroupByInput,
             callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
@@ -103,6 +111,7 @@ class ToolRegistry:
         ),
         ToolDefinition(
             name="sql_top_n",
+            backend="sql",
             description="Return the top groups for an allowlisted aggregate on a registered database file.",
             input_schema=SqlTopNInput,
             callable=lambda dataframe, arguments: SqlAnalysisService.analyze(
@@ -123,6 +132,7 @@ class ToolRegistry:
         return [
             {
                 "name": definition.name,
+                "backend": definition.backend,
                 "description": definition.description,
                 "input_schema": definition.input_schema.model_json_schema(),
             }
@@ -135,7 +145,17 @@ class ToolRegistry:
                 return definition
         raise ValueError(f"Unknown tool '{name}'.")
 
-    def execute(self, name: str, dataframe: pd.DataFrame, arguments: BaseModel | dict[str, Any]) -> dict[str, Any]:
+    def execute(
+        self,
+        name: str,
+        dataframe: pd.DataFrame,
+        arguments: BaseModel | dict[str, Any],
+        backend: str | None = None,
+    ) -> dict[str, Any]:
         definition = self.describe(name)
+        if backend is not None and backend != definition.backend:
+            raise ValueError(
+                f"Backend '{backend}' is not supported for tool '{name}'."
+            )
         validated_arguments = definition.input_schema.model_validate(arguments)
         return definition.callable(dataframe, validated_arguments)
