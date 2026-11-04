@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import pandas as pd
-
 from backend.app.ingestion.csv_reader import CsvReaderService
 
 
@@ -11,11 +9,9 @@ class DataProfilerService:
         file_path = CsvReaderService.resolve_upload_path(filename)
 
         try:
-            df = pd.read_csv(file_path)
-        except pd.errors.EmptyDataError as exc:
-            raise ValueError("CSV file is empty.") from exc
-        except pd.errors.ParserError as exc:
-            raise ValueError(f"CSV file could not be parsed: {exc}") from exc
+            df = CsvReaderService.read_csv(filename)
+        except ValueError:
+            raise
         except Exception as exc:  # pragma: no cover - defensive guard
             raise ValueError(f"Could not read CSV file: {exc}") from exc
 
