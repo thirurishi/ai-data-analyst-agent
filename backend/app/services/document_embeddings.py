@@ -78,6 +78,20 @@ class DocumentEmbeddingService:
             if chunk.chunk_id != expected_chunk_id:
                 raise DocumentEmbeddingError("Document chunks must use deterministic chunk IDs.")
 
+        try:
+            stored = self.vector_store.chunk_signatures(file_id=file_id, embedding_model=self.model)
+        except (VectorStoreError, ValueError, TypeError) as exc:
+            raise DocumentEmbeddingStorageError("The vector storage operation failed.") from exc
+        if stored == {chunk.chunk_id: (chunk.text, self.dimensions) for chunk in chunks}:
+            # Already indexed with identical chunks, model, and dimensions: skip the provider call.
+            return DocumentEmbeddingResponse(
+                file_id=file_id,
+                chunk_count=len(chunks),
+                stored_count=0,
+                embedding_model=self.model,
+                dimensions=self.dimensions,
+            )
+
         texts = [chunk.text for chunk in chunks]
         try:
             embeddings = self.provider.embed(texts)
@@ -110,7 +124,12 @@ class DocumentEmbeddingService:
             for chunk, embedding in zip(chunks, embeddings)
         ]
         try:
-            stored_count = self.vector_store.upsert_records(records)
+            # Replace rather than merge, so re-chunking never leaves stale chunks behind.
+            stored_count = self.vector_store.replace_file_records(
+                file_id=file_id,
+                embedding_model=self.model,
+                records=records,
+            )
         except (VectorStoreError, ValueError, TypeError) as exc:
             raise DocumentEmbeddingStorageError("The vector storage operation failed.") from exc
 

@@ -1,14 +1,23 @@
 from __future__ import annotations
 
+import logging
 import os
 import uuid
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, fields
 from hashlib import sha256
 from pathlib import Path
+from threading import RLock
+from typing import Any
+
+from backend.app.core.json_registry import JsonRegistryFile
+
+logger = logging.getLogger(__name__)
 
 UPLOAD_DIR = Path(__file__).resolve().parents[1] / "uploads"
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 SUPPORTED_UPLOAD_EXTENSIONS = (".csv", ".pdf", ".docx", ".txt")
+# Not an allowed upload extension, so it can never collide with or be served as an upload.
+UPLOAD_REGISTRY_FILENAME = ".upload_registry.json"
 
 
 @dataclass(frozen=True)
@@ -21,8 +30,63 @@ class UploadedFileRecord:
     file_fingerprint: str
 
 
+@dataclass(frozen=True)
+class RegistryLoadResult:
+    loaded: int
+    skipped: int
+
+
 class UploadService:
     _file_records: dict[str, UploadedFileRecord] = {}
+    _registry_lock = RLock()
+    _registry_file = JsonRegistryFile(lambda: UPLOAD_DIR / UPLOAD_REGISTRY_FILENAME)
+
+    @classmethod
+    def load_registry(cls) -> RegistryLoadResult:
+        """Reload persisted upload records, keeping only files that still exist unchanged."""
+        loaded = skipped = 0
+        with cls._registry_lock:
+            for entry in cls._registry_file.load():
+                record = cls._record_from_entry(entry)
+                if record is None or not cls._record_matches_stored_file(record):
+                    skipped += 1
+                    continue
+                cls._file_records.setdefault(record.file_id, record)
+                loaded += 1
+        if skipped:
+            logger.warning("Skipped %d stale or invalid upload registry entries.", skipped)
+        return RegistryLoadResult(loaded=loaded, skipped=skipped)
+
+    @classmethod
+    def _persist_registry(cls, records: list[UploadedFileRecord]) -> None:
+        cls._registry_file.save([asdict(record) for record in records])
+
+    @staticmethod
+    def _record_from_entry(entry: dict[str, Any]) -> UploadedFileRecord | None:
+        expected = {field.name: field.type for field in fields(UploadedFileRecord)}
+        if set(entry) != set(expected):
+            return None
+        if not all(isinstance(entry[name], str) for name in expected if name != "file_size"):
+            return None
+        if isinstance(entry["file_size"], bool) or not isinstance(entry["file_size"], int):
+            return None
+        try:
+            if str(uuid.UUID(entry["file_id"])) != entry["file_id"]:
+                return None
+        except ValueError:
+            return None
+        return UploadedFileRecord(**entry)
+
+    @staticmethod
+    def _record_matches_stored_file(record: UploadedFileRecord) -> bool:
+        try:
+            stored_path = UploadService.resolve_uploaded_file(
+                record.saved_filename,
+                SUPPORTED_UPLOAD_EXTENSIONS,
+            )
+            return UploadService._file_fingerprint(stored_path) == record.file_fingerprint
+        except (FileNotFoundError, ValueError):
+            return False
 
     @staticmethod
     def ensure_upload_dir() -> Path:
@@ -104,7 +168,10 @@ class UploadService:
             file_size=stored_path.stat().st_size,
             file_fingerprint=UploadService._file_fingerprint(stored_path),
         )
-        UploadService._file_records[record.file_id] = record
+        with UploadService._registry_lock:
+            # Persist first so a record is never reported as registered without being durable.
+            UploadService._persist_registry([*UploadService._file_records.values(), record])
+            UploadService._file_records[record.file_id] = record
         return record
 
     @staticmethod

@@ -1,13 +1,25 @@
 from __future__ import annotations
 
-from sqlalchemy import Column, MetaData, PrimaryKeyConstraint, String, Table, insert, select
+from sqlalchemy import Column, MetaData, PrimaryKeyConstraint, String, Table, delete, select, text
 from sqlalchemy.dialects.postgresql import insert as postgres_insert
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.types import Integer, JSON
 
-from backend.app.repositories.vector_store import VectorStoreError, VectorStoreRepository
+from backend.app.repositories.vector_store import (
+    VectorStoreDimensionError,
+    VectorStoreError,
+    VectorStoreRepository,
+    _require_single_file_and_model,
+)
 from backend.app.schemas.embedding import VectorDocumentRecord
+
+# pgvector stores the declared dimension of a vector column in atttypmod.
+_EMBEDDING_DIMENSIONS_QUERY = text(
+    "SELECT a.atttypmod FROM pg_attribute a JOIN pg_class c ON a.attrelid = c.oid "
+    "WHERE c.relname = :table_name AND pg_table_is_visible(c.oid) "
+    "AND a.attname = 'embedding' AND NOT a.attisdropped"
+)
 
 
 class PostgresVectorStore(VectorStoreRepository):
@@ -40,10 +52,21 @@ class PostgresVectorStore(VectorStoreRepository):
         )
         with self.engine.begin() as connection:
             table.create(connection, checkfirst=True)
+            self._verify_dimensions(connection)
         self._table = table
 
-    def upsert_records(self, records: list[VectorDocumentRecord]) -> int:
-        rows = [
+    def _verify_dimensions(self, connection: Connection) -> None:
+        # CREATE TABLE IF NOT EXISTS keeps an existing table, which may use other dimensions.
+        existing = connection.execute(_EMBEDDING_DIMENSIONS_QUERY, {"table_name": self.table_name}).scalar()
+        if isinstance(existing, int) and existing > 0 and existing != self.dimensions:
+            raise VectorStoreDimensionError(
+                f"Table '{self.table_name}' stores {existing}-dimension embeddings, "
+                f"but EMBEDDING_DIMENSIONS is {self.dimensions}."
+            )
+
+    @staticmethod
+    def _rows(records: list[VectorDocumentRecord]) -> list[dict]:
+        return [
             {
                 "chunk_id": record.chunk_id,
                 "file_id": record.file_id,
@@ -55,6 +78,58 @@ class PostgresVectorStore(VectorStoreRepository):
             }
             for record in records
         ]
+
+    def chunk_signatures(self, *, file_id: str, embedding_model: str) -> dict[str, tuple[str, int]]:
+        statement = select(
+            self._table.c.chunk_id,
+            self._table.c.chunk_text,
+            self._table.c.embedding,
+        ).where(
+            self._table.c.file_id == file_id,
+            self._table.c.embedding_model == embedding_model,
+        )
+        try:
+            with self.engine.connect() as connection:
+                rows = connection.execute(statement).all()
+        except SQLAlchemyError as exc:
+            raise VectorStoreError("The PostgreSQL vector store read failed.") from exc
+        return {row.chunk_id: (row.chunk_text, len(row.embedding)) for row in rows}
+
+    def replace_file_records(
+        self,
+        *,
+        file_id: str,
+        embedding_model: str,
+        records: list[VectorDocumentRecord],
+    ) -> int:
+        _require_single_file_and_model(file_id, embedding_model, records)
+        rows = self._rows(records)
+        try:
+            # One transaction: readers see either the old chunks or the new ones, never a mix.
+            with self.engine.begin() as connection:
+                connection.execute(
+                    delete(self._table).where(
+                        self._table.c.file_id == file_id,
+                        self._table.c.embedding_model == embedding_model,
+                    )
+                )
+                if rows:
+                    statement = postgres_insert(self._table).values(rows)
+                    connection.execute(
+                        statement.on_conflict_do_update(
+                            index_elements=["chunk_id", "embedding_model"],
+                            set_={
+                                name: statement.excluded[name]
+                                for name in ("file_id", "chunk_index", "chunk_text", "embedding", "metadata")
+                            },
+                        )
+                    )
+        except SQLAlchemyError as exc:
+            raise VectorStoreError("The PostgreSQL vector store write failed.") from exc
+        return len(rows)
+
+    def upsert_records(self, records: list[VectorDocumentRecord]) -> int:
+        rows = self._rows(records)
         if not rows:
             return 0
         statement = (

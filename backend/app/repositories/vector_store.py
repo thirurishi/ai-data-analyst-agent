@@ -13,10 +13,28 @@ class VectorStoreError(RuntimeError):
     pass
 
 
+class VectorStoreDimensionError(VectorStoreError):
+    """The store already holds vectors of a different dimension than configured."""
+
+
 class VectorStoreRepository(ABC):
     @abstractmethod
     def upsert_records(self, records: list[VectorDocumentRecord]) -> int:
         """Persist records and return the number newly inserted."""
+
+    @abstractmethod
+    def chunk_signatures(self, *, file_id: str, embedding_model: str) -> dict[str, tuple[str, int]]:
+        """Return {chunk_id: (chunk_text, embedding_dimensions)} stored for one file and model."""
+
+    @abstractmethod
+    def replace_file_records(
+        self,
+        *,
+        file_id: str,
+        embedding_model: str,
+        records: list[VectorDocumentRecord],
+    ) -> int:
+        """Atomically replace every record for one file and model; return the number written."""
 
     @abstractmethod
     def search(
@@ -66,6 +84,39 @@ class InMemoryVectorStore(VectorStoreRepository):
                     inserted += 1
         return inserted
 
+    def chunk_signatures(self, *, file_id: str, embedding_model: str) -> dict[str, tuple[str, int]]:
+        with self._lock:
+            return {
+                record.chunk_id: (record.chunk_text, len(record.embedding))
+                for record in self.records
+                if record.file_id == file_id and record.embedding_model == embedding_model
+            }
+
+    def replace_file_records(
+        self,
+        *,
+        file_id: str,
+        embedding_model: str,
+        records: list[VectorDocumentRecord],
+    ) -> int:
+        _require_single_file_and_model(file_id, embedding_model, records)
+
+        def belongs(record) -> bool:
+            return record.file_id == file_id and record.embedding_model == embedding_model
+
+        with self._lock:
+            previous_records = list(self.records)
+            previous_index = dict(self._records)
+            self.records = [record for record in self.records if not belongs(record)]
+            self._records = {key: value for key, value in self._records.items() if not belongs(value)}
+            try:
+                return self.upsert_records(records)
+            except Exception:
+                # Keep the previous index intact if the write fails.
+                self.records = previous_records
+                self._records = previous_index
+                raise
+
     def search(
         self,
         *,
@@ -99,3 +150,12 @@ class InMemoryVectorStore(VectorStoreRepository):
             ranked.append((similarity, record.chunk_id, record))
         ranked.sort(key=lambda item: (-item[0], item[1]))
         return [item[2] for item in ranked[:top_k]]
+
+
+def _require_single_file_and_model(
+    file_id: str,
+    embedding_model: str,
+    records: list[VectorDocumentRecord],
+) -> None:
+    if any(record.file_id != file_id or record.embedding_model != embedding_model for record in records):
+        raise VectorStoreError("Replacement records must belong to the requested file and model.")

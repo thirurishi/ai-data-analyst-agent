@@ -56,7 +56,7 @@ def _build_vector_store(backend: str, dimensions: int) -> VectorStoreRepository:
     try:
         return PostgresVectorStore(engine, dimensions)
     except VectorStoreError as exc:
-        # Raised when the pgvector package is unavailable.
+        # pgvector is unavailable, or the existing table uses other embedding dimensions.
         raise EmbeddingConfigurationError(str(exc)) from exc
     except SQLAlchemyError as exc:
         raise VectorStoreError("The PostgreSQL vector store is unavailable.") from exc

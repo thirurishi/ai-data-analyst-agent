@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from backend.app.api.routes.agent import router as agent_router
@@ -12,8 +14,19 @@ from backend.app.api.routes.metadata import router as metadata_router
 from backend.app.api.routes.profile_csv import router as profile_csv_router
 from backend.app.api.routes.upload import router as upload_router
 from backend.app.core.config import settings
+from backend.app.db.ingestion import DatabaseIngestionService
+from backend.app.ingestion.upload_service import UploadService
 
-app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Upload records first: ingestion entries are only reloaded for uploads that still exist.
+    UploadService.load_registry()
+    DatabaseIngestionService.load_registry()
+    yield
+
+
+app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)
 
 
 @app.get("/")
