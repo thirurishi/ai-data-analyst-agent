@@ -48,3 +48,24 @@ class DataQualityResponse(BaseModel):
     duplicate_row_percentage: float
     column_reports: list[ColumnQualityReport]
     issues: list[DataQualityIssue]
+
+
+class DataQualityRecommendation(BaseModel):
+    category: str
+    severity: str
+    column: str | None = None
+    issue: str
+    recommendation: str
+    reason: str
+    requires_human_review: bool
+
+
+class DataQualityRecommendationsResponse(BaseModel):
+    filename: str
+    saved_filename: str
+    file_id: str | None = None
+    original_filename: str | None = None
+    content_type: str | None = None
+    rows: int
+    columns: int
+    recommendations: list[DataQualityRecommendation]

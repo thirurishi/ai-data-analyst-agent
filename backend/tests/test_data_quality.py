@@ -16,7 +16,8 @@ import pytest
 
 from backend.app.ingestion.upload_service import UPLOAD_DIR
 from backend.app.quality.data_quality_service import DataQualityService
-from backend.app.schemas.data_quality import DataQualityResponse
+from backend.app.quality.data_quality_recommendation_service import DataQualityRecommendationService
+from backend.app.schemas.data_quality import DataQualityRecommendationsResponse, DataQualityResponse
 from backend.app.schemas.errors import IngestionErrorResponse
 from backend.app.schemas.upload import UploadResponse
 
@@ -136,6 +137,11 @@ def report_for(dataframe: pd.DataFrame) -> dict:
 
 def column_report(report: dict, column: str) -> dict:
     return next(item for item in report["column_reports"] if item["column"] == column)
+
+
+def recommendations_for(dataframe: pd.DataFrame) -> list[dict]:
+    quality_report = DataQualityService.analyze_dataframe(dataframe)
+    return DataQualityRecommendationService.generate_recommendations(quality_report)
 
 
 def test_clean_csv_returns_a_stable_empty_issue_report():
@@ -423,4 +429,134 @@ def test_api_rejects_empty_and_malformed_csv(data_quality_api, uploaded_csv):
         request_json(data_quality_api, f"/data-quality?filename={malformed_path.name}"),
         400,
         "malformed_csv",
+    )
+
+
+def test_clean_dataset_produces_no_recommendations():
+    dataframe = pd.DataFrame({"name": ["Ada", "Ben"], "amount": [10, 20]})
+
+    assert recommendations_for(dataframe) == []
+
+
+@pytest.mark.parametrize(
+    ("dataframe", "expected_category"),
+    [
+        (pd.DataFrame({"name": ["Ada", None, "Ben"]}), "missing_values"),
+        (pd.DataFrame({"name": ["Ada", "Ada"]}), "duplicate_rows"),
+        (pd.DataFrame({"empty": [None, None]}), "empty_column"),
+        (pd.DataFrame({"sparse": [None] * 9 + ["present"]}), "nearly_empty_column"),
+        (pd.DataFrame({"status": ["active"] * 3}), "constant_column"),
+        (pd.DataFrame({"amount": ["10", "unknown", "40"]}), "numeric_invalid_values"),
+        (pd.DataFrame({"amount": ["10", "unknown", "40"]}), "mixed_types"),
+        (pd.DataFrame({"event_date": ["2024-01-01", "invalid", "2024-03-01"]}), "date_invalid_values"),
+        (pd.DataFrame({"city": ["Paris", " paris", "PARIS"]}), "categorical_inconsistency"),
+        (pd.DataFrame({"value": [10, 11, 12, 13, 100]}), "numeric_outliers"),
+        (pd.DataFrame({"value": [1, 2, float("inf"), 4, 5]}), "numeric_invalid_values"),
+    ],
+)
+def test_detected_quality_signals_produce_human_review_recommendations(dataframe, expected_category):
+    recommendations = recommendations_for(dataframe)
+
+    recommendation = next(item for item in recommendations if item["category"] == expected_category)
+    assert recommendation["issue"]
+    assert recommendation["recommendation"]
+    assert recommendation["reason"]
+    assert recommendation["requires_human_review"] is True
+    if expected_category == "numeric_outliers":
+        assert "Investigate" in recommendation["recommendation"]
+        assert "remove" not in recommendation["recommendation"].lower()
+    if expected_category == "numeric_invalid_values" and "inf" in dataframe.to_string().lower():
+        assert "infinity-like" in recommendation["reason"]
+
+
+def test_recommendation_generation_does_not_modify_dataframe():
+    dataframe = pd.DataFrame(
+        {
+            "name": ["Ada", None, "Ada", "Ben"],
+            "amount": [10, 20, 10, float("inf")],
+        }
+    )
+    original = dataframe.copy(deep=True)
+
+    recommendations = recommendations_for(dataframe)
+
+    assert recommendations
+    pd.testing.assert_frame_equal(dataframe, original)
+
+
+def test_recommendation_response_schema_validates_output():
+    dataframe = pd.DataFrame({"name": ["Ada", None]})
+    report = DataQualityService.analyze_dataframe(dataframe)
+    payload = {
+        "filename": "sample.csv",
+        "saved_filename": "sample.csv",
+        "rows": report["rows"],
+        "columns": report["columns"],
+        "recommendations": DataQualityRecommendationService.generate_recommendations(report),
+    }
+
+    response = DataQualityRecommendationsResponse.model_validate(payload)
+
+    assert response.recommendations[0].category == "missing_values"
+    assert response.recommendations[0].requires_human_review is True
+
+
+def test_recommendations_api_works_with_filename_and_preserves_bytes(data_quality_api, uploaded_csv):
+    contents = b"name,amount\nAda,10\n,20\n"
+    path = uploaded_csv("phase42_recommendations_filename.csv", contents)
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?filename={path.name}",
+    )
+
+    assert status == 200
+    response = DataQualityRecommendationsResponse.model_validate(payload)
+    assert response.filename == path.name
+    assert response.rows == 2
+    assert any(item.category == "missing_values" for item in response.recommendations)
+    assert path.read_bytes() == contents
+
+
+def test_recommendations_api_works_with_registered_file_id_and_preserves_bytes(data_quality_api):
+    filename = f"phase42_recommendations_id_{uuid.uuid4().hex}.csv"
+    contents = b"name,amount\nAda,10\n,20\n"
+    status, upload_payload = upload_csv(data_quality_api, filename, contents)
+    assert status == 200
+    upload_response = UploadResponse.model_validate(upload_payload)
+
+    status, payload = request_json(
+        data_quality_api,
+        f"/data-quality/recommendations?file_id={upload_response.file_id}",
+    )
+
+    assert status == 200
+    response = DataQualityRecommendationsResponse.model_validate(payload)
+    assert response.file_id == upload_response.file_id
+    assert response.original_filename == filename
+    assert any(item.category == "missing_values" for item in response.recommendations)
+    assert (UPLOAD_DIR / upload_response.saved_filename).read_bytes() == contents
+
+
+def test_recommendations_api_rejects_missing_identifier(data_quality_api):
+    assert_error(
+        request_json(data_quality_api, "/data-quality/recommendations"),
+        400,
+        "missing_filename",
+    )
+
+
+def test_recommendations_api_rejects_invalid_file_id(data_quality_api):
+    assert_error(
+        request_json(data_quality_api, "/data-quality/recommendations?file_id=not-a-uuid"),
+        400,
+        "invalid_file_id",
+    )
+
+
+def test_recommendations_api_rejects_path_traversal(data_quality_api):
+    assert_error(
+        request_json(data_quality_api, "/data-quality/recommendations?filename=..%2Foutside.csv"),
+        400,
+        "invalid_filename",
     )
