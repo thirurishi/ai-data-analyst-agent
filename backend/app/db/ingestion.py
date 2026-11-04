@@ -72,6 +72,14 @@ class DatabaseIngestionService:
     def _table_name(file_id: str) -> str:
         return f"upload_{file_id.replace('-', '')}"
 
+    @classmethod
+    def resolve_registration(cls, file_id: str) -> IngestionResult:
+        with cls._registry_lock:
+            result = cls._registry.get(file_id)
+        if result is None:
+            raise FileNotFoundError("The requested file identifier is not registered for database ingestion.")
+        return result
+
     @staticmethod
     def _create_table(metadata: MetaData, table_name: str, dataframe: pd.DataFrame) -> Table:
         columns: list[Column[Any]] = []
