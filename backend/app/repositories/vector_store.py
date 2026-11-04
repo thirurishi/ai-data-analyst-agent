@@ -76,11 +76,12 @@ class InMemoryVectorStore(VectorStoreRepository):
     ) -> list[VectorDocumentRecord]:
         if not query_vector:
             return []
-        candidates = [
-            record
-            for record in self.records
-            if record.file_id == file_id and record.embedding_model == embedding_model
-        ]
+        with self._lock:
+            candidates = [
+                record
+                for record in self.records
+                if record.file_id == file_id and record.embedding_model == embedding_model
+            ]
         ranked = []
         for record in candidates:
             vector = record.embedding

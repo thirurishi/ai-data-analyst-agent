@@ -12,13 +12,16 @@ from backend.app.llm.exceptions import (
 )
 from backend.app.llm.schemas import LLMChatResponse
 from backend.app.llm.service import LLMService
+from backend.app.repositories.vector_store import VectorStoreError
 from backend.app.schemas.document_qa import (
     DocumentCitation,
     DocumentQAResponse,
 )
 from backend.app.services.document_retrieval import (
     DocumentRetrievalError,
+    DocumentRetrievalProviderError,
     DocumentRetrievalService,
+    DocumentRetrievalStorageError,
 )
 
 
@@ -39,6 +42,18 @@ class DocumentQAProviderError(DocumentQAError):
 
 
 class DocumentQAMalformedResponseError(DocumentQAError):
+    pass
+
+
+class DocumentQAConfigurationError(DocumentQAProviderError):
+    pass
+
+
+class DocumentQARetrievalProviderError(DocumentQAProviderError):
+    pass
+
+
+class DocumentQARetrievalStorageError(DocumentQAProviderError):
     pass
 
 
@@ -69,8 +84,16 @@ class DocumentQAService:
                 top_k=top_k,
             )
         except EmbeddingConfigurationError as exc:
-            raise DocumentQAProviderError(
+            raise DocumentQAConfigurationError(
                 "The document retrieval provider is unavailable."
+            ) from exc
+        except (DocumentRetrievalStorageError, VectorStoreError) as exc:
+            raise DocumentQARetrievalStorageError(
+                "Document evidence could not be retrieved."
+            ) from exc
+        except DocumentRetrievalProviderError as exc:
+            raise DocumentQARetrievalProviderError(
+                "Document evidence could not be retrieved."
             ) from exc
         except DocumentRetrievalError as exc:
             message = str(exc).lower()

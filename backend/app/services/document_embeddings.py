@@ -11,17 +11,23 @@ from backend.app.embeddings.provider import (
 )
 from backend.app.ingestion.upload_service import UploadService
 from backend.app.repositories.vector_store import (
-    InMemoryVectorStore,
     VectorStoreError,
     VectorStoreRepository,
 )
+from backend.app.repositories.vector_store_factory import get_vector_store
 from backend.app.schemas.document import DocumentChunkResponse
 from backend.app.schemas.embedding import DocumentEmbeddingResponse, VectorDocumentRecord
-from backend.app.db.engine import get_engine
-from backend.app.repositories.postgres_vector_store import PostgresVectorStore
 
 
 class DocumentEmbeddingError(ValueError):
+    pass
+
+
+class DocumentEmbeddingProviderError(DocumentEmbeddingError):
+    pass
+
+
+class DocumentEmbeddingStorageError(DocumentEmbeddingError):
     pass
 
 
@@ -76,11 +82,11 @@ class DocumentEmbeddingService:
         try:
             embeddings = self.provider.embed(texts)
         except EmbeddingProviderError as exc:
-            raise DocumentEmbeddingError("The embedding provider failed.") from exc
+            raise DocumentEmbeddingProviderError("The embedding provider failed.") from exc
         if len(embeddings) != len(chunks):
-            raise DocumentEmbeddingError("The embedding provider returned an invalid number of vectors.")
+            raise DocumentEmbeddingProviderError("The embedding provider returned an invalid number of vectors.")
         if any(len(vector) != self.dimensions for vector in embeddings):
-            raise DocumentEmbeddingError(
+            raise DocumentEmbeddingProviderError(
                 f"Embedding vectors must contain exactly {self.dimensions} dimensions."
             )
 
@@ -106,7 +112,7 @@ class DocumentEmbeddingService:
         try:
             stored_count = self.vector_store.upsert_records(records)
         except (VectorStoreError, ValueError, TypeError) as exc:
-            raise DocumentEmbeddingError("The vector storage operation failed.") from exc
+            raise DocumentEmbeddingStorageError("The vector storage operation failed.") from exc
 
         return DocumentEmbeddingResponse(
             file_id=file_id,
@@ -128,10 +134,4 @@ class DocumentEmbeddingService:
 
     @staticmethod
     def _build_vector_store(dimensions: int | None) -> VectorStoreRepository:
-        normalized_dimensions = dimensions or settings.EMBEDDING_DIMENSIONS
-        if settings.EMBEDDING_VECTOR_STORE == "postgres":
-            try:
-                return PostgresVectorStore(get_engine(), normalized_dimensions)
-            except VectorStoreError as exc:
-                raise EmbeddingConfigurationError(str(exc)) from exc
-        return InMemoryVectorStore()
+        return get_vector_store(dimensions)

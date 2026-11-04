@@ -25,6 +25,18 @@ class DocumentEmbeddingResponse(BaseModel):
     dimensions: int
 
 
+class DocumentIndexResponse(BaseModel):
+    file_id: str
+    filename: str
+    file_type: str
+    character_count: int
+    page_count: int | None
+    chunk_count: int
+    stored_count: int
+    embedding_model: str
+    dimensions: int
+
+
 class DocumentRetrievalRequest(BaseModel):
     file_id: str
     query: str = Field(min_length=1)

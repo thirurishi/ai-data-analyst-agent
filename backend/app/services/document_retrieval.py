@@ -14,11 +14,20 @@ from backend.app.repositories.vector_store import (
     VectorStoreError,
     VectorStoreRepository,
 )
+from backend.app.repositories.vector_store_factory import get_vector_store
 from backend.app.schemas.embedding import DocumentRetrievalRequest, DocumentRetrievalResponse, RetrievalResult
 from backend.app.schemas.embedding import VectorDocumentRecord
 
 
 class DocumentRetrievalError(ValueError):
+    pass
+
+
+class DocumentRetrievalProviderError(DocumentRetrievalError):
+    pass
+
+
+class DocumentRetrievalStorageError(DocumentRetrievalError):
     pass
 
 
@@ -62,9 +71,9 @@ class DocumentRetrievalService:
         try:
             embeddings = self.provider.embed([query])
         except EmbeddingProviderError as exc:
-            raise DocumentRetrievalError("The embedding provider failed.") from exc
+            raise DocumentRetrievalProviderError("The embedding provider failed.") from exc
         if len(embeddings) != 1 or len(embeddings[0]) != self.dimensions:
-            raise DocumentRetrievalError(
+            raise DocumentRetrievalProviderError(
                 f"Embedding vectors must contain exactly {self.dimensions} dimensions."
             )
 
@@ -78,10 +87,10 @@ class DocumentRetrievalService:
             )
         except (VectorStoreError, ValueError, TypeError) as exc:
             if "dimension" in str(exc).lower():
-                raise DocumentRetrievalError(
+                raise DocumentRetrievalStorageError(
                     f"Stored embedding dimension must be exactly {self.dimensions}."
                 ) from exc
-            raise DocumentRetrievalError("The vector storage search failed.") from exc
+            raise DocumentRetrievalStorageError("The vector storage search failed.") from exc
 
         scored_records = self._score_records(records, query_vector)
         results = [
@@ -110,7 +119,7 @@ class DocumentRetrievalService:
         scored = []
         for record in records:
             if len(record.embedding) != self.dimensions:
-                raise DocumentRetrievalError(
+                raise DocumentRetrievalStorageError(
                     f"Stored embedding dimension must be exactly {self.dimensions}."
                 )
             dot_product = sum(left * right for left, right in zip(record.embedding, query_vector))
@@ -136,15 +145,4 @@ class DocumentRetrievalService:
 
     @staticmethod
     def _build_vector_store(dimensions: int | None) -> VectorStoreRepository:
-        normalized_dimensions = settings.EMBEDDING_DIMENSIONS if dimensions is None else dimensions
-        if settings.EMBEDDING_VECTOR_STORE == "postgres":
-            from backend.app.db.engine import get_engine
-            from backend.app.repositories.postgres_vector_store import PostgresVectorStore
-
-            try:
-                return PostgresVectorStore(get_engine(), normalized_dimensions)
-            except VectorStoreError as exc:
-                raise EmbeddingConfigurationError(str(exc)) from exc
-        from backend.app.repositories.vector_store import InMemoryVectorStore
-
-        return InMemoryVectorStore()
+        return get_vector_store(dimensions)

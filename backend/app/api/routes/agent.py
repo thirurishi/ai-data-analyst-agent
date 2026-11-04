@@ -8,6 +8,7 @@ import pandas as pd
 
 from backend.app.analysis.service import AnalysisValidationError
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
+from backend.app.api.rag_errors import RAG_INFRASTRUCTURE_ERRORS, rag_infrastructure_error
 from backend.app.ingestion.csv_reader import CsvReaderService
 from backend.app.llm.answer_service import AnswerGenerationError, AnswerGenerationService
 from backend.app.llm.planner import AnalysisPlannerService
@@ -150,6 +151,8 @@ def agent_analyze(
 def agent_analyze_route(payload: AgentAnalysisRequest):
     try:
         return agent_analyze(payload)
+    except RAG_INFRASTRUCTURE_ERRORS as exc:
+        return rag_infrastructure_error(exc)
     except (AnalysisValidationError, ValueError) as exc:
         if "provider failed" in str(exc).lower() or "valid tool call" in str(exc).lower():
             return ingestion_error(502, "tool_selection_failed", str(exc))

@@ -30,6 +30,8 @@ class DocumentExtractionService:
                 UploadService.resolve_file_id(file_id)
             except FileNotFoundError as exc:
                 raise DocumentExtractionError("The requested document was not found.") from exc
+            except ValueError as exc:
+                raise DocumentExtractionError("The requested document identifier is invalid.") from exc
             raise DocumentExtractionError("The requested document identifier is invalid.")
 
         file_type = DocumentExtractionService._file_type(Path(record.saved_filename))

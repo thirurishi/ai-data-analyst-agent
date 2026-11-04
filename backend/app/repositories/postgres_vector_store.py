@@ -3,6 +3,7 @@ from __future__ import annotations
 from sqlalchemy import Column, MetaData, PrimaryKeyConstraint, String, Table, insert, select
 from sqlalchemy.dialects.postgresql import insert as postgres_insert
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.types import Integer, JSON
 
 from backend.app.repositories.vector_store import VectorStoreError, VectorStoreRepository
@@ -62,9 +63,12 @@ class PostgresVectorStore(VectorStoreRepository):
             .on_conflict_do_nothing(index_elements=["chunk_id", "embedding_model"])
             .returning(self._table.c.chunk_id)
         )
-        with self.engine.begin() as connection:
-            result = connection.execute(statement)
-            return len(result.scalars().all())
+        try:
+            with self.engine.begin() as connection:
+                result = connection.execute(statement)
+                return len(result.scalars().all())
+        except SQLAlchemyError as exc:
+            raise VectorStoreError("The PostgreSQL vector store write failed.") from exc
 
     def search(
         self,
@@ -89,8 +93,11 @@ class PostgresVectorStore(VectorStoreRepository):
             .order_by(self._table.c.embedding.cosine_distance(query_vector))
             .limit(top_k)
         )
-        with self.engine.connect() as connection:
-            rows = connection.execute(statement).mappings().all()
+        try:
+            with self.engine.connect() as connection:
+                rows = connection.execute(statement).mappings().all()
+        except SQLAlchemyError as exc:
+            raise VectorStoreError("The PostgreSQL vector store search failed.") from exc
         return [
             VectorDocumentRecord(
                 chunk_id=row["chunk_id"],

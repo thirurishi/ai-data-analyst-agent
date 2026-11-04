@@ -8,6 +8,7 @@ import pytest
 import backend.app.ingestion as ingestion_package
 import backend.app.ingestion.upload_service as upload_service
 import backend.app.api.routes.data_quality as data_quality_routes
+from backend.app.repositories.vector_store_factory import reset_vector_stores
 
 REAL_UPLOAD_DIR = (Path(upload_service.__file__).resolve().parents[1] / "uploads").resolve()
 TEST_UPLOAD_DIR_ENV = "AI_DATA_ANALYST_TEST_UPLOAD_DIR"
@@ -85,6 +86,14 @@ def _patch_test_module_upload_dir(request, isolated_upload_dir):
     with pytest.MonkeyPatch.context() as patcher:
         patcher.setattr(module, "UPLOAD_DIR", isolated_upload_dir)
         yield
+
+
+@pytest.fixture(autouse=True)
+def _reset_shared_vector_stores():
+    # The process-wide vector store must not leak indexed documents between tests.
+    reset_vector_stores()
+    yield
+    reset_vector_stores()
 
 
 @pytest.fixture(scope="session")
