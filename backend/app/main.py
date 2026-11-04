@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from backend.app.api.routes.analysis import router as analysis_router
 from backend.app.api.routes.csv_read import router as csv_read_router
 from backend.app.api.routes.data_quality import router as data_quality_router
+from backend.app.api.routes.llm import router as llm_router
 from backend.app.api.routes.metadata import router as metadata_router
 from backend.app.api.routes.profile_csv import router as profile_csv_router
 from backend.app.api.routes.upload import router as upload_router
@@ -27,3 +28,4 @@ app.include_router(csv_read_router)
 app.include_router(profile_csv_router)
 app.include_router(metadata_router)
 app.include_router(data_quality_router)
+app.include_router(llm_router)
