@@ -82,6 +82,8 @@ def test_tool_registry_contains_expected_tools(dataframe):
         "sql_aggregate",
         "sql_group_by",
         "sql_top_n",
+        "rag_retrieve",
+        "rag_ask",
     }
     assert registry.describe("analyze_summary").name == "analyze_summary"
     assert registry.execute("analyze_aggregate", dataframe, AnalyzeAggregateInput(value_column="revenue", aggregation="sum"))["value"] == 500

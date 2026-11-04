@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from typing import Any
+from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
+import pandas as pd
 
 from backend.app.analysis.service import AnalysisValidationError
 from backend.app.api.ingestion_errors import expected_ingestion_error, ingestion_error, unexpected_ingestion_error
@@ -11,6 +13,7 @@ from backend.app.llm.answer_service import AnswerGenerationError, AnswerGenerati
 from backend.app.llm.planner import AnalysisPlannerService
 from backend.app.llm.schemas import AnalysisPlan, DatasetMetadata, LLMChatResponse
 from backend.app.llm.service import LLMService
+from backend.app.ingestion.upload_service import UploadService
 from backend.app.schemas.agent import AgentAnalysisRequest, AgentAnalysisResponse, AgentToolResponse
 from backend.app.tools.registry import ToolRegistry
 from backend.app.tools.selector import SelectedToolCall, ToolSelectionService
@@ -74,31 +77,62 @@ def agent_analyze(
     answer_service: AnswerGenerationService | None = None,
     registry: ToolRegistry | None = None,
 ) -> AgentAnalysisResponse:
-    dataframe = CsvReaderService.read_csv(payload.filename, payload.file_id)
-    metadata = DatasetMetadata(
-        row_count=len(dataframe),
-        column_names=[str(column) for column in dataframe.columns],
-        dtypes={str(column): str(dtype) for column, dtype in dataframe.dtypes.items()},
-    )
     tool_registry = registry or ToolRegistry()
+    file_record = (
+        UploadService.get_file_record_by_id(payload.file_id)
+        if payload.file_id is not None
+        else None
+    )
+    is_document = (
+        file_record is not None
+        and Path(file_record.saved_filename).suffix.lower() in {".pdf", ".docx", ".txt"}
+    )
+    if is_document:
+        dataframe = pd.DataFrame()
+        metadata = DatasetMetadata(row_count=0, column_names=[], dtypes={})
+        definitions = [
+            definition
+            for definition in tool_registry.definitions()
+            if definition["backend"] == "rag"
+        ]
+    else:
+        dataframe = CsvReaderService.read_csv(payload.filename, payload.file_id)
+        metadata = DatasetMetadata(
+            row_count=len(dataframe),
+            column_names=[str(column) for column in dataframe.columns],
+            dtypes={str(column): str(dtype) for column, dtype in dataframe.dtypes.items()},
+        )
+        definitions = [
+            definition
+            for definition in tool_registry.definitions()
+            if definition["backend"] != "rag"
+        ]
     selector = selector_service or ToolSelectionService(LLMService())
-    selected = selector.select(payload.question, metadata, tool_registry.definitions())
+    selected = selector.select(payload.question, metadata, definitions)
+    if selected.backend == "rag" and selected.arguments.file_id != payload.file_id:
+        raise ValueError("RAG tool file_id must match the requested document.")
     result = tool_registry.execute(
         selected.tool_name,
         dataframe,
         selected.arguments,
         backend=selected.backend,
     )
-    plan = _plan_from_tool_call(selected)
-    answer_service_instance = answer_service or AnswerGenerationService(LLMService())
-    answer = answer_service_instance.answer(
-        payload.question,
-        plan,
-        result,
-        backend=selected.backend,
-        tool_name=selected.tool_name,
-        tool_arguments=selected.arguments.model_dump(mode="json"),
-    )
+    if selected.backend == "rag":
+        if selected.tool_name == "rag_ask":
+            answer = result["answer"]
+        else:
+            answer = f"Retrieved {result['count']} relevant document chunks."
+    else:
+        plan = _plan_from_tool_call(selected)
+        answer_service_instance = answer_service or AnswerGenerationService(LLMService())
+        answer = answer_service_instance.answer(
+            payload.question,
+            plan,
+            result,
+            backend=selected.backend,
+            tool_name=selected.tool_name,
+            tool_arguments=selected.arguments.model_dump(mode="json"),
+        )
 
     return AgentAnalysisResponse(
         question=payload.question,

@@ -8,11 +8,15 @@ from pydantic import BaseModel
 
 from backend.app.analysis.service import DeterministicAnalysisService
 from backend.app.analysis.sql_analysis_service import SqlAnalysisService
+from backend.app.services.document_qa import DocumentQAService
+from backend.app.services.document_retrieval import DocumentRetrievalService
 from backend.app.tools.schemas import (
     AnalyzeAggregateInput,
     AnalyzeGroupByInput,
     AnalyzeSummaryInput,
     AnalyzeTopNInput,
+    RagAskInput,
+    RagRetrieveInput,
     SqlAggregateInput,
     SqlGroupByInput,
     SqlSummaryInput,
@@ -123,6 +127,24 @@ class ToolRegistry:
                 n=arguments.n,
             ),
         ),
+        ToolDefinition(
+            name="rag_retrieve",
+            backend="rag",
+            description="Retrieve the most relevant indexed chunks from a registered PDF, DOCX, or TXT document.",
+            input_schema=RagRetrieveInput,
+            callable=lambda dataframe, arguments: DocumentRetrievalService()
+            .retrieve(arguments.file_id, arguments.query, top_k=arguments.top_k)
+            .model_dump(mode="json"),
+        ),
+        ToolDefinition(
+            name="rag_ask",
+            backend="rag",
+            description="Answer a question about a registered PDF, DOCX, or TXT document with retrieved source citations.",
+            input_schema=RagAskInput,
+            callable=lambda dataframe, arguments: DocumentQAService()
+            .ask(arguments.file_id, arguments.question, top_k=arguments.top_k)
+            .model_dump(mode="json"),
+        ),
     )
 
     def names(self) -> set[str]:
@@ -153,6 +175,8 @@ class ToolRegistry:
         backend: str | None = None,
     ) -> dict[str, Any]:
         definition = self.describe(name)
+        if definition.backend == "rag" and backend is None:
+            raise ValueError("The rag backend must be explicitly selected.")
         if backend is not None and backend != definition.backend:
             raise ValueError(
                 f"Backend '{backend}' is not supported for tool '{name}'."

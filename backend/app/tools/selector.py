@@ -13,6 +13,8 @@ from backend.app.tools.schemas import (
     AnalyzeGroupByInput,
     AnalyzeSummaryInput,
     AnalyzeTopNInput,
+    RagAskInput,
+    RagRetrieveInput,
     SqlAggregateInput,
     SqlGroupByInput,
     SqlSummaryInput,
@@ -36,6 +38,8 @@ class ToolSelectionService:
         "sql_aggregate": SqlAggregateInput,
         "sql_group_by": SqlGroupByInput,
         "sql_top_n": SqlTopNInput,
+        "rag_retrieve": RagRetrieveInput,
+        "rag_ask": RagAskInput,
     }
 
     def __init__(self, llm_service: Any):
@@ -70,7 +74,7 @@ class ToolSelectionService:
             backend = payload.get("backend")
             if backend is None:
                 backend = self._infer_backend(tool_name)
-            if not isinstance(backend, str) or backend not in {"pandas", "sql"}:
+            if not isinstance(backend, str) or backend not in {"pandas", "sql", "rag"}:
                 raise ValueError(f"Unsupported backend '{backend}'.")
 
             tool_definition = next(
@@ -92,6 +96,8 @@ class ToolSelectionService:
 
     @staticmethod
     def _infer_backend(tool_name: str) -> str:
+        if tool_name.startswith("rag_"):
+            raise ValueError("The rag backend must be explicitly selected.")
         return "sql" if tool_name.startswith("sql_") else "pandas"
 
     @staticmethod
@@ -136,5 +142,7 @@ class ToolSelectionService:
                 raise ValueError("The LLM requested an unknown column.")
             return
         if isinstance(arguments, SqlSummaryInput):
+            return
+        if isinstance(arguments, (RagRetrieveInput, RagAskInput)):
             return
         raise ValueError("The tool arguments are invalid.")
