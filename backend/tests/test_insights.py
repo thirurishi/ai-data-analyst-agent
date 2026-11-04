@@ -304,3 +304,20 @@ def test_dataset_description_mentions_entity_dates_metric_and_breakdowns(kaggle_
     assert "total amount: total 2,170" in answer
     assert "product category (3 values" in answer
     assert "total total" not in answer
+
+
+@pytest.mark.parametrize("question", ["LIST ALL COLUMNS", "what columns are there?", "show me the column names", "which fields does it have"])
+def test_offline_agent_lists_every_column(kaggle_style_frame, question):
+    outcome = OfflineAgent(kaggle_style_frame).run(question)
+
+    assert outcome["tool_name"] == "list_columns"
+    assert outcome["result"]["column_count"] == len(kaggle_style_frame.columns)
+    for column in kaggle_style_frame.columns:
+        assert column in outcome["answer"]
+
+
+def test_offline_agent_row_count_and_grouped_counts_stay_distinct(kaggle_style_frame):
+    agent = OfflineAgent(kaggle_style_frame)
+
+    assert agent.run("how many rows")["answer"] == "The dataset has 6 rows and 8 columns."
+    assert agent.run("how many rows per gender")["tool_name"] == "analyze_group_by"

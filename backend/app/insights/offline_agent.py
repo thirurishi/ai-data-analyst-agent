@@ -162,7 +162,41 @@ class OfflineAgent:
         counts = InsightService._group(self.dataframe, group, None, "count")
         return [{group: str(key), "value": int(value)} for key, value in counts.items()]
 
+    COLUMNS_INTENT = re.compile(r"\b(columns?|fields?|variables?|headers?|attributes?)\b")
+    ROWS_INTENT = re.compile(r"\bhow many (rows|records|entries|lines|observations)\b|\b(number|count) of (rows|records|entries)\b")
+    ROLE_LABELS = {"numeric": "number", "categorical": "category", "datetime": "date", "identifier": "ID", "text": "text"}
+
+    def _intent(self, question: str) -> dict[str, Any] | None:
+        """Questions about the table itself ('list all columns', 'how many rows') rather than its values."""
+        q = f" {question.lower()} "
+        mentions_column = any(f" {_normalize(str(c))} " in f" {_normalize(question)} " for c in self.dataframe.columns)
+        if self.COLUMNS_INTENT.search(q) and not mentions_column and not re.search(r"\b(by|per|each)\b", q):
+            columns = [
+                {"name": str(c), "role": next((r for r, names in self.roles.items() if str(c) in names), "text"),
+                 "dtype": str(self.dataframe[c].dtype)}
+                for c in self.dataframe.columns
+            ]
+            listing = ", ".join(f"{c['name']} ({self.ROLE_LABELS.get(c['role'], c['role'])})" for c in columns)
+            return {
+                "tool_name": "list_columns",
+                "arguments": {},
+                "result": {"operation": "columns", "column_count": len(columns), "columns": columns},
+                "answer": f"The dataset has {len(columns)} columns: {listing}.",
+            }
+        if self.ROWS_INTENT.search(q) and not re.search(r"\b(by|per|each|for each|in each)\b", q):
+            rows = int(len(self.dataframe))
+            return {
+                "tool_name": "analyze_summary",
+                "arguments": {},
+                "result": DeterministicAnalysisService.analyze_dataset(self.dataframe),
+                "answer": f"The dataset has {rows:,} rows and {len(self.dataframe.columns)} columns.",
+            }
+        return None
+
     def run(self, question: str) -> dict[str, Any]:
+        intent = self._intent(question)
+        if intent is not None:
+            return intent
         plan = self.plan(question)
         operation = plan["operation"]
         if operation == "summary":

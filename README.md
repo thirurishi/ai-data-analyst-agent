@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://ai-data-analyst-agent-wbvy.onrender.com"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-open_app-3F6B57?style=for-the-badge"></a>
-  <img alt="Tests" src="https://img.shields.io/badge/tests-397_passing-3F6B57?style=for-the-badge">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-402_passing-3F6B57?style=for-the-badge">
   <img alt="Python" src="https://img.shields.io/badge/python-3.11+-1E2924?style=for-the-badge&logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-1E2924?style=for-the-badge&logo=fastapi&logoColor=white">
   <img alt="Pandas" src="https://img.shields.io/badge/pandas-1E2924?style=for-the-badge&logo=pandas&logoColor=white">
@@ -131,7 +131,7 @@ sequenceDiagram
 | **AI** | OpenRouter (LLM tool-calling), OpenAI-compatible embeddings, pgvector |
 | **Documents** | pypdf, python-docx, ReportLab (PDF reports) |
 | **Frontend** | Vanilla JavaScript, Chart.js, CSS (light and dark themes) |
-| **Quality** | pytest (397 tests), ruff |
+| **Quality** | pytest (402 tests), ruff |
 | **Delivery** | Docker, Docker Compose, Render |
 
 ## 🚀 Quick start
@@ -229,7 +229,7 @@ curl -X POST http://127.0.0.1:8000/assistant/ask \
 python -m pytest -q
 ```
 
-**397 tests** cover ingestion edge cases, security, data quality, cleaning, the analysis tools, the LLM planner and tool selection (with mocked providers), RAG, persistence, insights, reports and the offline assistant. They run against an isolated temporary upload directory and need no API keys or database.
+**402 tests** cover ingestion edge cases, security, data quality, cleaning, the analysis tools, the LLM planner and tool selection (with mocked providers), RAG, persistence, insights, reports and the offline assistant. They run against an isolated temporary upload directory and need no API keys or database.
 
 ## 🗂️ Project structure
 
@@ -250,7 +250,7 @@ ai-data-analyst-agent/
 │   │   ├── repositories/   # vector stores (memory / pgvector)
 │   │   ├── ingestion/      # safe uploads, file registry, CSV reader, profiler
 │   │   └── main.py
-│   └── tests/              # 397 pytest tests
+│   └── tests/              # 402 pytest tests
 ├── frontend/               # web app (HTML, CSS, JS) served at /app
 ├── sample_data/            # demo retail dataset
 ├── docs/                   # banner, demo GIF, screenshots
