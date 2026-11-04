@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from backend.app.api.ingestion_errors import ingestion_error, unexpected_ingestion_error
 from backend.app.schemas.document import DocumentChunkingResponse, DocumentExtractionResponse
@@ -6,14 +6,26 @@ from backend.app.schemas.embedding import (
     DocumentRetrievalRequest,
     DocumentRetrievalResponse,
 )
+from backend.app.schemas.document_qa import DocumentQARequest, DocumentQAResponse
 from backend.app.services.document_chunking import DocumentChunkingError, DocumentChunkingService
 from backend.app.services.document_extraction import DocumentExtractionError, DocumentExtractionService
 from backend.app.services.document_retrieval import (
     DocumentRetrievalError,
     DocumentRetrievalService,
 )
+from backend.app.services.document_qa import (
+    DocumentQAFileNotFoundError,
+    DocumentQAInvalidFileError,
+    DocumentQAMalformedResponseError,
+    DocumentQAProviderError,
+    DocumentQAService,
+)
 
 router = APIRouter()
+
+
+def get_document_qa_service() -> DocumentQAService:
+    return DocumentQAService()
 
 
 @router.post("/documents/extract/{file_id}", response_model=DocumentExtractionResponse)
@@ -78,5 +90,24 @@ async def retrieve_document(request: DocumentRetrievalRequest):
         if "query" in message or "top_k" in message:
             return ingestion_error(400, "invalid_retrieval_request", str(exc))
         return ingestion_error(400, "document_retrieval_failed", str(exc))
+    except Exception:  # pragma: no cover - defensive guard for unexpected service failures
+        return unexpected_ingestion_error()
+
+
+@router.post("/documents/ask", response_model=DocumentQAResponse)
+async def ask_document(
+    request: DocumentQARequest,
+    service: DocumentQAService = Depends(get_document_qa_service),
+):
+    try:
+        return service.ask(request.file_id, request.question, top_k=request.top_k)
+    except DocumentQAFileNotFoundError:
+        return ingestion_error(404, "file_not_found", "The requested document was not found.")
+    except DocumentQAInvalidFileError:
+        return ingestion_error(400, "invalid_file_id", "The document identifier is invalid.")
+    except DocumentQAMalformedResponseError:
+        return ingestion_error(502, "invalid_answer_response", "The document answer provider returned an invalid response.")
+    except DocumentQAProviderError:
+        return ingestion_error(502, "document_answer_provider_failed", "The document answer provider failed.")
     except Exception:  # pragma: no cover - defensive guard for unexpected service failures
         return unexpected_ingestion_error()
